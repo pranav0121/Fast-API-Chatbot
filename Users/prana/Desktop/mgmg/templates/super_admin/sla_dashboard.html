@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLA Dashboard - YouCloud Support System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sla-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .sla-metric-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sla-status-green {
+            border-left: 5px solid #28a745;
+        }
+
+        .sla-status-yellow {
+            border-left: 5px solid #ffc107;
+        }
+
+        .sla-status-red {
+            border-left: 5px solid #dc3545;
+        }
+
+        .sla-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .sla-green {
+            background-color: #28a745;
+        }
+
+        .sla-yellow {
+            background-color: #ffc107;
+        }
+
+        .sla-red {
+            background-color: #dc3545;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .priority-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .priority-critical {
+            border-left: 4px solid #dc3545;
+        }
+
+        .priority-high {
+            border-left: 4px solid #fd7e14;
+        }
+
+        .priority-medium {
+            border-left: 4px solid #ffc107;
+        }
+
+        .priority-low {
+            border-left: 4px solid #28a745;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: white !important;
+        }
+
+        .btn-filter {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/super-admin">
+                <i class="fas fa-shield-alt"></i> YouCloud Super Admin
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/super-admin/dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a class="nav-link" href="/super-admin/partners">
+                    <i class="fas fa-handshake"></i> Partners
+                </a>
+                <a class="nav-link active" href="/super-admin/sla">
+                    <i class="fas fa-clock"></i> SLA Dashboard
+                </a>
+                <a class="nav-link" href="/super-admin/escalation">
+                    <i class="fas fa-exclamation-triangle"></i> Escalation
+                </a>
+                <a class="nav-link" href="/auth/admin/logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="sla-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1><i class="fas fa-clock"></i> SLA Dashboard</h1>
+                    <p class="mb-0">Service Level Agreement Monitoring & Analytics</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-light btn-filter" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button type="button" class="btn btn-outline-light btn-filter" onclick="exportReport()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- SLA Overview Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="sla-metric-card sla-status-green">
+                    <div class="metric-value text-success" id="within-sla">0</div>
+                    <div class="metric-label">Within SLA</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="sla-metric-card sla-status-yellow">
+                    <div class="metric-value text-warning" id="sla-warning">0</div>
+                    <div class="metric-label">SLA Warning</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="sla-metric-card sla-status-red">
+                    <div class="metric-value text-danger" id="sla-breached">0</div>
+                    <div class="metric-label">SLA Breached</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="sla-metric-card">
+                    <div class="metric-value text-primary" id="avg-compliance">0%</div>
+                    <div class="metric-label">Avg Compliance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="chart-container">
+                    <h5><i class="fas fa-chart-line"></i> SLA Compliance Trend (Last 30 Days)</h5>
+                    <canvas id="complianceChart" height="100"></canvas>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="chart-container">
+                    <h5><i class="fas fa-chart-pie"></i> Priority Breakdown</h5>
+                    <canvas id="priorityChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priority Level Details -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="table-container">
+                    <h5><i class="fas fa-list"></i> SLA Status by Priority Level</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Target (Hours)</th>
+                                    <th>Total Tickets</th>
+                                    <th>Within SLA</th>
+                                    <th>Warning</th>
+                                    <th>Breached</th>
+                                    <th>Compliance Rate</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sla-priority-table">
+                                <!-- Data loaded via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Ticket View -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="table-container">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5><i class="fas fa-ticket-alt"></i> Current Tickets SLA Status</h5>
+                        <div>
+                            <select class="form-select d-inline-block w-auto me-2" id="priority-filter" onchange="filterTickets()">
+                                <option value="all">All Priorities</option>
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                            <select class="form-select d-inline-block w-auto" id="status-filter" onchange="filterTickets()">
+                                <option value="all">All Statuses</option>
+                                <option value="ok">Within SLA</option>
+                                <option value="warning">Warning</option>
+                                <option value="breached">Breached</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Subject</th>
+                                    <th>Priority</th>
+                                    <th>Organization</th>
+                                    <th>Created</th>
+                                    <th>Time Elapsed</th>
+                                    <th>Time Remaining</th>
+                                    <th>SLA Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tickets-table">
+                                <!-- Data loaded via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let complianceChart, priorityChart;
+        let currentData = {};
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            loadSLAData();
+            loadDetailedTickets();
+            
+            // Auto-refresh every 5 minutes
+            setInterval(function() {
+                loadSLAData();
+                loadDetailedTickets();
+            }, 300000);
+        });
+
+        function initializeCharts() {
+            // Compliance Trend Chart
+            const complianceCtx = document.getElementById('complianceChart').getContext('2d');
+            complianceChart = new Chart(complianceCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'SLA Compliance %',
+                        data: [],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Priority Breakdown Chart
+            const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+            priorityChart = new Chart(priorityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Critical', 'High', 'Medium', 'Low'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#dc3545', '#fd7e14', '#ffc107', '#28a745']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        async function loadSLAData() {
+            try {
+                const response = await fetch('/super-admin/api/sla/overview');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateOverviewCards(data);
+                    updatePriorityTable(data.sla_levels);
+                    loadAnalyticsData();
+                }
+            } catch (error) {
+                console.error('Error loading SLA data:', error);
+            }
+        }
+
+        async function loadAnalyticsData() {
+            try {
+                const response = await fetch('/super-admin/api/sla/analytics?days=30');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateComplianceChart(data.daily_trend);
+                    updatePriorityChart(data.priority_breakdown);
+                }
+            } catch (error) {
+                console.error('Error loading analytics data:', error);
+            }
+        }
+
+        async function loadDetailedTickets() {
+            try {
+                const priority = document.getElementById('priority-filter').value;
+                const url = priority === 'all' ? 
+                    '/super-admin/api/sla/detailed' : 
+                    `/super-admin/api/sla/detailed?priority=${priority}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateTicketsTable(data.tickets);
+                    currentData.tickets = data.tickets;
+                }
+            } catch (error) {
+                console.error('Error loading detailed tickets:', error);
+            }
+        }
+
+        function updateOverviewCards(data) {
+            const totalWithinSLA = data.sla_levels.reduce((sum, level) => sum + level.within_sla, 0);
+            const totalWarning = data.sla_levels.reduce((sum, level) => sum + level.warning, 0);
+            const totalBreached = data.sla_levels.reduce((sum, level) => sum + level.breached, 0);
+            const totalTickets = totalWithinSLA + totalWarning + totalBreached;
+            const avgCompliance = totalTickets > 0 ? 
+                ((totalWithinSLA / totalTickets) * 100).toFixed(1) : 100;
+
+            document.getElementById('within-sla').textContent = totalWithinSLA;
+            document.getElementById('sla-warning').textContent = totalWarning;
+            document.getElementById('sla-breached').textContent = totalBreached;
+            document.getElementById('avg-compliance').textContent = avgCompliance + '%';
+        }
+
+        function updatePriorityTable(slaLevels) {
+            const tbody = document.getElementById('sla-priority-table');
+            tbody.innerHTML = '';
+
+            slaLevels.forEach(level => {
+                const row = `
+                    <tr class="priority-${level.priority.toLowerCase()}">
+                        <td><strong>${level.priority}</strong></td>
+                        <td>${level.target_hours}h</td>
+                        <td>${level.total_tickets}</td>
+                        <td><span class="badge bg-success">${level.within_sla}</span></td>
+                        <td><span class="badge bg-warning">${level.warning}</span></td>
+                        <td><span class="badge bg-danger">${level.breached}</span></td>
+                        <td><strong>${level.compliance_rate}%</strong></td>
+                        <td>
+                            <span class="sla-indicator sla-${level.status}"></span>
+                            ${level.status.charAt(0).toUpperCase() + level.status.slice(1)}
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function updateComplianceChart(dailyTrend) {
+            complianceChart.data.labels = dailyTrend.map(d => d.date);
+            complianceChart.data.datasets[0].data = dailyTrend.map(d => d.compliance_rate);
+            complianceChart.update();
+        }
+
+        function updatePriorityChart(priorityBreakdown) {
+            const data = [
+                priorityBreakdown.critical?.total || 0,
+                priorityBreakdown.high?.total || 0,
+                priorityBreakdown.medium?.total || 0,
+                priorityBreakdown.low?.total || 0
+            ];
+            priorityChart.data.datasets[0].data = data;
+            priorityChart.update();
+        }
+
+        function updateTicketsTable(tickets) {
+            const tbody = document.getElementById('tickets-table');
+            tbody.innerHTML = '';
+
+            tickets.forEach(ticket => {
+                const statusBadge = ticket.sla_status === 'ok' ? 'success' : 
+                                   ticket.sla_status === 'warning' ? 'warning' : 'danger';
+                
+                const timeRemaining = ticket.time_remaining > 0 ? 
+                    `${ticket.time_remaining.toFixed(1)}h remaining` : 
+                    `${Math.abs(ticket.time_remaining).toFixed(1)}h overdue`;
+                
+                const row = `
+                    <tr>
+                        <td><strong>#${ticket.ticket_id}</strong></td>
+                        <td>${ticket.subject}</td>
+                        <td><span class="badge bg-${ticket.priority === 'critical' ? 'danger' : 
+                                                    ticket.priority === 'high' ? 'warning' :
+                                                    ticket.priority === 'medium' ? 'info' : 'success'}">${ticket.priority}</span></td>
+                        <td>${ticket.organization}</td>
+                        <td>${new Date(ticket.created_at).toLocaleString()}</td>
+                        <td>${ticket.hours_passed.toFixed(1)}h</td>
+                        <td>${timeRemaining}</td>
+                        <td>
+                            <span class="badge bg-${statusBadge}">
+                                ${ticket.sla_status.charAt(0).toUpperCase() + ticket.sla_status.slice(1)}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function filterTickets() {
+            const priorityFilter = document.getElementById('priority-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            
+            if (!currentData.tickets) return;
+            
+            let filteredTickets = currentData.tickets;
+            
+            if (priorityFilter !== 'all') {
+                filteredTickets = filteredTickets.filter(t => t.priority.toLowerCase() === priorityFilter);
+            }
+            
+            if (statusFilter !== 'all') {
+                filteredTickets = filteredTickets.filter(t => t.sla_status === statusFilter);
+            }
+            
+            updateTicketsTable(filteredTickets);
+        }
+
+        function refreshData() {
+            loadSLAData();
+            loadDetailedTickets();
+            
+            // Show refresh indicator
+            const refreshBtn = document.querySelector('[onclick="refreshData()"]');
+            const originalText = refreshBtn.innerHTML;
+            refreshBtn.innerHTML = '<i class="fas fa-spin fa-spinner"></i> Refreshing...';
+            refreshBtn.disabled = true;
+            
+            setTimeout(() => {
+                refreshBtn.innerHTML = originalText;
+                refreshBtn.disabled = false;
+            }, 2000);
+        }
+
+        function exportReport() {
+            // Implement report export functionality
+            alert('Export functionality will be implemented soon!');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escalation Dashboard - Super Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet">
+    <style>
+        .sla-progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .sla-green {
+            background-color: #28a745;
+        }
+
+        .sla-yellow {
+            background-color: #ffc107;
+        }
+
+        .sla-red {
+            background-color: #dc3545;
+        }
+
+        .escalation-card {
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .escalation-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .priority-critical {
+            border-left-color: #dc3545;
+        }
+
+        .priority-high {
+            border-left-color: #fd7e14;
+        }
+
+        .priority-medium {
+            border-left-color: #ffc107;
+        }
+
+        .priority-low {
+            border-left-color: #28a745;
+        }
+
+        .level-badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .level-0 {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .level-1 {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .level-2 {
+            background-color: #fce4ec;
+            color: #c2185b;
+        }
+
+        .time-remaining {
+            font-weight: bold;
+        }
+
+        .time-good {
+            color: #28a745;
+        }
+
+        .time-warning {
+            color: #ffc107;
+        }
+
+        .time-critical {
+            color: #dc3545;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="fas fa-crown"></i> Super Admin</h4>
+            </div>
+            <div class="sidebar-menu">
+                <a href="{{ url_for('super_admin.dashboard') }}" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{{ url_for('super_admin.partners') }}" class="menu-item">
+                    <i class="fas fa-handshake"></i> Partner Management
+                </a>
+                <a href="{{ url_for('super_admin.escalation_dashboard') }}" class="menu-item active">
+                    <i class="fas fa-exclamation-triangle"></i> Escalation Dashboard
+                </a>
+                <a href="{{ url_for('super_admin.workflow_logs') }}" class="menu-item">
+                    <i class="fas fa-history"></i> Workflow Logs
+                </a>
+                <a href="{{ url_for('super_admin.audit_logs') }}" class="menu-item">
+                    <i class="fas fa-shield-alt"></i> Audit Logs
+                </a>
+                <a href="{{ url_for('super_admin.bot_configuration') }}" class="menu-item">
+                    <i class="fas fa-robot"></i> Bot Configuration
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2><i class="fas fa-exclamation-triangle me-3"></i>Escalation Dashboard</h2>
+                <div class="header-actions">
+                    <button class="btn btn-outline-primary" onclick="loadEscalationData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-outline-success" onclick="exportEscalationReport()">
+                        <i class="fas fa-download"></i> Export Report
+                    </button>
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <!-- SLA Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-success" id="tickets-green">0</h3>
+                                <p class="mb-0">Within SLA</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-warning" id="tickets-yellow">0</h3>
+                                <p class="mb-0">SLA Warning</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-danger" id="tickets-red">0</h3>
+                                <p class="mb-0">SLA Breached</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-primary" id="avg-compliance">0%</h3>
+                                <p class="mb-0">Overall Compliance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-section">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <select class="form-select" id="levelFilter" onchange="applyFilters()">
+                                <option value="">All Levels</option>
+                                <option value="0">Level 0 - Bot</option>
+                                <option value="1">Level 1 - ICP</option>
+                                <option value="2">Level 2 - YouCloud</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="priorityFilter" onchange="applyFilters()">
+                                <option value="">All Priorities</option>
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="statusFilter" onchange="applyFilters()">
+                                <option value="">All Statuses</option>
+                                <option value="open">Open</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="escalated">Escalated</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="slaFilter" onchange="applyFilters()">
+                                <option value="">All SLA Status</option>
+                                <option value="green">Within SLA</option>
+                                <option value="orange">SLA Warning</option>
+                                <option value="red">SLA Breached</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="searchFilter" placeholder="Search tickets..."
+                                onkeyup="applyFilters()">
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Escalation Tickets -->
+                <div class="row" id="escalation-tickets">
+                    <div class="col-12 text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Force Escalation Modal -->
+    <div class="modal fade" id="forceEscalationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Force Escalate Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="escalationForm">
+                        <input type="hidden" id="escalationTicketId">
+                        <div class="mb-3">
+                            <label class="form-label">Escalate to Level</label>
+                            <select class="form-select" id="escalationLevel" required>
+                                <option value="1">Level 1 - ICP (4 hours SLA)</option>
+                                <option value="2">Level 2 - YouCloud (24 hours SLA)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Reason for Escalation</label>
+                            <textarea class="form-control" id="escalationComment" rows="3"
+                                placeholder="Provide a reason for manual escalation..." required></textarea>
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Warning:</strong> This will immediately escalate the ticket and notify the assigned
+                            partner.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" onclick="executeForceEscalation()">
+                        <i class="fas fa-exclamation-triangle"></i> Force Escalate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let escalationData = [];
+        let filteredData = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadEscalationData();
+
+            // Auto-refresh every 30 seconds
+            setInterval(loadEscalationData, 30000);
+        });
+
+        async function loadEscalationData() {
+            try {
+                const response = await fetch('/super-admin/api/escalation/dashboard');
+                const data = await response.json();
+                
+                // Handle the response structure properly
+                if (data.tickets) {
+                    escalationData = data.tickets;
+                    filteredData = [...escalationData];
+                    
+                    // Update the SLA overview with the summary data
+                    document.getElementById('tickets-green').textContent = data.within_sla || 0;
+                    document.getElementById('tickets-yellow').textContent = data.sla_warning || 0;
+                    document.getElementById('tickets-red').textContent = data.sla_breached || 0;
+                    
+                    const totalTickets = escalationData.length;
+                    const compliance = totalTickets > 0 ? Math.round((data.within_sla / totalTickets) * 100) : 100;
+                    document.getElementById('avg-compliance').textContent = compliance + '%';
+                    
+                    renderEscalationTickets();
+                } else {
+                    console.warn('No tickets data in response:', data);
+                    escalationData = [];
+                    filteredData = [];
+                    updateSLAOverview();
+                    renderEscalationTickets();
+                }
+            } catch (error) {
+                console.error('Error loading escalation data:', error);
+                showNotification('Error loading escalation data', 'error');
+                
+                // Set fallback data
+                escalationData = [];
+                filteredData = [];
+                updateSLAOverview();
+                renderEscalationTickets();
+            }
+        }
+
+        function updateSLAOverview() {
+            // Set fallback values when no data is available
+            document.getElementById('tickets-green').textContent = '0';
+            document.getElementById('tickets-yellow').textContent = '0';
+            document.getElementById('tickets-red').textContent = '0';
+            document.getElementById('avg-compliance').textContent = '100%';
+        }
+
+        function renderEscalationTickets() {
+            const container = document.getElementById('escalation-tickets');
+
+            if (filteredData.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="card">
+                            <div class="card-body py-5">
+                                <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                                <h5>No Tickets Requiring Escalation</h5>
+                                <p class="text-muted">All tickets are within their SLA targets</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredData.map(ticket => {
+                const timeRemainingClass = ticket.sla_status === 'green' ? 'time-good' :
+                    ticket.sla_status === 'orange' ? 'time-warning' : 'time-critical';
+
+                const timeText = ticket.time_remaining > 0 ?
+                    `${Math.abs(ticket.time_remaining).toFixed(1)}h remaining` :
+                    `${Math.abs(ticket.time_remaining).toFixed(1)}h overdue`;
+
+                return `
+                    <div class="col-lg-6 col-xl-4 mb-3">
+                        <div class="card escalation-card priority-${ticket.priority}">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>#${ticket.ticket_id}</strong>
+                                    <span class="level-badge level-${ticket.escalation_level}">
+                                        Level ${ticket.escalation_level} - ${ticket.level_name}
+                                    </span>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                            data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/admin#tickets" target="_blank">
+                                            <i class="fas fa-eye"></i> View Ticket
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="forceEscalate(${ticket.ticket_id})">
+                                            <i class="fas fa-arrow-up"></i> Force Escalate
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title">${ticket.subject}</h6>
+                                <div class="mb-2">
+                                    <small class="text-muted">Priority:</small>
+                                    <span class="badge bg-${getPriorityColor(ticket.priority)}">${ticket.priority.toUpperCase()}</span>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">Organization:</small>
+                                    <strong>${ticket.organization}</strong>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">Created by:</small>
+                                    ${ticket.created_by}
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">Escalation:</small>
+                                    <span class="badge bg-${getEscalationColor(ticket.escalation_level)}">${ticket.level_name}</span>
+                                </div>
+                                ${ticket.partner ? `
+                                <div class="mb-2">
+                                    <small class="text-muted">Assigned to:</small>
+                                    <strong class="text-success">${ticket.partner.name}</strong>
+                                    <small class="text-muted">(${ticket.partner.type})</small>
+                                </div>
+                                ` : `
+                                <div class="mb-2">
+                                    <small class="text-muted">Assignment:</small>
+                                    <span class="text-warning">⚠ Unassigned</span>
+                                </div>
+                                `}
+                                <div class="mb-3">
+                                    <small class="text-muted">Created:</small>
+                                    ${new Date(ticket.created_at).toLocaleString()}
+                                </div>
+                                
+                                <!-- SLA Progress -->
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">SLA Status</small>
+                                        <small class="time-remaining ${timeRemainingClass}">${timeText}</small>
+                                    </div>
+                                    <div class="progress sla-progress">
+                                        <div class="progress-bar sla-${ticket.sla_status}" 
+                                             style="width: ${ticket.time_remaining > 0 ?
+                        Math.max(10, (ticket.time_remaining / 24) * 100) : 100}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group w-100">
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            onclick="window.open('/admin#tickets', '_blank')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" 
+                                            onclick="forceEscalate(${ticket.ticket_id})">
+                                        <i class="fas fa-arrow-up"></i> Escalate
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getPriorityColor(priority) {
+            switch (priority) {
+                case 'critical': return 'danger';
+                case 'high': return 'warning';
+                case 'medium': return 'info';
+                case 'low': return 'success';
+                default: return 'secondary';
+            }
+        }
+
+        function getEscalationColor(level) {
+            switch (level) {
+                case 0: return 'primary';    // Bot
+                case 1: return 'warning';    // ICP
+                case 2: return 'danger';     // YouCloud
+                default: return 'secondary';
+            }
+        }
+
+        function applyFilters() {
+            const levelFilter = document.getElementById('levelFilter').value;
+            const priorityFilter = document.getElementById('priorityFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const slaFilter = document.getElementById('slaFilter').value;
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+
+            filteredData = escalationData.filter(ticket => {
+                return (!levelFilter || ticket.escalation_level.toString() === levelFilter) &&
+                    (!priorityFilter || ticket.priority === priorityFilter) &&
+                    (!statusFilter || ticket.status === statusFilter) &&
+                    (!slaFilter || ticket.sla_status === slaFilter) &&
+                    (!searchFilter ||
+                        ticket.subject.toLowerCase().includes(searchFilter) ||
+                        ticket.organization.toLowerCase().includes(searchFilter) ||
+                        ticket.created_by.toLowerCase().includes(searchFilter));
+            });
+
+            renderEscalationTickets();
+        }
+
+        function clearFilters() {
+            document.getElementById('levelFilter').value = '';
+            document.getElementById('priorityFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('slaFilter').value = '';
+            document.getElementById('searchFilter').value = '';
+
+            filteredData = [...escalationData];
+            renderEscalationTickets();
+        }
+
+        function forceEscalate(ticketId) {
+            document.getElementById('escalationTicketId').value = ticketId;
+            document.getElementById('escalationLevel').value = '1';
+            document.getElementById('escalationComment').value = '';
+
+            new bootstrap.Modal(document.getElementById('forceEscalationModal')).show();
+        }
+
+        async function executeForceEscalation() {
+            const ticketId = document.getElementById('escalationTicketId').value;
+            const level = document.getElementById('escalationLevel').value;
+            const comment = document.getElementById('escalationComment').value;
+
+            if (!comment.trim()) {
+                alert('Please provide a reason for escalation');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/super-admin/api/escalation/force/${ticketId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        level: parseInt(level),
+                        comment: comment
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showNotification(result.message, 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('forceEscalationModal')).hide();
+                    loadEscalationData();
+                } else {
+                    const error = await response.json();
+                    showNotification(error.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error force escalating ticket:', error);
+                showNotification('Error escalating ticket', 'error');
+            }
+        }
+
+        function exportEscalationReport() {
+            const csvData = [
+                ['Ticket ID', 'Subject', 'Priority', 'Level', 'SLA Status', 'Time Remaining', 'Organization', 'Created']
+            ];
+
+            escalationData.forEach(ticket => {
+                csvData.push([
+                    ticket.ticket_id,
+                    ticket.subject,
+                    ticket.priority,
+                    `Level ${ticket.escalation_level} - ${ticket.level_name}`,
+                    ticket.sla_status,
+                    ticket.time_remaining > 0 ? `${ticket.time_remaining.toFixed(1)}h remaining` : `${Math.abs(ticket.time_remaining).toFixed(1)}h overdue`,
+                    ticket.organization,
+                    new Date(ticket.created_at).toLocaleString()
+                ]);
+            });
+
+            const csvContent = csvData.map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `escalation_report_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function showNotification(message, type) {
+            const alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+            const notification = `
+                <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                     style="top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', notification);
+
+            setTimeout(() => {
+                const alert = document.querySelector('.alert');
+                if (alert) alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+# English translations for Flask Chatbot
+# Copyright (C) 2024
+# This file is distributed under the same license as the Flask Chatbot package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Flask Chatbot 1.0\n"
+"Report-Msgid-Bugs-To: support@youcloudtech.com\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: Auto Generated\n"
+"Language: en\n"
+"Language-Team: English\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Support Center - We're Here to Help"
+msgstr "Support Center - We're Here to Help"
+
+msgid "We're Here to Help"
+msgstr "We're Here to Help"
+
+msgid "Get instant support for all your questions. Our AI-powered chatbot and live support team are ready to assist you 24/7."
+msgstr "Get instant support for all your questions. Our AI-powered chatbot and live support team are ready to assist you 24/7."
+
+msgid "Instant Response"
+msgstr "Instant Response"
+
+msgid "Expert Support"
+msgstr "Expert Support"
+
+msgid "24/7 Available"
+msgstr "24/7 Available"
+
+msgid "Start Chat"
+msgstr "Start Chat"
+
+msgid "Browse FAQ"
+msgstr "Browse FAQ"
+
+msgid "Choose Language"
+msgstr "Choose Language"
+
+msgid "Chat with us"
+msgstr "Chat with us"
+
+msgid "Type your message here..."
+msgstr "Type your message here..."
+
+msgid "Send"
+msgstr "Send"
+
+msgid "Hello! How can I help you today?"
+msgstr "Hello! How can I help you today?"
+
+msgid "Thank you for visiting our support center. We're here to help!"
+msgstr "Thank you for visiting our support center. We're here to help!"
+
+msgid "Start Support Chat"
+msgstr "Start Support Chat"
+
+msgid "View FAQ"
+msgstr "View FAQ"
+
+msgid "Get instant support for all your questions. Our AI-powered chatbot and live support team are ready to assist you 24/7."
+msgstr "Get instant support for all your questions. Our AI-powered chatbot and live support team are ready to assist you 24/7."

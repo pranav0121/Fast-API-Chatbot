@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Device Info Check</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .info-box { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .label { font-weight: bold; color: #333; }
+        .value { color: #666; font-family: monospace; background: #f8f9fa; padding: 2px 6px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Your Device Information</h1>
+    
+    <div class="info-box">
+        <h3>🖥️ Device & Browser</h3>
+        <p><span class="label">User Agent:</span> <span class="value" id="userAgent"></span></p>
+        <p><span class="label">Platform:</span> <span class="value" id="platform"></span></p>
+        <p><span class="label">Language:</span> <span class="value" id="language"></span></p>
+        <p><span class="label">Screen:</span> <span class="value" id="screen"></span></p>
+        <p><span class="label">Viewport:</span> <span class="value" id="viewport"></span></p>
+    </div>
+
+    <div class="info-box">
+        <h3>⚡ Browser Capabilities</h3>
+        <p><span class="label">Cookies Enabled:</span> <span class="value" id="cookies"></span></p>
+        <p><span class="label">Local Storage:</span> <span class="value" id="localStorage"></span></p>
+        <p><span class="label">WebSocket Support:</span> <span class="value" id="webSocket"></span></p>
+        <p><span class="label">Touch Support:</span> <span class="value" id="touch"></span></p>
+    </div>
+
+    <div class="info-box">
+        <h3>🕒 Session Info</h3>
+        <p><span class="label">Timezone:</span> <span class="value" id="timezone"></span></p>
+        <p><span class="label">Current Time:</span> <span class="value" id="currentTime"></span></p>
+        <p><span class="label">Page Load Time:</span> <span class="value" id="loadTime"></span></p>
+    </div>
+
+    <script src="device-tracker.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Basic info
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            document.getElementById('platform').textContent = navigator.platform;
+            document.getElementById('language').textContent = navigator.language;
+            document.getElementById('screen').textContent = `${screen.width}x${screen.height}`;
+            document.getElementById('viewport').textContent = `${window.innerWidth}x${window.innerHeight}`;
+            
+            // Capabilities
+            document.getElementById('cookies').textContent = navigator.cookieEnabled ? 'Yes' : 'No';
+            document.getElementById('localStorage').textContent = typeof(Storage) !== "undefined" ? 'Yes' : 'No';
+            document.getElementById('webSocket').textContent = typeof(WebSocket) !== "undefined" ? 'Yes' : 'No';
+            document.getElementById('touch').textContent = 'ontouchstart' in window ? 'Yes' : 'No';
+            
+            // Session info
+            document.getElementById('timezone').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById('currentTime').textContent = new Date().toLocaleString();
+            document.getElementById('loadTime').textContent = new Date().toLocaleTimeString();
+            
+            // If device tracker is loaded, show additional info
+            setTimeout(function() {
+                if (typeof deviceTracker !== 'undefined') {
+                    const context = deviceTracker.getDeviceContext();
+                    console.log('📱 Device Context:', context);
+                    
+                    // Add parsed device info
+                    const parseBox = document.createElement('div');
+                    parseBox.className = 'info-box';
+                    parseBox.innerHTML = `
+                        <h3>🤖 Parsed Device Info</h3>
+                        <p><span class="label">Device Type:</span> <span class="value">${context.deviceType}</span></p>
+                        <p><span class="label">Browser:</span> <span class="value">${context.browser.name} ${context.browser.version}</span></p>
+                        <p><span class="label">OS:</span> <span class="value">${context.os.name} ${context.os.version}</span></p>
+                        <p><span class="label">Session ID:</span> <span class="value">${context.sessionId}</span></p>
+                    `;
+                    document.body.appendChild(parseBox);
+                    
+                    // Check for warnings
+                    const warnings = deviceTracker.getCompatibilityWarnings();
+                    if (warnings.length > 0) {
+                        const warningBox = document.createElement('div');
+                        warningBox.className = 'info-box';
+                        warningBox.style.background = '#fff3cd';
+                        warningBox.style.border = '1px solid #ffeaa7';
+                        warningBox.innerHTML = `
+                            <h3>⚠️ Compatibility Warnings</h3>
+                            ${warnings.map(w => `<p style="color: #856404;">• ${w.message}</p>`).join('')}
+                        `;
+                        document.body.appendChild(warningBox);
+                    }
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

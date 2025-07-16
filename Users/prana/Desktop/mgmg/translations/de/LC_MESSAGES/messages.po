@@ -1,0 +1,68 @@
+# German translations for Chatbot Support
+# Copyright (C) 2025 YouCloudTech
+# This file is distributed under the same license as the Chatbot Support project.
+msgid ""
+msgstr ""
+"Project-Id-Version: Chatbot Support 1.0\n"
+"Report-Msgid-Bugs-To: support@youcloudtech.com\n"
+"POT-Creation-Date: 2025-06-10 02:20+0530\n"
+"PO-Revision-Date: 2025-06-10 02:20+0530\n"
+"Last-Translator: Support Team <support@youcloudtech.com>\n"
+"Language: de\n"
+"Language-Team: German\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+msgid "Support Center - We're Here to Help"
+msgstr "Support-Center - Wir Sind Hier um zu Helfen"
+
+msgid "We're Here to Help"
+msgstr "Wir Sind Hier um zu Helfen"
+
+msgid "Get instant support for all your questions. Our AI-powered chatbot and live support team are ready to assist you 24/7."
+msgstr "Erhalten Sie sofortige Unterstützung für alle Ihre Fragen. Unser KI-gestützter Chatbot und das Live-Support-Team stehen Ihnen rund um die Uhr zur Verfügung."
+
+msgid "Instant Response"
+msgstr "Sofortige Antwort"
+
+msgid "Expert Support"
+msgstr "Experten-Support"
+
+msgid "24/7 Available"
+msgstr "24/7 Verfügbar"
+
+msgid "Start Support Chat"
+msgstr "Support-Chat Starten"
+
+msgid "View FAQ"
+msgstr "FAQ Anzeigen"
+
+msgid "Quick Help Categories"
+msgstr "Schnelle Hilfe Kategorien"
+
+msgid "Choose a category to get started or describe your issue"
+msgstr "Wählen Sie eine Kategorie zum Starten oder beschreiben Sie Ihr Problem"
+
+msgid "Support Chat"
+msgstr "Support-Chat"
+
+msgid "Online"
+msgstr "Online"
+
+msgid "Hi there! 👋"
+msgstr "Hallo! 👋"
+
+msgid "How can we help you today?"
+msgstr "Wie können wir Ihnen heute helfen?"
+
+msgid "Please select a category:"
+msgstr "Bitte wählen Sie eine Kategorie:"
+
+msgid "Language selection"
+msgstr "Sprachauswahl"
+
+msgid "Choose Language"
+msgstr "Sprache Wählen"

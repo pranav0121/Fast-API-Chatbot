@@ -1,0 +1,36 @@
+# Translation file for Dutch
+msgid ""
+msgstr ""
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Support Center - We're Here to Help"
+msgstr "Ondersteuningscentrum - We Zijn Er Om Te Helpen"
+
+msgid "We're Here to Help"
+msgstr "We Zijn Er Om Te Helpen"
+
+msgid "Choose Language"
+msgstr "Kies Taal"
+
+msgid "Chat with us"
+msgstr "Chat met ons"
+
+msgid "Start Chat"
+msgstr "Start Chat"
+
+msgid "Browse FAQ"
+msgstr "FAQ Bekijken"
+
+msgid "Instant Response"
+msgstr "Directe Reactie"
+
+msgid "Expert Support"
+msgstr "Expert Ondersteuning"
+
+msgid "24/7 Available"
+msgstr "24/7 Beschikbaar"
+
+msgid "Get instant support for all your questions. Our AI-powered chatbot and live support team are ready to assist you 24/7."
+msgstr "Krijg directe ondersteuning voor al uw vragen. Onze AI-chatbot en live supportteam staan klaar om u 24/7 te helpen."

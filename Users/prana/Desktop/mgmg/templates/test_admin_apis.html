@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .loading {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Admin Panel API Test</h1>
+    <p>This page tests all the API endpoints that the admin panel uses.</p>
+
+    <div id="dashboard-stats" class="test-section loading">
+        <h3>Dashboard Stats API</h3>
+        <button onclick="testDashboardStats()">Test /api/admin/dashboard-stats</button>
+        <div id="dashboard-result">Click the button to test...</div>
+    </div>
+
+    <div id="tickets-api" class="test-section loading">
+        <h3>Tickets API</h3>
+        <button onclick="testTicketsAPI()">Test /api/admin/tickets</button>
+        <div id="tickets-result">Click the button to test...</div>
+    </div>
+
+    <div id="recent-activity" class="test-section loading">
+        <h3>Recent Activity API</h3>
+        <button onclick="testRecentActivity()">Test /api/admin/recent-activity</button>
+        <div id="activity-result">Click the button to test...</div>
+    </div>
+
+    <div id="categories-api" class="test-section loading">
+        <h3>Categories API</h3>
+        <button onclick="testCategoriesAPI()">Test /api/categories</button>
+        <div id="categories-result">Click the button to test...</div>
+    </div>
+
+    <script>
+        async function testAPI(url, resultElementId, sectionId) {
+            const resultDiv = document.getElementById(resultElementId);
+            const section = document.getElementById(sectionId);
+
+            resultDiv.innerHTML = '<div style="color: #856404;">Testing...</div>';
+            section.className = 'test-section loading';
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div style="color: green;"><strong>✅ Success!</strong></div>
+                        <div><strong>Status:</strong> ${response.status}</div>
+                        <div><strong>Response:</strong></div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    section.className = 'test-section success';
+                } else {
+                    resultDiv.innerHTML = `
+                        <div style="color: red;"><strong>❌ Error!</strong></div>
+                        <div><strong>Status:</strong> ${response.status}</div>
+                        <div><strong>Response:</strong></div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    section.className = 'test-section error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div style="color: red;"><strong>❌ Network Error!</strong></div>
+                    <div><strong>Error:</strong> ${error.message}</div>
+                    <div>This usually means the server is not running or there's a connection issue.</div>
+                `;
+                section.className = 'test-section error';
+            }
+        }
+
+        function testDashboardStats() {
+            testAPI('/api/admin/dashboard-stats', 'dashboard-result', 'dashboard-stats');
+        }
+
+        function testTicketsAPI() {
+            testAPI('/api/admin/tickets', 'tickets-result', 'tickets-api');
+        }
+
+        function testRecentActivity() {
+            testAPI('/api/admin/recent-activity', 'activity-result', 'recent-activity');
+        }
+
+        function testCategoriesAPI() {
+            testAPI('/api/categories', 'categories-result', 'categories-api');
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            console.log('Starting automatic API tests...');
+            setTimeout(() => testDashboardStats(), 500);
+            setTimeout(() => testTicketsAPI(), 1000);
+            setTimeout(() => testRecentActivity(), 1500);
+            setTimeout(() => testCategoriesAPI(), 2000);
+        });
+    </script>
+</body>
+
+</html>

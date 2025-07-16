@@ -1,0 +1,36 @@
+<<<<<<< HEAD
+fastapi
+uvicorn
+redis
+httpx
+asyncpg 
+sqlalchemy 
+databases 
+psycopg2
+python-dotenv
+orjson
+pyjwt
+async_timeout
+pydantic[email]
+Jinja2
+aiosmtplib
+python-multipart
+passlib
+pytz
+bcrypt
+apscheduler
+=======
+Flask==2.0.1
+Flask-SQLAlchemy==2.5.1
+python-dotenv==0.19.0
+pyodbc==4.0.32
+SQLAlchemy==1.4.23
+Pillow==9.5.0
+Werkzeug==2.0.1
+Flask-Login==0.6.2
+Flask-SocketIO==5.3.2
+eventlet==0.33.0
+dnspython==1.16.0
+Flask-Babel==2.0.0
+PyJWT==2.8.0
+>>>>>>> 0ff7794 (YouTicket)

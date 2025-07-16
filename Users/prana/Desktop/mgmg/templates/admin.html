@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Support Center</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="fas fa-headset"></i> Support Admin</h4>
+            </div>
+            <div class="sidebar-menu">
+                <a href="#dashboard" class="menu-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="#tickets" class="menu-item" onclick="showSection('tickets')">
+                    <i class="fas fa-ticket-alt"></i> Tickets
+                </a>
+                <a href="#live-chat" class="menu-item" onclick="showSection('live-chat')">
+                    <i class="fas fa-comments"></i> Live Chat
+                </a>
+                <a href="#analytics" class="menu-item" onclick="showSection('analytics')">
+                    <i class="fas fa-analytics"></i> Analytics
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h2 id="page-title">Dashboard</h2>
+                <div class="header-actions">
+                    <button class="btn btn-outline-primary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="admin-profile">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown">
+                                <i class="fas fa-user-shield"></i> {{ session.get('admin_name', 'Admin') }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('auth.admin_logout') }}">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-tickets">0</h3>
+                            <p>Total Tickets</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pending-tickets">0</h3>
+                            <p>Pending Tickets</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="resolved-tickets">0</h3>
+                            <p>Resolved Tickets</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="active-chats">0</h3>
+                            <p>Active Chats</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h4>Recent Activity</h4>
+                    <div class="activity-list" id="recent-activity">
+                        <!-- Recent activity will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tickets Section -->
+            <div id="tickets-section" class="content-section">
+                <div class="tickets-header">
+                    <div class="filters">
+                        <select class="form-select" id="status-filter" onchange="filterTickets()">
+                            <option value="">All Statuses</option>
+                            <option value="open">Open</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                        <select class="form-select" id="priority-filter" onchange="filterTickets()">
+                            <option value="">All Priorities</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                        <select class="form-select" id="escalation-filter" onchange="filterTickets()">
+                            <option value="">All Escalation Levels</option>
+                            <option value="normal">Normal</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <select class="form-select" id="category-filter" onchange="filterTickets()">
+                            <option value="">All Categories</option>
+                        </select>
+                        <input type="text" class="form-control" id="organization-filter"
+                            placeholder="Filter by organization..." onkeyup="filterTickets()">
+                    </div>
+                </div>
+                <div class="tickets-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Subject</th>
+                                <th>Priority</th>
+                                <th>Escalation</th>
+                                <th>Organization</th>
+                                <th>Category</th>
+                                <th>User</th>
+                                <th>Device Info</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>End Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tickets-tbody">
+                            <!-- Tickets will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Live Chat Section -->
+            <div id="live-chat-section" class="content-section">
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <h5>Active Conversations</h5>
+                        <div class="conversations-list" id="conversations-list">
+                            <!-- Active conversations will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="chat-main">
+                        <div class="chat-header-main">
+                            <h5 id="chat-user-name">Select a conversation</h5>
+                            <div class="chat-actions">
+                                <button class="btn btn-sm btn-outline-success" onclick="updateTicketStatus('resolved')">
+                                    <i class="fas fa-check"></i> Resolve
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="updateTicketStatus('closed')">
+                                    <i class="fas fa-times"></i> Close
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="admin-chat-messages">
+                            <div class="no-chat-selected">
+                                <i class="fas fa-comments"></i>
+                                <p>Select a conversation to start chatting</p>
+                            </div>
+                        </div>
+                        <div class="chat-input-section" id="admin-chat-input" style="display: none;">
+                            <div class="input-group">
+                                <input type="file" id="admin-file-input" style="display: none;"
+                                    accept="image/*,.pdf,.doc,.docx,.txt" onchange="handleAdminFileSelect(event)">
+                                <button class="btn btn-outline-secondary"
+                                    onclick="document.getElementById('admin-file-input').click()">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <input type="text" class="form-control" id="admin-message-input"
+                                    placeholder="Type your reply..." onkeypress="handleEnter(event)">
+                                <button class="btn btn-primary" onclick="sendAdminMessage()">
+                                    <i class="fas fa-paper-plane"></i> Send
+                                </button>
+                            </div>
+                            <div id="admin-file-preview" style="display: none; margin-top: 10px;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-file"></i> <span id="admin-selected-file-name"></span>
+                                    <button type="button" class="btn-close float-end"
+                                        onclick="clearAdminFileSelection()"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analytics-section" class="content-section">
+                <div class="analytics-grid">
+                    <div class="chart-container">
+                        <h5>Tickets by Category</h5>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h5>Resolution Time</h5>
+                        <canvas id="resolutionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Details Modal -->
+    <div class="modal fade" id="ticketModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ticket Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="ticket-details">
+                    <!-- Ticket details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteCurrentTicket()" id="delete-ticket-btn">
+                        <i class="fas fa-trash"></i> Delete Ticket
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="openLiveChat()">Start Live Chat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+
+</html>

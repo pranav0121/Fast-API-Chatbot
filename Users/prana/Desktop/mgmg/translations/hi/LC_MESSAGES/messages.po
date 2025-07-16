@@ -1,0 +1,118 @@
+# Hindi translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-06-10 02:47+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: hi\n"
+"Language-Team: hi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+msgid "Support Center - We're Here to Help"
+msgstr "सहायता केंद्र - हम यहाँ मदद के लिए हैं"
+
+msgid "We're Here to Help"
+msgstr "हम यहाँ मदद के लिए हैं"
+
+msgid ""
+"Get instant support for all your questions. Our AI-powered chatbot and "
+"live support team are ready to assist you 24/7."
+msgstr ""
+"अपने सभी प्रश्नों के लिए तुरंत सहायता प्राप्त करें। हमारा AI-संचालित "
+"चैटबॉट और लाइव सपोर्ट टीम 24/7 आपकी सहायता के लिए तैयार है।"
+
+msgid "Instant Response"
+msgstr "तुरंत उत्तर"
+
+msgid "Expert Support"
+msgstr "विशेषज्ञ सहायता"
+
+msgid "24/7 Available"
+msgstr "24/7 उपलब्ध"
+
+msgid "Start Support Chat"
+msgstr "सहायता चैट शुरू करें"
+
+msgid "View FAQ"
+msgstr "FAQ देखें"
+
+msgid "Quick Help Categories"
+msgstr "त्वरित सहायता श्रेणियां"
+
+msgid "Choose a category to get started or describe your issue"
+msgstr "शुरू करने के लिए एक श्रेणी चुनें या अपनी समस्या का वर्णन करें"
+
+msgid "Support Chat"
+msgstr "सहायता चैट"
+
+msgid "Online"
+msgstr "ऑनलाइन"
+
+msgid "Hi there! 👋"
+msgstr "नमस्ते! 👋"
+
+msgid "How can we help you today?"
+msgstr "आज हम आपकी कैसे मदद कर सकते हैं?"
+
+msgid "Please select a category:"
+msgstr "कृपया एक श्रेणी चुनें:"
+
+msgid "Language selection"
+msgstr "भाषा चयन"
+
+msgid "Choose Language"
+msgstr "भाषा चुनें"
+
+msgid "Common Issues"
+msgstr "सामान्य समस्याएं"
+
+msgid "Does any of these match your issue?"
+msgstr "क्या इनमें से कोई आपकी समस्या से मेल खाता है?"
+
+msgid "Can't find your issue?"
+msgstr "अपनी समस्या नहीं मिल रही?"
+
+msgid "Describe Your Issue"
+msgstr "अपनी समस्या का वर्णन करें"
+
+msgid "Your Name (Optional)"
+msgstr "आपका नाम (वैकल्पिक)"
+
+msgid "Email (Optional)"
+msgstr "ईमेल (वैकल्पिक)"
+
+msgid "Enter your name"
+msgstr "अपना नाम दर्ज करें"
+
+msgid "Enter your email"
+msgstr "अपना ईमेल दर्ज करें"
+
+msgid "Type your question here..."
+msgstr "यहाँ अपना प्रश्न टाइप करें..."
+
+msgid "Connected with support"
+msgstr "सहायता से जुड़े हुए"
+
+msgid "Ticket"
+msgstr "टिकट"
+
+msgid "Close"
+msgstr "बंद करें"
+
+msgid "Submit"
+msgstr "जमा करें"
+
+msgid "Back"
+msgstr "वापस"
+

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}" {% if get_locale() in ['ar', 'ur' ] %}dir="rtl" {% endif %}>>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('Support Center - We\'re Here to Help') }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-end py-3">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light btn-sm dropdown-toggle language-dropdown-btn" type="button"
+                            id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe me-2"></i>
+                            {% if get_locale() == 'en' %}🇺🇸 English
+                            {% elif get_locale() == 'ar' %}🇸🇦 العربية
+                            {% elif get_locale() == 'es' %}🇪🇸 Español
+                            {% elif get_locale() == 'hi' %}🇮🇳 हिन्दी
+                            {% elif get_locale() == 'it' %}🇮🇹 Italiano
+                            {% elif get_locale() == 'ja' %}🇯🇵 日本語
+                            {% elif get_locale() == 'ko' %}🇰🇷 한국어
+                            {% elif get_locale() == 'pt' %}🇵🇹 Português
+                            {% elif get_locale() == 'ru' %}🇷🇺 Русский
+                            {% elif get_locale() == 'ur' %}🇵🇰 اردو
+                            {% elif get_locale() == 'zh' %}🇨🇳 中文
+                            {% else %}🇺🇸 English
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end language-dropdown"
+                            aria-labelledby="languageDropdown">
+                            <li class="dropdown-header">
+                                <i class="fas fa-language me-2"></i>{{ _('Choose Language') }}
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <!-- All Available Languages -->
+                            {% for lang in available_languages %}
+                            <li>
+                                <a class="dropdown-item language-item {% if get_locale() == lang %}active{% endif %}"
+                                    href="{{ url_for('set_language', lang_code=lang) }}">
+                                    {% if lang == 'en' %}
+                                    <span class="flag">🇺🇸</span>
+                                    <span class="lang-name">English</span>
+                                    <span class="lang-code">EN</span>
+                                    {% elif lang == 'ar' %}
+                                    <span class="flag">🇸🇦</span>
+                                    <span class="lang-name">العربية</span>
+                                    <span class="lang-code">AR</span>
+                                    {% elif lang == 'es' %}
+                                    <span class="flag">🇪🇸</span>
+                                    <span class="lang-name">Español</span>
+                                    <span class="lang-code">ES</span>
+                                    {% elif lang == 'hi' %}
+                                    <span class="flag">🇮🇳</span>
+                                    <span class="lang-name">हिन्दी</span>
+                                    <span class="lang-code">HI</span>
+                                    {% elif lang == 'it' %}
+                                    <span class="flag">🇮🇹</span>
+                                    <span class="lang-name">Italiano</span>
+                                    <span class="lang-code">IT</span>
+                                    {% elif lang == 'ja' %}
+                                    <span class="flag">🇯🇵</span>
+                                    <span class="lang-name">日本語</span>
+                                    <span class="lang-code">JA</span>
+                                    {% elif lang == 'ko' %}
+                                    <span class="flag">🇰🇷</span>
+                                    <span class="lang-name">한국어</span>
+                                    <span class="lang-code">KO</span>
+                                    {% elif lang == 'pt' %}
+                                    <span class="flag">🇵🇹</span>
+                                    <span class="lang-name">Português</span>
+                                    <span class="lang-code">PT</span>
+                                    {% elif lang == 'ru' %}
+                                    <span class="flag">🇷🇺</span>
+                                    <span class="lang-name">Русский</span>
+                                    <span class="lang-code">RU</span>
+                                    {% elif lang == 'ur' %}
+                                    <span class="flag">🇵🇰</span>
+                                    <span class="lang-name">اردو</span>
+                                    <span class="lang-code">UR</span>
+                                    {% elif lang == 'zh' %}
+                                    <span class="flag">🇨🇳</span>
+                                    <span class="lang-name">中文</span>
+                                    <span class="lang-code">ZH</span>
+                                    {% else %}
+                                    <span class="flag">🌐</span>
+                                    <span class="lang-name">{{ lang|upper }}</span>
+                                    <span class="lang-code">{{ lang|upper }}</span>
+                                    {% endif %}
+                                    {% if get_locale() == lang %}
+                                    <i class="fas fa-check ms-auto text-success"></i>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-headset me-2"></i>{{ _('Support Center') }}
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>{{ _('Home') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/faq">
+                            <i class="fas fa-question-circle me-1"></i>{{ _('FAQ') }}
+                        </a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <!-- User Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>{{ current_user.Name or 'User' }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li class="dropdown-header">
+                                <i class="fas fa-user me-2"></i>{{ current_user.Name }}
+                                <br><small class="text-muted">{{ current_user.Email }}</small>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/profile">
+                                    <i class="fas fa-id-card me-2"></i>{{ _('View Profile') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/profile/edit">
+                                    <i class="fas fa-edit me-2"></i>{{ _('Edit Profile') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/my-tickets">
+                                    <i class="fas fa-ticket-alt me-2"></i>{{ _('My Tickets') }}
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="/logout">
+                                    <i class="fas fa-sign-out-alt me-2"></i>{{ _('Logout') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">
+                            <i class="fas fa-sign-in-alt me-1"></i>{{ _('Login') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">
+                            <i class="fas fa-user-plus me-1"></i>{{ _('Register') }}
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if current_user.is_authenticated and current_user.IsAdmin %}
+                    <li class="nav-item">
+                        <a class="nav-link text-warning" href="/admin">
+                            <i class="fas fa-cogs me-1"></i>{{ _('Admin') }}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            <i class="fas fa-headset text-primary"></i>
+                            {{ _('We\'re Here to Help') }}
+                        </h1>
+                        <p class="hero-subtitle">
+                            {{ _('Get instant support for all your questions. Our AI-powered chatbot and live support
+                            team are ready to assist you 24/7.') }}
+                        </p>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-bolt text-warning"></i>
+                                <span>{{ _('Instant Response') }}</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-users text-success"></i>
+                                <span>{{ _('Expert Support') }}</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-clock text-info"></i>
+                                <span>{{ _('24/7 Available') }}</span>
+                            </div>
+                        </div> <button class="btn btn-primary btn-lg hero-cta" onclick="openSupportChat()">
+                            <i class="fas fa-comments"></i>
+                            {{ _('Start Support Chat') }}
+                        </button>
+                        <a href="/faq" class="btn btn-outline-primary btn-lg ms-3">
+                            <i class="fas fa-question-circle"></i>
+                            {{ _('View FAQ') }}
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <div class="floating-card">
+                            <i class="fas fa-comment-dots"></i>
+                            <h5>Quick Help</h5>
+                            <p>Get answers instantly</p>
+                        </div>
+                        <div class="floating-card card-2">
+                            <i class="fas fa-user-tie"></i>
+                            <h5>Expert Support</h5>
+                            <p>Talk to our specialists</p>
+                        </div>
+                        <div class="floating-card card-3">
+                            <i class="fas fa-shield-alt"></i>
+                            <h5>Secure & Safe</h5>
+                            <p>Your data is protected</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Help Section -->
+    <div class="quick-help-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2>{{ _('Quick Help Categories') }}</h2>
+                <p class="text-muted">{{ _('Choose a category to get started or describe your issue') }}</p>
+            </div>
+            <div class="row" id="quick-categories">
+                <!-- Categories will be loaded here -->
+            </div>
+        </div>
+    </div> <!-- Chat Widget -->
+    <div id="chat-widget" class="chat-widget">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h5><i class="fas fa-headset"></i> {{ _('Support Chat') }}</h5>
+                <span class="online-status">
+                    <i class="fas fa-circle"></i> {{ _('Online') }}
+                </span>
+            </div>
+            <button class="minimize-btn" onclick="toggleChat()">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+
+        <div class="chat-body">
+            <!-- Welcome Screen -->
+            <div class="welcome-screen" id="welcome-screen">
+                <div class="welcome-content">
+                    <div class="welcome-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h4>{{ _('Hi there! 👋') }}</h4>
+                    <p>{{ _('How can we help you today?') }}</p>
+                    <div class="category-selection">
+                        <p class="text-muted mb-3">{{ _('Please select a category:') }}</p>
+                        <div class="categories" id="categories">
+                            <!-- Categories will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="messages" id="chat-messages" style="display: none;">
+                <!-- Messages will appear here -->
+            </div>
+
+            <!-- Common Issues -->
+            <div class="common-issues" id="common-issues" style="display: none;">
+                <div class="section-header">
+                    <h6><i class="fas fa-lightbulb"></i> Common Issues</h6>
+                    <p class="text-muted">Does any of these match your issue?</p>
+                </div>
+                <div class="issues-list" id="issues-list">
+                    <!-- Common issues will be loaded here -->
+                </div>
+                <div class="custom-issue-section">
+                    <p class="text-muted">Can't find your issue?</p>
+                    <button class="btn btn-outline-primary btn-sm" onclick="showCustomIssueForm()">
+                        <i class="fas fa-edit"></i> Describe Your Issue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Custom Issue Form -->
+            <div class="custom-issue-form" id="custom-issue-form" style="display: none;">
+                <div class="section-header">
+                    <h6><i class="fas fa-edit"></i> Describe Your Issue</h6>
+                    <p class="text-muted">Please provide details about your problem</p>
+                </div>
+                <div class="form-content">
+                    <div class="mb-3">
+                        <label class="form-label">Your Name (Optional)</label>
+                        <input type="text" class="form-control" id="user-name" placeholder="Enter your name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email (Optional)</label>
+                        <input type="email" class="form-control" id="user-email" placeholder="Enter your email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Describe Your Issue *</label> <textarea class="form-control"
+                            id="issue-description" rows="4"
+                            placeholder="Please provide as much detail as possible about your issue... You can also paste images directly here!"></textarea>
+                    </div>
+                    <!-- File Upload Section -->
+                    <div class="mb-3">
+                        <label class="form-label">Attach Screenshot (Optional)</label>
+                        <div class="file-upload-area active" id="form-file-upload-area">
+                            <div class="upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag & drop files here or click to browse</p>
+                                <small>Supported: JPG, PNG, GIF (Max 10MB)</small>
+                            </div>
+                            <input type="file" id="form-file-input" accept="image/*" multiple style="display: none;">
+                        </div>
+                        <!-- File Preview -->
+                        <div class="file-preview" id="form-file-preview" style="display: none;"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="goBackToIssues()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="submitCustomIssue()">
+                            <i class="fas fa-paper-plane"></i> Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Chat -->
+            <div class="live-chat" id="live-chat" style="display: none;">
+                <div class="chat-status">
+                    <div class="status-indicator">
+                        <i class="fas fa-circle text-success"></i>
+                        <span>Connected with support</span>
+                    </div>
+                    <div class="ticket-info">
+                        Ticket #<span id="ticket-number">-</span>
+                    </div>
+                </div>
+                <div class="chat-messages-container" id="chat-messages-container">
+                    <!-- Live chat messages -->
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-footer"> <!-- Category Selection Input -->
+            <div class="chat-input-section" id="category-input" style="display: none;">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="category-message-input"
+                        placeholder="Type your question here..." onkeypress="handleCategoryEnter(event)">
+                    <button class="btn btn-primary" onclick="sendCategoryMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <small class="text-muted d-block mt-1">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Describe your issue and we'll connect you with support
+                </small>
+            </div> <!-- Live Chat Input -->
+            <div class="chat-input-section" id="live-chat-input" style="display: none;">
+                <!-- File Upload Area -->
+                <div class="file-upload-area" id="file-upload-area">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag & drop files here or click to browse</p>
+                        <small>Supported: JPG, PNG, GIF (Max 10MB)</small>
+                    </div>
+                    <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
+                </div>
+
+                <!-- File Preview -->
+                <div class="file-preview" id="file-preview" style="display: none;"></div>
+
+                <div class="input-group">
+                    <button class="btn btn-outline-secondary" id="attach-btn" type="button" title="Attach File">
+                        <i class="fas fa-paperclip"></i>
+                    </button> <input type="text" class="form-control" id="live-chat-message-input"
+                        placeholder="Type your message or paste an image..." onkeypress="handleChatEnter(event)">
+                    <button class="btn btn-primary" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="chat-footer-info">
+                    <small class="text-muted">
+                        <i class="fas fa-lock"></i> Your conversation is secure and private
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Solution Modal -->
+    <div class="modal fade" id="solutionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-lightbulb text-warning"></i> Solution
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="solution-content">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="markAsSolved()">
+                        <i class="fas fa-check"></i> This Solved My Issue
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="needMoreHelp()">
+                        <i class="fas fa-comments"></i> Need More Help
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-star text-warning"></i> Rate Your Experience
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <p>How was our support today?</p>
+                        <div class="rating-stars" id="rating-stars">
+                            <i class="fas fa-star" data-rating="1"></i>
+                            <i class="fas fa-star" data-rating="2"></i>
+                            <i class="fas fa-star" data-rating="3"></i>
+                            <i class="fas fa-star" data-rating="4"></i>
+                            <i class="fas fa-star" data-rating="5"></i>
+                        </div>
+                        <div class="mt-3">
+                            <textarea class="form-control" placeholder="Any additional feedback? (Optional)"
+                                id="feedback-text" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Skip</button>
+                    <button type="button" class="btn btn-primary" onclick="submitFeedback()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab-container" id="fab-container">
+        <button class="fab" onclick="openSupportChat()">
+            <i class="fas fa-comments"></i>
+        </button>
+        <div class="fab-tooltip">Need Help? Click to chat with us!</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+
+</html>

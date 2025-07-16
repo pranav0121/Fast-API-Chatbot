@@ -1,0 +1,138 @@
+<!-- Device Info Display Template for Admin UI -->
+<!-- Add this section to your admin ticket detail template -->
+
+<div class="device-info-section">
+    <h5>📱 Device Information</h5>
+    <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="device-info-header">
+                        <span class="device-icon">{{ ticket.device_info.device_icon }}</span>
+                        <span class="device-type">{{ ticket.device_info.device_type.title() }}</span>
+                        <span class="risk-badge badge badge-{{ ticket.device_info.risk_color }}">
+                            {{ ticket.device_info.risk_level.upper() }}
+                        </span>
+                    </div>
+                    
+                    <div class="device-details mt-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small class="text-muted">Browser:</small><br>
+                                <strong>{{ ticket.device_info.browser }}</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted">Operating System:</small><br>
+                                <strong>{{ ticket.device_info.os }}</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <small class="text-muted">IP Address:</small><br>
+                                <code>{{ ticket.device_info.ip_address }}</code>
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted">Device Type:</small><br>
+                                <span class="badge badge-secondary">{{ ticket.device_info.device_type }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if ticket.device_info.warnings %}
+                    <div class="device-warnings mt-2">
+                        <small class="text-muted">⚠️ Alerts:</small><br>
+                        {% for warning in ticket.device_info.warnings %}
+                            <span class="badge badge-warning">{{ warning }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="device-summary mt-2">
+                        <small class="text-muted">Summary:</small><br>
+                        <small>{{ ticket.device_info.admin_summary }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional CSS for device info styling -->
+<style>
+.device-info-section {
+    margin-bottom: 20px;
+}
+
+.device-info-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.device-icon {
+    font-size: 1.5em;
+}
+
+.device-type {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.risk-badge {
+    font-size: 0.75em;
+    padding: 2px 8px;
+}
+
+.device-details {
+    background-color: #f8f9fc;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.device-warnings .badge {
+    margin-right: 5px;
+}
+
+.border-left-info {
+    border-left: 0.25rem solid #36b9cc !important;
+}
+
+.badge-green {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-blue {
+    background-color: #007bff;
+    color: white;
+}
+
+.badge-red {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-gray {
+    background-color: #6c757d;
+    color: white;
+}
+</style>
+
+<!-- JavaScript for additional device info functionality -->
+<script>
+function toggleDeviceDetails() {
+    const details = document.querySelector('.device-details');
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+}
+
+// Add click handler for device info expansion
+document.addEventListener('DOMContentLoaded', function() {
+    const deviceHeader = document.querySelector('.device-info-header');
+    if (deviceHeader) {
+        deviceHeader.style.cursor = 'pointer';
+        deviceHeader.setAttribute('title', 'Click to toggle device details');
+        deviceHeader.addEventListener('click', toggleDeviceDetails);
+    }
+});
+</script>

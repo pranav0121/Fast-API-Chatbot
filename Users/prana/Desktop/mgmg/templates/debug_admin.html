@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f5f5f5;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Admin Panel API Debug</h1>
+
+    <div class="test-section">
+        <h3>API Tests</h3>
+        <button onclick="testDashboardStats()">Test Dashboard Stats</button>
+        <button onclick="testTickets()">Test Tickets</button>
+        <button onclick="testRecentActivity()">Test Recent Activity</button>
+        <button onclick="testCategories()">Test Categories</button>
+        <div id="api-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Dashboard Stats Display</h3>
+        <p>Total Tickets: <span id="total-tickets">?</span></p>
+        <p>Pending Tickets: <span id="pending-tickets">?</span></p>
+        <p>Resolved Tickets: <span id="resolved-tickets">?</span></p>
+        <p>Active Chats: <span id="active-chats">?</span></p>
+        <button onclick="loadDashboardData()">Load Dashboard Data</button>
+    </div>
+
+    <script>
+        function addResult(message, isError = false) {
+            const results = document.getElementById('api-results');
+            const div = document.createElement('div');
+            div.className = 'result ' + (isError ? 'error' : 'success');
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+            console.log(message);
+        }
+
+        async function testDashboardStats() {
+            try {
+                addResult('Testing /api/admin/dashboard-stats...');
+                const response = await fetch('/api/admin/dashboard-stats');
+                addResult(`Response status: ${response.status}`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`Dashboard data: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    const error = await response.text();
+                    addResult(`Error: ${error}`, true);
+                }
+            } catch (error) {
+                addResult(`Exception: ${error.message}`, true);
+            }
+        }
+
+        async function testTickets() {
+            try {
+                addResult('Testing /api/admin/tickets...');
+                const response = await fetch('/api/admin/tickets');
+                addResult(`Response status: ${response.status}`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`Found ${data.length} tickets`);
+                    if (data.length > 0) {
+                        addResult(`First ticket: ${JSON.stringify(data[0], null, 2)}`);
+                    }
+                } else {
+                    const error = await response.text();
+                    addResult(`Error: ${error}`, true);
+                }
+            } catch (error) {
+                addResult(`Exception: ${error.message}`, true);
+            }
+        }
+
+        async function testRecentActivity() {
+            try {
+                addResult('Testing /api/admin/recent-activity...');
+                const response = await fetch('/api/admin/recent-activity');
+                addResult(`Response status: ${response.status}`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`Recent activity data: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    const error = await response.text();
+                    addResult(`Error: ${error}`, true);
+                }
+            } catch (error) {
+                addResult(`Exception: ${error.message}`, true);
+            }
+        }
+
+        async function testCategories() {
+            try {
+                addResult('Testing /api/categories...');
+                const response = await fetch('/api/categories');
+                addResult(`Response status: ${response.status}`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`Found ${data.length} categories`);
+                } else {
+                    const error = await response.text();
+                    addResult(`Error: ${error}`, true);
+                }
+            } catch (error) {
+                addResult(`Exception: ${error.message}`, true);
+            }
+        }
+
+        async function loadDashboardData() {
+            try {
+                addResult('Loading dashboard data for display...');
+                const response = await fetch('/api/admin/dashboard-stats');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const stats = await response.json();
+
+                document.getElementById('total-tickets').textContent = stats.totalTickets || 0;
+                document.getElementById('pending-tickets').textContent = stats.pendingTickets || 0;
+                document.getElementById('resolved-tickets').textContent = stats.resolvedTickets || 0;
+                document.getElementById('active-chats').textContent = stats.activeChats || 0;
+
+                addResult('Dashboard data loaded successfully');
+            } catch (error) {
+                addResult(`Error loading dashboard data: ${error.message}`, true);
+            }
+        }
+
+        // Auto-load dashboard data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            addResult('Page loaded, testing connection...');
+            testDashboardStats();
+        });
+    </script>
+</body>
+
+</html>

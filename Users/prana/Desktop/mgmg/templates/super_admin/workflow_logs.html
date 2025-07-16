@@ -1,0 +1,722 @@
+{% extends "base.html" %}
+
+{% block title %}Workflow Logs - Super Admin{% endblock %}
+
+{% block content %}
+<div class="super-admin-container">
+    <div class="super-admin-header">
+        <h1 class="super-admin-title">
+            <i class="fas fa-project-diagram"></i>
+            Workflow Logs & Timeline
+        </h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="exportLogs()">
+                <i class="fas fa-download"></i> Export Logs
+            </button>
+            <button class="btn btn-primary" onclick="refreshLogs()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+        <div class="filter-group">
+            <label for="ticketFilter">Ticket ID:</label>
+            <input type="number" id="ticketFilter" placeholder="Enter ticket ID">
+        </div>
+        <div class="filter-group">
+            <label for="statusFilter">Status:</label>
+            <select id="statusFilter">
+                <option value="">All Statuses</option>
+                <option value="open">Open</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+                <option value="closed">Closed</option>
+                <option value="escalated">Escalated</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="priorityFilter">Priority:</label>
+            <select id="priorityFilter">
+                <option value="">All Priorities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="dateFromFilter">From Date:</label>
+            <input type="date" id="dateFromFilter">
+        </div>
+        <div class="filter-group">
+            <label for="dateToFilter">To Date:</label>
+            <input type="date" id="dateToFilter">
+        </div>
+        <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+        <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <!-- Workflow Timeline -->
+    <div class="workflow-timeline">
+        <div class="timeline-header">
+            <h3>Ticket Status Timeline</h3>
+            <div class="timeline-stats">
+                <span class="stat-badge">
+                    <i class="fas fa-clock"></i>
+                    <span id="totalLogs">0</span> Events
+                </span>
+                <span class="stat-badge">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="escalationCount">0</span> Escalations
+                </span>
+            </div>
+        </div>
+
+        <div class="timeline-container" id="timelineContainer">
+            <!-- Timeline items will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Detailed Logs Table -->
+    <div class="logs-table-section">
+        <h3>Detailed Status Logs</h3>
+        <div class="table-container">
+            <table class="logs-table" id="logsTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Ticket ID</th>
+                        <th>Status Change</th>
+                        <th>Changed By</th>
+                        <th>SLA Status</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                    <!-- Logs will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Ticket Details Modal -->
+<div class="modal fade" id="ticketDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ticket Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="ticketDetailsContent">
+                <!-- Ticket details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .super-admin-container {
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .super-admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .super-admin-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .super-admin-title i {
+        color: #3498db;
+        margin-right: 10px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .filters-section {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+    }
+
+    .filter-group label {
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .workflow-timeline {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .timeline-stats {
+        display: flex;
+        gap: 15px;
+    }
+
+    .stat-badge {
+        background: #f8f9fa;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .stat-badge i {
+        margin-right: 5px;
+        color: #007bff;
+    }
+
+    .timeline-container {
+        position: relative;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 40px;
+        margin-bottom: 20px;
+        border-left: 2px solid #e9ecef;
+    }
+
+    .timeline-item:last-child {
+        border-left: 2px solid transparent;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -8px;
+        top: 0;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #007bff;
+        border: 2px solid white;
+        box-shadow: 0 0 0 2px #007bff;
+    }
+
+    .timeline-dot.escalation {
+        background: #dc3545;
+        box-shadow: 0 0 0 2px #dc3545;
+    }
+
+    .timeline-dot.resolution {
+        background: #28a745;
+        box-shadow: 0 0 0 2px #28a745;
+    }
+
+    .timeline-content {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+    }
+
+    .timeline-content.escalation {
+        border-left-color: #dc3545;
+    }
+
+    .timeline-content.resolution {
+        border-left-color: #28a745;
+    }
+
+    .timeline-time {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+
+    .timeline-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .timeline-description {
+        font-size: 14px;
+        color: #495057;
+    }
+
+    .logs-table-section {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        margin-top: 15px;
+    }
+
+    .logs-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .logs-table th,
+    .logs-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .logs-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+        position: sticky;
+        top: 0;
+    }
+
+    .logs-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .status-badge.open {
+        background: #cce5ff;
+        color: #004085;
+    }
+
+    .status-badge.in_progress {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-badge.resolved {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .status-badge.closed {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-badge.escalated {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .sla-status {
+        font-weight: 500;
+    }
+
+    .sla-status.on-time {
+        color: #28a745;
+    }
+
+    .sla-status.at-risk {
+        color: #ffc107;
+    }
+
+    .sla-status.breached {
+        color: #dc3545;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #545b62;
+    }
+
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .super-admin-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .filters-section {
+            flex-direction: column;
+        }
+
+        .filter-group {
+            min-width: 100%;
+        }
+
+        .timeline-stats {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+
+<script>
+    let currentLogs = [];
+    let filteredLogs = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadWorkflowLogs();
+
+        // Set default date range (last 30 days)
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+        document.getElementById('dateFromFilter').value = thirtyDaysAgo.toISOString().split('T')[0];
+        document.getElementById('dateToFilter').value = today.toISOString().split('T')[0];
+    });
+
+    function loadWorkflowLogs() {
+        showLoading();
+
+        fetch('/super-admin/api/workflow-logs')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentLogs = data.logs;
+                    filteredLogs = [...currentLogs];
+                    updateLogsDisplay();
+                    updateStats();
+                } else {
+                    showError('Failed to load workflow logs: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading workflow logs:', error);
+                showError('Failed to load workflow logs');
+            })
+            .finally(() => {
+                hideLoading();
+            });
+    }
+
+    function updateLogsDisplay() {
+        updateTimeline();
+        updateLogsTable();
+    }
+
+    function updateTimeline() {
+        const container = document.getElementById('timelineContainer');
+
+        if (filteredLogs.length === 0) {
+            container.innerHTML = '<p class="text-center text-muted">No workflow logs found</p>';
+            return;
+        }
+
+        // Group logs by ticket and sort by timestamp
+        const ticketGroups = {};
+        filteredLogs.forEach(log => {
+            if (!ticketGroups[log.ticket_id]) {
+                ticketGroups[log.ticket_id] = [];
+            }
+            ticketGroups[log.ticket_id].push(log);
+        });
+
+        let timelineHTML = '';
+        Object.keys(ticketGroups).forEach(ticketId => {
+            const ticketLogs = ticketGroups[ticketId].sort((a, b) => new Date(b.changed_at) - new Date(a.changed_at));
+
+            timelineHTML += `<div class="ticket-timeline-group">
+            <h5>Ticket #${ticketId}</h5>`;
+
+            ticketLogs.forEach((log, index) => {
+                const isEscalation = log.new_status === 'escalated';
+                const isResolution = log.new_status === 'resolved' || log.new_status === 'closed';
+
+                timelineHTML += `
+                <div class="timeline-item">
+                    <div class="timeline-dot ${isEscalation ? 'escalation' : isResolution ? 'resolution' : ''}"></div>
+                    <div class="timeline-content ${isEscalation ? 'escalation' : isResolution ? 'resolution' : ''}">
+                        <div class="timeline-time">${formatDateTime(log.changed_at)}</div>
+                        <div class="timeline-title">
+                            Status: ${log.old_status || 'New'} → ${log.new_status}
+                        </div>
+                        <div class="timeline-description">
+                            Changed by: ${log.changed_by || 'System'}<br>
+                            SLA Status: <span class="sla-status ${getSLAStatusClass(log.sla_status)}">${log.sla_status}</span>
+                            ${log.notes ? `<br>Notes: ${log.notes}` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            });
+
+            timelineHTML += '</div>';
+        });
+
+        container.innerHTML = timelineHTML;
+    }
+
+    function updateLogsTable() {
+        const tbody = document.getElementById('logsTableBody');
+
+        if (filteredLogs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No logs found</td></tr>';
+            return;
+        }
+
+        const sortedLogs = [...filteredLogs].sort((a, b) => new Date(b.changed_at) - new Date(a.changed_at));
+
+        tbody.innerHTML = sortedLogs.map(log => `
+        <tr>
+            <td>${formatDateTime(log.changed_at)}</td>
+            <td>
+                <a href="#" onclick="showTicketDetails(${log.ticket_id})" class="text-primary">
+                    #${log.ticket_id}
+                </a>
+            </td>
+            <td>
+                <span class="status-badge ${log.old_status || 'new'}">${log.old_status || 'New'}</span>
+                →
+                <span class="status-badge ${log.new_status}">${log.new_status}</span>
+            </td>
+            <td>${log.changed_by || 'System'}</td>
+            <td>
+                <span class="sla-status ${getSLAStatusClass(log.sla_status)}">
+                    ${log.sla_status}
+                </span>
+            </td>
+            <td>${log.notes || '-'}</td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="showTicketDetails(${log.ticket_id})">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    function updateStats() {
+        document.getElementById('totalLogs').textContent = filteredLogs.length;
+        document.getElementById('escalationCount').textContent =
+            filteredLogs.filter(log => log.new_status === 'escalated').length;
+    }
+
+    function applyFilters() {
+        const ticketId = document.getElementById('ticketFilter').value;
+        const status = document.getElementById('statusFilter').value;
+        const priority = document.getElementById('priorityFilter').value;
+        const dateFrom = document.getElementById('dateFromFilter').value;
+        const dateTo = document.getElementById('dateToFilter').value;
+
+        filteredLogs = currentLogs.filter(log => {
+            if (ticketId && log.ticket_id != ticketId) return false;
+            if (status && log.new_status !== status) return false;
+            if (priority && log.priority !== priority) return false;
+
+            const logDate = new Date(log.changed_at);
+            if (dateFrom && logDate < new Date(dateFrom)) return false;
+            if (dateTo && logDate > new Date(dateTo + 'T23:59:59')) return false;
+
+            return true;
+        });
+
+        updateLogsDisplay();
+        updateStats();
+    }
+
+    function clearFilters() {
+        document.getElementById('ticketFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('priorityFilter').value = '';
+        document.getElementById('dateFromFilter').value = '';
+        document.getElementById('dateToFilter').value = '';
+
+        filteredLogs = [...currentLogs];
+        updateLogsDisplay();
+        updateStats();
+    }
+
+    function refreshLogs() {
+        loadWorkflowLogs();
+    }
+
+    function exportLogs() {
+        const exportData = filteredLogs.map(log => ({
+            'Timestamp': formatDateTime(log.changed_at),
+            'Ticket ID': log.ticket_id,
+            'Old Status': log.old_status || 'New',
+            'New Status': log.new_status,
+            'Changed By': log.changed_by || 'System',
+            'SLA Status': log.sla_status,
+            'Notes': log.notes || ''
+        }));
+
+        downloadCSV(exportData, 'workflow_logs.csv');
+    }
+
+    function showTicketDetails(ticketId) {
+        fetch(`/super-admin/api/tickets/${ticketId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const ticket = data.ticket;
+                    document.getElementById('ticketDetailsContent').innerHTML = `
+                    <div class="ticket-details">
+                        <h6>Ticket #${ticket.id}</h6>
+                        <p><strong>Subject:</strong> ${ticket.subject}</p>
+                        <p><strong>Status:</strong> <span class="status-badge ${ticket.status}">${ticket.status}</span></p>
+                        <p><strong>Priority:</strong> ${ticket.priority}</p>
+                        <p><strong>Organization:</strong> ${ticket.organization}</p>
+                        <p><strong>Created:</strong> ${formatDateTime(ticket.created_at)}</p>
+                        <p><strong>Last Updated:</strong> ${formatDateTime(ticket.updated_at)}</p>
+                        ${ticket.resolution_method ? `<p><strong>Resolution Method:</strong> ${ticket.resolution_method}</p>` : ''}
+                        ${ticket.escalation_level ? `<p><strong>Escalation Level:</strong> ${ticket.escalation_level}</p>` : ''}
+                    </div>
+                `;
+
+                    new bootstrap.Modal(document.getElementById('ticketDetailsModal')).show();
+                } else {
+                    showError('Failed to load ticket details');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading ticket details:', error);
+                showError('Failed to load ticket details');
+            });
+    }
+
+    function getSLAStatusClass(status) {
+        switch (status) {
+            case 'On Time': return 'on-time';
+            case 'At Risk': return 'at-risk';
+            case 'Breached': return 'breached';
+            default: return '';
+        }
+    }
+
+    function formatDateTime(dateString) {
+        return new Date(dateString).toLocaleString();
+    }
+
+    function downloadCSV(data, filename) {
+        const csvContent = convertToCSV(data);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
+    function convertToCSV(data) {
+        if (!data.length) return '';
+
+        const headers = Object.keys(data[0]);
+        const csvRows = [headers.join(',')];
+
+        data.forEach(row => {
+            const values = headers.map(header => {
+                const value = row[header] || '';
+                return `"${value.toString().replace(/"/g, '""')}"`;
+            });
+            csvRows.push(values.join(','));
+        });
+
+        return csvRows.join('\n');
+    }
+
+    function showLoading() {
+        // Add loading spinner if needed
+    }
+
+    function hideLoading() {
+        // Remove loading spinner if needed
+    }
+
+    function showError(message) {
+        // Show error message
+        console.error(message);
+        alert(message);
+    }
+</script>
+{% endblock %}

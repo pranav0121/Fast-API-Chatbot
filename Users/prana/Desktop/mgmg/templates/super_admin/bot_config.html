@@ -1,0 +1,1025 @@
+{% extends "base.html" %}
+
+{% block title %}Bot Configuration - Super Admin{% endblock %}
+
+{% block content %}
+<div class="super-admin-container">
+    <div class="super-admin-header">
+        <h1 class="super-admin-title">
+            <i class="fas fa-robot"></i>
+            Bot Configuration & Management
+        </h1>
+        <div class="header-actions">
+            <button class="btn btn-success" onclick="testBotConnection()">
+                <i class="fas fa-plug"></i> Test Connection
+            </button>
+            <button class="btn btn-primary" onclick="saveBotConfiguration()">
+                <i class="fas fa-save"></i> Save Configuration
+            </button>
+        </div>
+    </div>
+
+    <!-- Bot Status Overview -->
+    <div class="bot-status-cards">
+        <div class="status-card">
+            <div class="status-icon">
+                <i class="fas fa-circle" id="botStatusIcon"></i>
+            </div>
+            <div class="status-info">
+                <h3 id="botStatus">Checking...</h3>
+                <p>Bot Status</p>
+            </div>
+        </div>
+        <div class="status-card">
+            <div class="status-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="status-info">
+                <h3 id="botAccuracy">0%</h3>
+                <p>Accuracy Rate</p>
+            </div>
+        </div>
+        <div class="status-card">
+            <div class="status-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="status-info">
+                <h3 id="botInteractions">0</h3>
+                <p>Total Interactions</p>
+            </div>
+        </div>
+        <div class="status-card">
+            <div class="status-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="status-info">
+                <h3 id="avgResponseTime">0ms</h3>
+                <p>Avg Response Time</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bot Configuration Tabs -->
+    <div class="bot-config-tabs">
+        <nav class="nav nav-tabs" id="botConfigTabs">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#generalConfig">
+                <i class="fas fa-cog"></i> General Settings
+            </button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dialogflowConfig">
+                <i class="fas fa-google"></i> Dialogflow
+            </button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rasaConfig">
+                <i class="fas fa-brain"></i> Rasa
+            </button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#customConfig">
+                <i class="fas fa-code"></i> Custom Bot
+            </button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#escalationConfig">
+                <i class="fas fa-level-up-alt"></i> Escalation Rules
+            </button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#performanceConfig">
+                <i class="fas fa-chart-bar"></i> Performance
+            </button>
+        </nav>
+
+        <div class="tab-content" id="botConfigTabsContent">
+            <!-- General Settings Tab -->
+            <div class="tab-pane fade show active" id="generalConfig">
+                <div class="config-section">
+                    <h4>General Bot Settings</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="botEnabled">Enable Bot</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="botEnabled">
+                                    <label class="form-check-label" for="botEnabled">
+                                        Activate automated bot responses
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="botType">Bot Type</label>
+                                <select class="form-select" id="botType" onchange="switchBotType()">
+                                    <option value="dialogflow">Google Dialogflow</option>
+                                    <option value="rasa">Rasa Open Source</option>
+                                    <option value="custom">Custom Bot API</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultLanguage">Default Language</label>
+                                <select class="form-select" id="defaultLanguage">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
+                                    <option value="hi">Hindi</option>
+                                    <option value="ar">Arabic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="confidenceThreshold">Confidence Threshold</label>
+                                <input type="range" class="form-range" id="confidenceThreshold" min="0" max="1"
+                                    step="0.1" value="0.7" oninput="updateConfidenceValue(this.value)">
+                                <div class="range-labels">
+                                    <span>0%</span>
+                                    <span id="confidenceValue">70%</span>
+                                    <span>100%</span>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Minimum confidence level required for bot to respond
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="maxRetries">Max Retry Attempts</label>
+                                <input type="number" class="form-control" id="maxRetries" value="3" min="1" max="10">
+                                <small class="form-text text-muted">
+                                    Number of retry attempts before escalating to human
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="responseTimeout">Response Timeout (seconds)</label>
+                                <input type="number" class="form-control" id="responseTimeout" value="30" min="5"
+                                    max="300">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dialogflow Configuration Tab -->
+            <div class="tab-pane fade" id="dialogflowConfig">
+                <div class="config-section">
+                    <h4>Google Dialogflow Configuration</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dialogflowProjectId">Project ID</label>
+                                <input type="text" class="form-control" id="dialogflowProjectId"
+                                    placeholder="your-project-id">
+                            </div>
+                            <div class="form-group">
+                                <label for="dialogflowSessionId">Session ID</label>
+                                <input type="text" class="form-control" id="dialogflowSessionId"
+                                    placeholder="default-session">
+                            </div>
+                            <div class="form-group">
+                                <label for="dialogflowLanguageCode">Language Code</label>
+                                <input type="text" class="form-control" id="dialogflowLanguageCode" value="en-US"
+                                    placeholder="en-US">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dialogflowCredentials">Service Account Key (JSON)</label>
+                                <textarea class="form-control" id="dialogflowCredentials" rows="8"
+                                    placeholder="Paste your service account JSON key here"></textarea>
+                                <small class="form-text text-muted">
+                                    Upload your Google Cloud service account key
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-secondary" onclick="uploadCredentialsFile()">
+                                    <i class="fas fa-upload"></i> Upload Key File
+                                </button>
+                                <input type="file" id="credentialsFile" accept=".json" style="display: none;"
+                                    onchange="loadCredentialsFile()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rasa Configuration Tab -->
+            <div class="tab-pane fade" id="rasaConfig">
+                <div class="config-section">
+                    <h4>Rasa Open Source Configuration</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="rasaServerUrl">Rasa Server URL</label>
+                                <input type="url" class="form-control" id="rasaServerUrl"
+                                    placeholder="http://localhost:5005" value="http://localhost:5005">
+                            </div>
+                            <div class="form-group">
+                                <label for="rasaModel">Model Name</label>
+                                <input type="text" class="form-control" id="rasaModel" placeholder="default"
+                                    value="default">
+                            </div>
+                            <div class="form-group">
+                                <label for="rasaAuthToken">Authentication Token</label>
+                                <input type="password" class="form-control" id="rasaAuthToken"
+                                    placeholder="Optional authentication token">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="rasaWebhookUrl">Webhook URL</label>
+                                <input type="url" class="form-control" id="rasaWebhookUrl"
+                                    placeholder="http://localhost:5005/webhooks/rest/webhook">
+                            </div>
+                            <div class="form-group">
+                                <label for="rasaCustomActions">Custom Actions Server</label>
+                                <input type="url" class="form-control" id="rasaCustomActions"
+                                    placeholder="http://localhost:5055/webhook">
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rasaFallback">
+                                    <label class="form-check-label" for="rasaFallback">
+                                        Enable fallback responses
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Bot Configuration Tab -->
+            <div class="tab-pane fade" id="customConfig">
+                <div class="config-section">
+                    <h4>Custom Bot API Configuration</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="customBotUrl">Bot API Endpoint</label>
+                                <input type="url" class="form-control" id="customBotUrl"
+                                    placeholder="https://your-bot-api.com/chat">
+                            </div>
+                            <div class="form-group">
+                                <label for="customBotApiKey">API Key</label>
+                                <input type="password" class="form-control" id="customBotApiKey"
+                                    placeholder="Your API key">
+                            </div>
+                            <div class="form-group">
+                                <label for="customBotMethod">HTTP Method</label>
+                                <select class="form-select" id="customBotMethod">
+                                    <option value="POST">POST</option>
+                                    <option value="GET">GET</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="customBotHeaders">Custom Headers (JSON)</label>
+                                <textarea class="form-control" id="customBotHeaders" rows="4"
+                                    placeholder='{"Content-Type": "application/json"}'></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="customBotPayload">Request Payload Template</label>
+                                <textarea class="form-control" id="customBotPayload" rows="4"
+                                    placeholder='{"message": "{user_message}", "session_id": "{session_id}"}'></textarea>
+                                <small class="form-text text-muted">
+                                    Use {user_message} and {session_id} as placeholders
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Escalation Rules Tab -->
+            <div class="tab-pane fade" id="escalationConfig">
+                <div class="config-section">
+                    <h4>Bot Escalation Rules</h4>
+                    <div class="escalation-rules">
+                        <div class="rule-item">
+                            <h5>Confidence-Based Escalation</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Low Confidence Threshold</label>
+                                    <input type="range" class="form-range" id="lowConfidenceThreshold" min="0" max="1"
+                                        step="0.1" value="0.3">
+                                    <span id="lowConfidenceValue">30%</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Medium Confidence Threshold</label>
+                                    <input type="range" class="form-range" id="mediumConfidenceThreshold" min="0"
+                                        max="1" step="0.1" value="0.6">
+                                    <span id="mediumConfidenceValue">60%</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>High Confidence Threshold</label>
+                                    <input type="range" class="form-range" id="highConfidenceThreshold" min="0" max="1"
+                                        step="0.1" value="0.8">
+                                    <span id="highConfidenceValue">80%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rule-item">
+                            <h5>Time-Based Escalation</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Max Bot Interaction Time (minutes)</label>
+                                    <input type="number" class="form-control" id="maxBotTime" value="10" min="1"
+                                        max="60">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Max Unanswered Messages</label>
+                                    <input type="number" class="form-control" id="maxUnansweredMessages" value="3"
+                                        min="1" max="10">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rule-item">
+                            <h5>Keyword-Based Escalation</h5>
+                            <div class="form-group">
+                                <label>Escalation Keywords (comma-separated)</label>
+                                <textarea class="form-control" id="escalationKeywords" rows="3"
+                                    placeholder="urgent, emergency, complaint, billing, refund, cancel"></textarea>
+                                <small class="form-text text-muted">
+                                    Messages containing these keywords will be escalated immediately
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Tab -->
+            <div class="tab-pane fade" id="performanceConfig">
+                <div class="config-section">
+                    <h4>Bot Performance Analytics</h4>
+                    <div class="performance-charts">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="responseTimeChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="accuracyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="interactionVolumeChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="escalationRateChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="performance-metrics">
+                        <h5>Recent Performance Metrics</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>Last 24h</th>
+                                        <th>Last 7 days</th>
+                                        <th>Last 30 days</th>
+                                        <th>Trend</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="performanceMetricsBody">
+                                    <!-- Metrics will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Bot Modal -->
+    <div class="modal fade" id="testBotModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Test Bot Connection</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="bot-test-interface">
+                        <div class="test-messages" id="testMessages">
+                            <!-- Test conversation will appear here -->
+                        </div>
+                        <div class="test-input">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="testMessage"
+                                    placeholder="Type a test message..." onkeypress="handleTestKeyPress(event)">
+                                <button class="btn btn-primary" onclick="sendTestMessage()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .super-admin-container {
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .super-admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .super-admin-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .super-admin-title i {
+        color: #17a2b8;
+        margin-right: 10px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .bot-status-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .status-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .status-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .status-icon .fa-circle.online {
+        color: #28a745;
+    }
+
+    .status-icon .fa-circle.offline {
+        color: #dc3545;
+    }
+
+    .status-info h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .status-info p {
+        color: #6c757d;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .bot-config-tabs {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid #e9ecef;
+        padding: 0 20px;
+    }
+
+    .nav-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+        padding: 15px 20px;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #007bff;
+        border-bottom: 2px solid #007bff;
+        background: none;
+    }
+
+    .tab-content {
+        padding: 30px;
+    }
+
+    .config-section h4 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 10px 15px;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .form-range {
+        margin: 10px 0;
+    }
+
+    .range-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .range-labels #confidenceValue {
+        font-weight: 600;
+        color: #007bff;
+    }
+
+    .escalation-rules {
+        space-y: 30px;
+    }
+
+    .rule-item {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .rule-item h5 {
+        color: #495057;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .performance-charts {
+        margin-bottom: 30px;
+    }
+
+    .chart-container {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        height: 300px;
+    }
+
+    .performance-metrics {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .bot-test-interface {
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .test-messages {
+        flex: 1;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
+
+    .test-message {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border-radius: 15px;
+        max-width: 70%;
+    }
+
+    .test-message.user {
+        background: #007bff;
+        color: white;
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .test-message.bot {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+    .test-message.system {
+        background: #fff3cd;
+        color: #856404;
+        font-style: italic;
+        text-align: center;
+        max-width: 100%;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #545b62;
+    }
+
+    .btn-success {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #218838;
+    }
+
+    @media (max-width: 768px) {
+        .super-admin-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .bot-status-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .nav-tabs {
+            flex-wrap: wrap;
+            padding: 0 10px;
+        }
+
+        .nav-tabs .nav-link {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .tab-content {
+            padding: 20px;
+        }
+    }
+</style>
+
+<script>
+    let currentBotConfig = {};
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadBotConfiguration();
+        loadBotStatus();
+        initializeCharts();
+
+        // Update range sliders
+        document.getElementById('confidenceThreshold').addEventListener('input', function (e) {
+            updateConfidenceValue(e.target.value);
+        });
+
+        document.getElementById('lowConfidenceThreshold').addEventListener('input', function (e) {
+            document.getElementById('lowConfidenceValue').textContent = Math.round(e.target.value * 100) + '%';
+        });
+
+        document.getElementById('mediumConfidenceThreshold').addEventListener('input', function (e) {
+            document.getElementById('mediumConfidenceValue').textContent = Math.round(e.target.value * 100) + '%';
+        });
+
+        document.getElementById('highConfidenceThreshold').addEventListener('input', function (e) {
+            document.getElementById('highConfidenceValue').textContent = Math.round(e.target.value * 100) + '%';
+        });
+    });
+
+    function loadBotConfiguration() {
+        fetch('/super-admin/api/bot-config')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentBotConfig = data.config;
+                    populateConfigForm(data.config);
+                } else {
+                    showError('Failed to load bot configuration: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading bot configuration:', error);
+                showError('Failed to load bot configuration');
+            });
+    }
+
+    function loadBotStatus() {
+        fetch('/super-admin/api/bot-status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateBotStatus(data.status);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading bot status:', error);
+            });
+    }
+
+    function updateBotStatus(status) {
+        const statusIcon = document.getElementById('botStatusIcon');
+        const statusText = document.getElementById('botStatus');
+
+        if (status.online) {
+            statusIcon.className = 'fas fa-circle online';
+            statusText.textContent = 'Online';
+        } else {
+            statusIcon.className = 'fas fa-circle offline';
+            statusText.textContent = 'Offline';
+        }
+
+        document.getElementById('botAccuracy').textContent = status.accuracy + '%';
+        document.getElementById('botInteractions').textContent = status.total_interactions;
+        document.getElementById('avgResponseTime').textContent = status.avg_response_time + 'ms';
+    }
+
+    function populateConfigForm(config) {
+        // General settings
+        document.getElementById('botEnabled').checked = config.enabled || false;
+        document.getElementById('botType').value = config.bot_type || 'dialogflow';
+        document.getElementById('defaultLanguage').value = config.default_language || 'en';
+        document.getElementById('confidenceThreshold').value = config.confidence_threshold || 0.7;
+        document.getElementById('maxRetries').value = config.max_retries || 3;
+        document.getElementById('responseTimeout').value = config.response_timeout || 30;
+
+        // Dialogflow settings
+        document.getElementById('dialogflowProjectId').value = config.dialogflow_project_id || '';
+        document.getElementById('dialogflowSessionId').value = config.dialogflow_session_id || '';
+        document.getElementById('dialogflowLanguageCode').value = config.dialogflow_language_code || 'en-US';
+
+        // Rasa settings
+        document.getElementById('rasaServerUrl').value = config.rasa_server_url || 'http://localhost:5005';
+        document.getElementById('rasaModel').value = config.rasa_model || 'default';
+        document.getElementById('rasaAuthToken').value = config.rasa_auth_token || '';
+        document.getElementById('rasaWebhookUrl').value = config.rasa_webhook_url || '';
+        document.getElementById('rasaCustomActions').value = config.rasa_custom_actions || '';
+        document.getElementById('rasaFallback').checked = config.rasa_fallback || false;
+
+        // Custom bot settings
+        document.getElementById('customBotUrl').value = config.custom_bot_url || '';
+        document.getElementById('customBotApiKey').value = config.custom_bot_api_key || '';
+        document.getElementById('customBotMethod').value = config.custom_bot_method || 'POST';
+        document.getElementById('customBotHeaders').value = config.custom_bot_headers || '';
+        document.getElementById('customBotPayload').value = config.custom_bot_payload || '';
+
+        // Escalation settings
+        document.getElementById('lowConfidenceThreshold').value = config.low_confidence_threshold || 0.3;
+        document.getElementById('mediumConfidenceThreshold').value = config.medium_confidence_threshold || 0.6;
+        document.getElementById('highConfidenceThreshold').value = config.high_confidence_threshold || 0.8;
+        document.getElementById('maxBotTime').value = config.max_bot_time || 10;
+        document.getElementById('maxUnansweredMessages').value = config.max_unanswered_messages || 3;
+        document.getElementById('escalationKeywords').value = config.escalation_keywords || '';
+
+        // Update display values
+        updateConfidenceValue(config.confidence_threshold || 0.7);
+        document.getElementById('lowConfidenceValue').textContent = Math.round((config.low_confidence_threshold || 0.3) * 100) + '%';
+        document.getElementById('mediumConfidenceValue').textContent = Math.round((config.medium_confidence_threshold || 0.6) * 100) + '%';
+        document.getElementById('highConfidenceValue').textContent = Math.round((config.high_confidence_threshold || 0.8) * 100) + '%';
+    }
+
+    function updateConfidenceValue(value) {
+        document.getElementById('confidenceValue').textContent = Math.round(value * 100) + '%';
+    }
+
+    function switchBotType() {
+        const botType = document.getElementById('botType').value;
+        // Show/hide relevant configuration tabs based on bot type
+        // This would be implemented to show only relevant tabs
+    }
+
+    function saveBotConfiguration() {
+        const config = {
+            enabled: document.getElementById('botEnabled').checked,
+            bot_type: document.getElementById('botType').value,
+            default_language: document.getElementById('defaultLanguage').value,
+            confidence_threshold: parseFloat(document.getElementById('confidenceThreshold').value),
+            max_retries: parseInt(document.getElementById('maxRetries').value),
+            response_timeout: parseInt(document.getElementById('responseTimeout').value),
+
+            // Dialogflow config
+            dialogflow_project_id: document.getElementById('dialogflowProjectId').value,
+            dialogflow_session_id: document.getElementById('dialogflowSessionId').value,
+            dialogflow_language_code: document.getElementById('dialogflowLanguageCode').value,
+            dialogflow_credentials: document.getElementById('dialogflowCredentials').value,
+
+            // Rasa config
+            rasa_server_url: document.getElementById('rasaServerUrl').value,
+            rasa_model: document.getElementById('rasaModel').value,
+            rasa_auth_token: document.getElementById('rasaAuthToken').value,
+            rasa_webhook_url: document.getElementById('rasaWebhookUrl').value,
+            rasa_custom_actions: document.getElementById('rasaCustomActions').value,
+            rasa_fallback: document.getElementById('rasaFallback').checked,
+
+            // Custom bot config
+            custom_bot_url: document.getElementById('customBotUrl').value,
+            custom_bot_api_key: document.getElementById('customBotApiKey').value,
+            custom_bot_method: document.getElementById('customBotMethod').value,
+            custom_bot_headers: document.getElementById('customBotHeaders').value,
+            custom_bot_payload: document.getElementById('customBotPayload').value,
+
+            // Escalation config
+            low_confidence_threshold: parseFloat(document.getElementById('lowConfidenceThreshold').value),
+            medium_confidence_threshold: parseFloat(document.getElementById('mediumConfidenceThreshold').value),
+            high_confidence_threshold: parseFloat(document.getElementById('highConfidenceThreshold').value),
+            max_bot_time: parseInt(document.getElementById('maxBotTime').value),
+            max_unanswered_messages: parseInt(document.getElementById('maxUnansweredMessages').value),
+            escalation_keywords: document.getElementById('escalationKeywords').value
+        };
+
+        fetch('/super-admin/api/bot-config', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(config)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess('Bot configuration saved successfully');
+                    currentBotConfig = config;
+                } else {
+                    showError('Failed to save bot configuration: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving bot configuration:', error);
+                showError('Failed to save bot configuration');
+            });
+    }
+
+    function testBotConnection() {
+        document.getElementById('testMessages').innerHTML = '';
+        new bootstrap.Modal(document.getElementById('testBotModal')).show();
+
+        // Add initial system message
+        addTestMessage('Bot connection test started...', 'system');
+
+        // Test the connection
+        fetch('/super-admin/api/test-bot-connection', {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addTestMessage('✓ Bot connection successful!', 'system');
+                    addTestMessage('You can now test the bot by typing messages below.', 'system');
+                } else {
+                    addTestMessage('✗ Bot connection failed: ' + data.message, 'system');
+                }
+            })
+            .catch(error => {
+                console.error('Error testing bot connection:', error);
+                addTestMessage('✗ Bot connection failed: ' + error.message, 'system');
+            });
+    }
+
+    function sendTestMessage() {
+        const messageInput = document.getElementById('testMessage');
+        const message = messageInput.value.trim();
+
+        if (!message) return;
+
+        addTestMessage(message, 'user');
+        messageInput.value = '';
+
+        // Send message to bot
+        fetch('/super-admin/api/test-bot-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addTestMessage(data.response, 'bot');
+                    if (data.confidence) {
+                        addTestMessage(`Confidence: ${Math.round(data.confidence * 100)}%`, 'system');
+                    }
+                } else {
+                    addTestMessage('Bot error: ' + data.message, 'system');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending test message:', error);
+                addTestMessage('Error: ' + error.message, 'system');
+            });
+    }
+
+    function handleTestKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendTestMessage();
+        }
+    }
+
+    function addTestMessage(message, type) {
+        const messagesContainer = document.getElementById('testMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `test-message ${type}`;
+        messageDiv.textContent = message;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function uploadCredentialsFile() {
+        document.getElementById('credentialsFile').click();
+    }
+
+    function loadCredentialsFile() {
+        const file = document.getElementById('credentialsFile').files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('dialogflowCredentials').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function initializeCharts() {
+        // Initialize Chart.js charts for performance monitoring
+        // This would be implemented with actual Chart.js integration
+        console.log('Charts initialized');
+    }
+
+    function showSuccess(message) {
+        // Show success message
+        console.log('Success:', message);
+        alert(message);
+    }
+
+    function showError(message) {
+        // Show error message
+        console.error('Error:', message);
+        alert(message);
+    }
+</script>
+{% endblock %}

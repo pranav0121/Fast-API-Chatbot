@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Tickets Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .error { color: red; }
+        .success { color: green; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .priority-badge { padding: 2px 6px; border-radius: 3px; color: white; font-size: 12px; }
+        .priority-critical { background-color: #dc3545; }
+        .priority-high { background-color: #fd7e14; }
+        .priority-medium { background-color: #ffc107; color: black; }
+        .priority-low { background-color: #6c757d; }
+        .status-badge { padding: 2px 6px; border-radius: 3px; color: white; font-size: 12px; }
+        .status-open { background-color: #28a745; }
+        .status-in_progress { background-color: #007bff; }
+        .status-closed { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <h1>Admin Tickets Test Page</h1>
+    
+    <div id="status">Loading...</div>
+    
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="loadTickets()">Load Tickets</button>
+    <button onclick="checkAuth()">Check Auth</button>
+    
+    <div id="output"></div>
+    
+    <table id="tickets-table" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Subject</th>
+                <th>Priority</th>
+                <th>Organization</th>
+                <th>Category</th>
+                <th>User</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="tickets-tbody">
+        </tbody>
+    </table>
+
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            output.appendChild(div);
+            console.log(message);
+        }
+        
+        function formatTime(timestamp) {
+            if (!timestamp) return 'Unknown';
+            try {
+                const date = new Date(timestamp);
+                return date.toLocaleString();
+            } catch (e) {
+                return timestamp;
+            }
+        }
+        
+        async function checkAuth() {
+            try {
+                log('Checking authentication status...');
+                const response = await fetch('/api/admin/dashboard-stats');
+                log(`Auth check status: ${response.status}`);
+                
+                if (response.status === 401) {
+                    log('Not authenticated - need to login first', 'error');
+                } else if (response.status === 200) {
+                    log('Authentication OK', 'success');
+                } else {
+                    log(`Unexpected auth status: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`Auth check error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testLogin() {
+            try {
+                log('Testing login process...');
+                
+                // First get login page
+                const loginPage = await fetch('/auth/admin/login');
+                log(`Login page status: ${loginPage.status}`);
+                
+                if (loginPage.status !== 200) {
+                    log('Cannot access login page', 'error');
+                    return;
+                }
+                
+                // Submit login credentials
+                const formData = new FormData();
+                formData.append('email', 'admin@youcloudtech.com');
+                formData.append('password', 'admin123');
+                
+                const loginResponse = await fetch('/auth/admin/login', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                log(`Login response status: ${loginResponse.status}`);
+                
+                if (loginResponse.status === 200 || loginResponse.status === 302) {
+                    log('Login appears successful', 'success');
+                    // Try to load tickets now
+                    setTimeout(loadTickets, 1000);
+                } else {
+                    log('Login failed', 'error');
+                }
+                
+            } catch (error) {
+                log(`Login test error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function loadTickets() {
+            try {
+                log('Loading tickets...');
+                const response = await fetch('/api/admin/tickets');
+                
+                log(`Tickets response status: ${response.status}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`Tickets API error: ${response.status} - ${errorText}`, 'error');
+                    return;
+                }
+                
+                const response_data = await response.json();
+                log(`Tickets response received: ${JSON.stringify(response_data, null, 2)}`);
+                
+                // Check if response has error
+                if (response_data.error || !response_data.success) {
+                    log(`Tickets error: ${response_data.error || 'Unknown error'}`, 'error');
+                    return;
+                }
+                
+                // Extract tickets array from response
+                const tickets = response_data.tickets || [];
+                log(`Extracted ${tickets.length} tickets from response`, 'success');
+                
+                const tbody = document.getElementById('tickets-tbody');
+                const table = document.getElementById('tickets-table');
+                
+                if (!Array.isArray(tickets) || tickets.length === 0) {
+                    log('No tickets found');
+                    tbody.innerHTML = '<tr><td colspan="9" class="text-center">No tickets found</td></tr>';
+                    table.style.display = 'table';
+                    return;
+                }
+                
+                log(`Rendering ${tickets.length} tickets`);
+                tbody.innerHTML = tickets.map(ticket => `
+                    <tr>
+                        <td>#${ticket.id}</td>
+                        <td>${ticket.subject || 'No subject'}</td>
+                        <td><span class="priority-badge priority-${ticket.priority || 'medium'}">${(ticket.priority || 'medium').toUpperCase()}</span></td>
+                        <td>
+                            <div>${ticket.organization || 'Unknown Org'}</div>
+                            <small style="color: #666;">${ticket.user_name || 'Anonymous'}</small>
+                        </td>
+                        <td>${ticket.category || 'Unknown'}</td>
+                        <td>${ticket.user_name || 'Anonymous'}</td>
+                        <td><span class="status-badge status-${ticket.status}">${ticket.status.replace('_', ' ')}</span></td>
+                        <td>${formatTime(ticket.created_at)}</td>
+                        <td>
+                            <button onclick="viewTicket(${ticket.id})">View</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                table.style.display = 'table';
+                log('Tickets rendered successfully', 'success');
+                
+            } catch (error) {
+                log(`Error loading tickets: ${error.message}`, 'error');
+            }
+        }
+        
+        function viewTicket(ticketId) {
+            log(`View ticket ${ticketId} clicked`);
+        }
+        
+        // Auto-check auth on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

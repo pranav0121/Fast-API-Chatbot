@@ -1,0 +1,1168 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Logs - Super Admin{% endblock %}
+
+{% block content %}
+<div class="super-admin-container">
+    <div class="super-admin-header">
+        <h1 class="super-admin-title">
+            <i class="fas fa-shield-alt"></i>
+            System Audit Logs
+        </h1>
+        <div class="header-actions">
+            <button class="btn btn-warning" onclick="downloadAuditReport()">
+                <i class="fas fa-file-pdf"></i> Export Report
+            </button>
+            <button class="btn btn-primary" onclick="refreshAuditLogs()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Security Alerts -->
+    <div class="security-alerts" id="securityAlerts">
+        <!-- Security alerts will be loaded here -->
+    </div>
+
+    <!-- Audit Filters -->
+    <div class="audit-filters">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="userFilter">User:</label>
+                <select id="userFilter">
+                    <option value="">All Users</option>
+                    <!-- Users will be loaded dynamically -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="actionFilter">Action:</label>
+                <select id="actionFilter">
+                    <option value="">All Actions</option>
+                    <option value="login">Login</option>
+                    <option value="logout">Logout</option>
+                    <option value="create_ticket">Create Ticket</option>
+                    <option value="update_ticket">Update Ticket</option>
+                    <option value="delete_ticket">Delete Ticket</option>
+                    <option value="escalate_ticket">Escalate Ticket</option>
+                    <option value="create_user">Create User</option>
+                    <option value="update_user">Update User</option>
+                    <option value="delete_user">Delete User</option>
+                    <option value="create_partner">Create Partner</option>
+                    <option value="update_partner">Update Partner</option>
+                    <option value="delete_partner">Delete Partner</option>
+                    <option value="update_settings">Update Settings</option>
+                    <option value="access_admin">Access Admin Panel</option>
+                    <option value="export_data">Export Data</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="userTypeFilter">User Type:</label>
+                <select id="userTypeFilter">
+                    <option value="">All Types</option>
+                    <option value="super_admin">Super Admin</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                    <option value="system">System</option>
+                    <option value="api">API</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="ipFilter">IP Address:</label>
+                <input type="text" id="ipFilter" placeholder="Enter IP address">
+            </div>
+        </div>
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="dateFromFilter">From Date:</label>
+                <input type="datetime-local" id="dateFromFilter">
+            </div>
+            <div class="filter-group">
+                <label for="dateToFilter">To Date:</label>
+                <input type="datetime-local" id="dateToFilter">
+            </div>
+            <div class="filter-group">
+                <label for="severityFilter">Severity:</label>
+                <select id="severityFilter">
+                    <option value="">All Severities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-primary" onclick="applyAuditFilters()">Apply Filters</button>
+                <button class="btn btn-secondary" onclick="clearAuditFilters()">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Statistics -->
+    <div class="audit-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-eye"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="totalAuditLogs">0</h3>
+                <p>Total Audit Logs</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="suspiciousActivities">0</h3>
+                <p>Suspicious Activities</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="uniqueUsers">0</h3>
+                <p>Unique Users</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="recentActivities">0</h3>
+                <p>Last 24 Hours</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Logs Table -->
+    <div class="audit-logs-table">
+        <div class="table-header">
+            <h3>Audit Trail</h3>
+            <div class="table-actions">
+                <button class="btn btn-sm btn-secondary" onclick="exportAuditLogs()">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+                <div class="entries-per-page">
+                    <label>Show:</label>
+                    <select id="entriesPerPage" onchange="changeEntriesPerPage()">
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                    </select>
+                    <span>entries</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="audit-table" id="auditTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>IP Address</th>
+                        <th>User Agent</th>
+                        <th>Details</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="auditTableBody">
+                    <!-- Audit logs will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-pagination" id="auditPagination">
+            <!-- Pagination will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Audit Details Modal -->
+<div class="modal fade" id="auditDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Audit Log Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="auditDetailsContent">
+                <!-- Audit details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Security Alert Modal -->
+<div class="modal fade" id="securityAlertModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Security Alert
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="securityAlertContent">
+                <!-- Security alert details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="acknowledgeSecurityAlert()">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .super-admin-container {
+        padding: 20px;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .super-admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .super-admin-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .super-admin-title i {
+        color: #e74c3c;
+        margin-right: 10px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .security-alerts {
+        margin-bottom: 20px;
+    }
+
+    .security-alert {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-left: 4px solid #dc3545;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .security-alert.high {
+        background: #fff3cd;
+        border-color: #ffeaa7;
+        border-left-color: #ffc107;
+    }
+
+    .security-alert.critical {
+        background: #f8d7da;
+        border-color: #f5c6cb;
+        border-left-color: #dc3545;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.7;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .security-alert-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .security-alert-icon {
+        font-size: 20px;
+        color: #dc3545;
+    }
+
+    .security-alert-text {
+        font-weight: 500;
+    }
+
+    .audit-filters {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: end;
+        margin-bottom: 15px;
+    }
+
+    .filter-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+    }
+
+    .filter-group label {
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 10px;
+        align-items: end;
+    }
+
+    .audit-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .stat-info h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .stat-info p {
+        color: #6c757d;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .audit-logs-table {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .table-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .entries-per-page {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+    }
+
+    .entries-per-page select {
+        padding: 4px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .audit-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .audit-table th,
+    .audit-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .audit-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+        position: sticky;
+        top: 0;
+    }
+
+    .audit-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .action-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .action-badge.login {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .action-badge.logout {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .action-badge.create {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .action-badge.update {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .action-badge.delete {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .action-badge.access {
+        background: #cce5ff;
+        color: #004085;
+    }
+
+    .status-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+
+    .status-indicator.success {
+        background: #28a745;
+    }
+
+    .status-indicator.warning {
+        background: #ffc107;
+    }
+
+    .status-indicator.danger {
+        background: #dc3545;
+    }
+
+    .user-agent-cell {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .details-cell {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .table-pagination {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .pagination-info {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .pagination-controls {
+        display: flex;
+        gap: 5px;
+    }
+
+    .pagination-btn {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        background: white;
+        color: #495057;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .pagination-btn:hover {
+        background: #f8f9fa;
+    }
+
+    .pagination-btn.active {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #545b62;
+    }
+
+    .btn-warning {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .btn-warning:hover {
+        background: #e0a800;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+    }
+
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .super-admin-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .filter-row {
+            flex-direction: column;
+        }
+
+        .filter-group {
+            min-width: 100%;
+        }
+
+        .audit-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .table-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .table-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+
+<script>
+    let currentAuditLogs = [];
+    let filteredAuditLogs = [];
+    let currentPage = 1;
+    let entriesPerPage = 25;
+    let totalEntries = 0;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadAuditLogs();
+        loadUsers();
+        checkSecurityAlerts();
+
+        // Set default date range (last 7 days)
+        const today = new Date();
+        const sevenDaysAgo = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
+
+        document.getElementById('dateFromFilter').value = formatDateTimeLocal(sevenDaysAgo);
+        document.getElementById('dateToFilter').value = formatDateTimeLocal(today);
+
+        // Auto-refresh every 30 seconds
+        setInterval(checkSecurityAlerts, 30000);
+    });
+
+    function loadAuditLogs() {
+        showLoading();
+
+        fetch('/super-admin/api/audit-logs')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentAuditLogs = data.logs;
+                    filteredAuditLogs = [...currentAuditLogs];
+                    totalEntries = filteredAuditLogs.length;
+                    updateAuditDisplay();
+                    updateAuditStats();
+                } else {
+                    showError('Failed to load audit logs: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading audit logs:', error);
+                showError('Failed to load audit logs');
+            })
+            .finally(() => {
+                hideLoading();
+            });
+    }
+
+    function loadUsers() {
+        fetch('/super-admin/api/users')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const userSelect = document.getElementById('userFilter');
+                    data.users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = `${user.name} (${user.email})`;
+                        userSelect.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading users:', error);
+            });
+    }
+
+    function checkSecurityAlerts() {
+        fetch('/super-admin/api/security-alerts')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.alerts.length > 0) {
+                    displaySecurityAlerts(data.alerts);
+                } else {
+                    document.getElementById('securityAlerts').innerHTML = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking security alerts:', error);
+            });
+    }
+
+    function displaySecurityAlerts(alerts) {
+        const container = document.getElementById('securityAlerts');
+
+        container.innerHTML = alerts.map(alert => `
+        <div class="security-alert ${alert.severity}">
+            <div class="security-alert-content">
+                <i class="fas fa-exclamation-triangle security-alert-icon"></i>
+                <div>
+                    <div class="security-alert-text">${alert.message}</div>
+                    <small class="text-muted">${formatDateTime(alert.created_at)}</small>
+                </div>
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="showSecurityAlertDetails(${alert.id})">
+                View Details
+            </button>
+        </div>
+    `).join('');
+    }
+
+    function showSecurityAlertDetails(alertId) {
+        fetch(`/super-admin/api/security-alerts/${alertId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const alert = data.alert;
+                    document.getElementById('securityAlertContent').innerHTML = `
+                    <div class="security-alert-details">
+                        <h6>Alert Details</h6>
+                        <p><strong>Type:</strong> ${alert.type}</p>
+                        <p><strong>Severity:</strong> <span class="badge bg-${alert.severity}">${alert.severity}</span></p>
+                        <p><strong>Description:</strong> ${alert.description}</p>
+                        <p><strong>Time:</strong> ${formatDateTime(alert.created_at)}</p>
+                        ${alert.ip_address ? `<p><strong>IP Address:</strong> ${alert.ip_address}</p>` : ''}
+                        ${alert.user_agent ? `<p><strong>User Agent:</strong> ${alert.user_agent}</p>` : ''}
+                        ${alert.additional_data ? `<p><strong>Additional Data:</strong> <pre>${JSON.stringify(alert.additional_data, null, 2)}</pre></p>` : ''}
+                    </div>
+                `;
+
+                    new bootstrap.Modal(document.getElementById('securityAlertModal')).show();
+                } else {
+                    showError('Failed to load security alert details');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading security alert details:', error);
+                showError('Failed to load security alert details');
+            });
+    }
+
+    function updateAuditDisplay() {
+        updateAuditTable();
+        updatePagination();
+    }
+
+    function updateAuditTable() {
+        const tbody = document.getElementById('auditTableBody');
+        const startIndex = (currentPage - 1) * entriesPerPage;
+        const endIndex = startIndex + entriesPerPage;
+        const pageData = filteredAuditLogs.slice(startIndex, endIndex);
+
+        if (pageData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No audit logs found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = pageData.map(log => `
+        <tr>
+            <td>${formatDateTime(log.created_at)}</td>
+            <td>
+                ${log.user_name || 'System'}
+                <br>
+                <small class="text-muted">${log.user_type}</small>
+            </td>
+            <td>
+                <span class="action-badge ${getActionClass(log.action)}">${log.action}</span>
+            </td>
+            <td>${log.ip_address || '-'}</td>
+            <td class="user-agent-cell" title="${log.user_agent || ''}">
+                ${log.user_agent || '-'}
+            </td>
+            <td class="details-cell" title="${log.details || ''}">
+                ${truncateText(log.details || '', 50)}
+            </td>
+            <td>
+                <span class="status-indicator ${getStatusClass(log.action)}"></span>
+                ${getStatusText(log.action)}
+            </td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="showAuditDetails(${log.id})">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    function updatePagination() {
+        const totalPages = Math.ceil(filteredAuditLogs.length / entriesPerPage);
+        const pagination = document.getElementById('auditPagination');
+
+        const startEntry = (currentPage - 1) * entriesPerPage + 1;
+        const endEntry = Math.min(currentPage * entriesPerPage, filteredAuditLogs.length);
+
+        let paginationHTML = `
+        <div class="pagination-info">
+            Showing ${startEntry} to ${endEntry} of ${filteredAuditLogs.length} entries
+        </div>
+        <div class="pagination-controls">
+    `;
+
+        // Previous button
+        paginationHTML += `
+        <button class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage < maxVisiblePages - 1) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                ${i}
+            </button>
+        `;
+        }
+
+        // Next button
+        paginationHTML += `
+        <button class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+
+        paginationHTML += '</div>';
+        pagination.innerHTML = paginationHTML;
+    }
+
+    function updateAuditStats() {
+        document.getElementById('totalAuditLogs').textContent = filteredAuditLogs.length;
+
+        // Count suspicious activities (failed logins, unusual access patterns, etc.)
+        const suspiciousActivities = filteredAuditLogs.filter(log =>
+            log.action.includes('failed') ||
+            log.action.includes('unauthorized') ||
+            log.details && log.details.includes('suspicious')
+        ).length;
+        document.getElementById('suspiciousActivities').textContent = suspiciousActivities;
+
+        // Count unique users
+        const uniqueUsers = new Set(filteredAuditLogs.map(log => log.user_id)).size;
+        document.getElementById('uniqueUsers').textContent = uniqueUsers;
+
+        // Count recent activities (last 24 hours)
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const recentActivities = filteredAuditLogs.filter(log =>
+            new Date(log.created_at) > twentyFourHoursAgo
+        ).length;
+        document.getElementById('recentActivities').textContent = recentActivities;
+    }
+
+    function applyAuditFilters() {
+        const userId = document.getElementById('userFilter').value;
+        const action = document.getElementById('actionFilter').value;
+        const userType = document.getElementById('userTypeFilter').value;
+        const ipAddress = document.getElementById('ipFilter').value;
+        const dateFrom = document.getElementById('dateFromFilter').value;
+        const dateTo = document.getElementById('dateToFilter').value;
+        const severity = document.getElementById('severityFilter').value;
+
+        filteredAuditLogs = currentAuditLogs.filter(log => {
+            if (userId && log.user_id != userId) return false;
+            if (action && log.action !== action) return false;
+            if (userType && log.user_type !== userType) return false;
+            if (ipAddress && !log.ip_address.includes(ipAddress)) return false;
+            if (severity && log.severity !== severity) return false;
+
+            const logDate = new Date(log.created_at);
+            if (dateFrom && logDate < new Date(dateFrom)) return false;
+            if (dateTo && logDate > new Date(dateTo)) return false;
+
+            return true;
+        });
+
+        currentPage = 1;
+        updateAuditDisplay();
+        updateAuditStats();
+    }
+
+    function clearAuditFilters() {
+        document.getElementById('userFilter').value = '';
+        document.getElementById('actionFilter').value = '';
+        document.getElementById('userTypeFilter').value = '';
+        document.getElementById('ipFilter').value = '';
+        document.getElementById('dateFromFilter').value = '';
+        document.getElementById('dateToFilter').value = '';
+        document.getElementById('severityFilter').value = '';
+
+        filteredAuditLogs = [...currentAuditLogs];
+        currentPage = 1;
+        updateAuditDisplay();
+        updateAuditStats();
+    }
+
+    function changePage(page) {
+        const totalPages = Math.ceil(filteredAuditLogs.length / entriesPerPage);
+        if (page < 1 || page > totalPages) return;
+
+        currentPage = page;
+        updateAuditDisplay();
+    }
+
+    function changeEntriesPerPage() {
+        entriesPerPage = parseInt(document.getElementById('entriesPerPage').value);
+        currentPage = 1;
+        updateAuditDisplay();
+    }
+
+    function showAuditDetails(logId) {
+        const log = currentAuditLogs.find(l => l.id === logId);
+        if (!log) return;
+
+        let detailsHTML = `
+        <div class="audit-details">
+            <h6>Audit Log #${log.id}</h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Timestamp:</strong> ${formatDateTime(log.created_at)}</p>
+                    <p><strong>User:</strong> ${log.user_name || 'System'}</p>
+                    <p><strong>User Type:</strong> ${log.user_type}</p>
+                    <p><strong>Action:</strong> <span class="action-badge ${getActionClass(log.action)}">${log.action}</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>IP Address:</strong> ${log.ip_address || 'N/A'}</p>
+                    <p><strong>User Agent:</strong> ${log.user_agent || 'N/A'}</p>
+                    <p><strong>Status:</strong> ${getStatusText(log.action)}</p>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h6>Details:</h6>
+                <pre class="bg-light p-3 rounded">${log.details || 'No additional details'}</pre>
+            </div>
+        </div>
+    `;
+
+        document.getElementById('auditDetailsContent').innerHTML = detailsHTML;
+        new bootstrap.Modal(document.getElementById('auditDetailsModal')).show();
+    }
+
+    function refreshAuditLogs() {
+        loadAuditLogs();
+        checkSecurityAlerts();
+    }
+
+    function exportAuditLogs() {
+        const exportData = filteredAuditLogs.map(log => ({
+            'Timestamp': formatDateTime(log.created_at),
+            'User': log.user_name || 'System',
+            'User Type': log.user_type,
+            'Action': log.action,
+            'IP Address': log.ip_address || '',
+            'User Agent': log.user_agent || '',
+            'Details': log.details || ''
+        }));
+
+        downloadCSV(exportData, 'audit_logs.csv');
+    }
+
+    function downloadAuditReport() {
+        // Generate comprehensive audit report
+        const reportData = {
+            period: {
+                from: document.getElementById('dateFromFilter').value || 'All time',
+                to: document.getElementById('dateToFilter').value || 'Now'
+            },
+            stats: {
+                totalLogs: filteredAuditLogs.length,
+                uniqueUsers: new Set(filteredAuditLogs.map(log => log.user_id)).size,
+                suspiciousActivities: filteredAuditLogs.filter(log =>
+                    log.action.includes('failed') || log.action.includes('unauthorized')
+                ).length
+            },
+            topActions: getTopActions(),
+            topUsers: getTopUsers(),
+            logs: filteredAuditLogs
+        };
+
+        // In a real implementation, you'd send this to a server endpoint
+        // that generates a PDF report
+        alert('Audit report generation feature would be implemented here');
+    }
+
+    function acknowledgeSecurityAlert() {
+        // Implement security alert acknowledgment
+        alert('Security alert acknowledgment feature would be implemented here');
+    }
+
+    function getActionClass(action) {
+        if (action.includes('login')) return 'login';
+        if (action.includes('logout')) return 'logout';
+        if (action.includes('create')) return 'create';
+        if (action.includes('update')) return 'update';
+        if (action.includes('delete')) return 'delete';
+        if (action.includes('access')) return 'access';
+        return 'default';
+    }
+
+    function getStatusClass(action) {
+        if (action.includes('failed') || action.includes('unauthorized')) return 'danger';
+        if (action.includes('warning') || action.includes('suspicious')) return 'warning';
+        return 'success';
+    }
+
+    function getStatusText(action) {
+        if (action.includes('failed') || action.includes('unauthorized')) return 'Failed';
+        if (action.includes('warning') || action.includes('suspicious')) return 'Warning';
+        return 'Success';
+    }
+
+    function getTopActions() {
+        const actionCounts = {};
+        filteredAuditLogs.forEach(log => {
+            actionCounts[log.action] = (actionCounts[log.action] || 0) + 1;
+        });
+
+        return Object.entries(actionCounts)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 10)
+            .map(([action, count]) => ({ action, count }));
+    }
+
+    function getTopUsers() {
+        const userCounts = {};
+        filteredAuditLogs.forEach(log => {
+            const user = log.user_name || 'System';
+            userCounts[user] = (userCounts[user] || 0) + 1;
+        });
+
+        return Object.entries(userCounts)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 10)
+            .map(([user, count]) => ({ user, count }));
+    }
+
+    function formatDateTime(dateString) {
+        return new Date(dateString).toLocaleString();
+    }
+
+    function formatDateTimeLocal(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    function truncateText(text, maxLength) {
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
+    }
+
+    function downloadCSV(data, filename) {
+        const csvContent = convertToCSV(data);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
+    function convertToCSV(data) {
+        if (!data.length) return '';
+
+        const headers = Object.keys(data[0]);
+        const csvRows = [headers.join(',')];
+
+        data.forEach(row => {
+            const values = headers.map(header => {
+                const value = row[header] || '';
+                return `"${value.toString().replace(/"/g, '""')}"`;
+            });
+            csvRows.push(values.join(','));
+        });
+
+        return csvRows.join('\n');
+    }
+
+    function showLoading() {
+        // Add loading spinner if needed
+    }
+
+    function hideLoading() {
+        // Remove loading spinner if needed
+    }
+
+    function showError(message) {
+        // Show error message
+        console.error(message);
+        alert(message);
+    }
+</script>
+{% endblock %}

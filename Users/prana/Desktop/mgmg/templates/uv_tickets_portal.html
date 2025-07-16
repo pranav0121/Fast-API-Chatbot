@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>🎫 Tickets Portal - Urban Vyapari Integration</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f6fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .integration-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .filters-title {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .tickets-section {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .tickets-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tickets-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .tickets-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .tickets-table th {
+            background: #f8f9fa;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tickets-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tickets-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-open {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-closed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-resolved {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .priority-critical {
+            background: #dc3545;
+            color: white;
+        }
+
+        .priority-high {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .priority-medium {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .priority-low {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #117a8b;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .loading,
+        .error,
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .error {
+            color: #721c24;
+            background: #f8d7da;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .pagination {
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .pagination-info {
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .integration-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tickets-table {
+                font-size: 12px;
+            }
+
+            .tickets-table th,
+            .tickets-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🎫 Support Tickets Portal</h1>
+            <div class="integration-info">
+                <div>
+                    <strong>🔗 Urban Vyapari Integration</strong><br>
+                    <small>Admin: {{ admin.admin_name }} ({{ admin.admin_email }})</small>
+                </div>
+                <button class="btn btn-info" onclick="refreshAll()">🔄 Refresh All</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Stats -->
+        <div class="stats-grid" id="statsContainer">
+            <div class="loading">📊 Loading statistics...</div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-title">🔍 Filter Tickets</div>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="statusFilter">Status</label>
+                    <select id="statusFilter" onchange="applyFilters()">
+                        <option value="all">All Statuses</option>
+                        <option value="open">Open</option>
+                        <option value="pending">Pending</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="priorityFilter">Priority</label>
+                    <select id="priorityFilter" onchange="applyFilters()">
+                        <option value="all">All Priorities</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="categoryFilter">Category</label>
+                    <select id="categoryFilter" onchange="applyFilters()">
+                        <option value="all">All Categories</option>
+                        <option value="technical">Technical</option>
+                        <option value="billing">Billing</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="bug">Bug Report</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <button class="btn btn-success" onclick="window.open('/admin', '_blank')" style="width: 100%;">
+                        ➕ Go to Admin Panel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tickets Table -->
+        <div class="tickets-section">
+            <div class="tickets-header">
+                <div class="tickets-title">📋 Support Tickets</div>
+                <div id="ticketsCount">Loading...</div>
+            </div>
+            <div id="ticketsContainer">
+                <div class="loading">📥 Loading tickets...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_TOKEN = '{{ token }}';
+        const API_BASE = window.location.origin + '/api';
+        let currentData = { tickets: [], stats: {} };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadDashboardStats();
+            loadTickets();
+            setInitialFilters();
+        });
+
+        function setInitialFilters() {
+            document.getElementById('statusFilter').value = '{{ filters.status }}';
+            document.getElementById('priorityFilter').value = '{{ filters.priority }}';
+            document.getElementById('categoryFilter').value = '{{ filters.category }}';
+        }
+
+        // Load dashboard statistics
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/dashboard-stats?token=${API_TOKEN}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    currentData.stats = data;
+                    displayStats(data);
+                } else {
+                    throw new Error(data.error || 'Failed to load stats');
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('statsContainer').innerHTML =
+                    '<div class="error">❌ Failed to load statistics: ' + error.message + '</div>';
+            }
+        }
+
+        function displayStats(stats) {
+            const container = document.getElementById('statsContainer');
+            container.innerHTML = `
+                <div class="stat-card">
+                    <span class="stat-number">${stats.totalTickets || 0}</span>
+                    <div class="stat-label">Total Tickets</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${stats.pendingTickets || 0}</span>
+                    <div class="stat-label">Pending Tickets</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${stats.resolvedTickets || 0}</span>
+                    <div class="stat-label">Resolved Tickets</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${stats.activeChats || 0}</span>
+                    <div class="stat-label">Active Chats</div>
+                </div>
+            `;
+        }
+
+        // Load tickets with filters
+        async function loadTickets() {
+            const params = new URLSearchParams({
+                token: API_TOKEN,
+                status: document.getElementById('statusFilter').value,
+                priority: document.getElementById('priorityFilter').value,
+                category: document.getElementById('categoryFilter').value,
+                limit: 50,
+                offset: 0
+            });
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/tickets?${params}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    currentData.tickets = data;
+                    displayTickets(data);
+                } else {
+                    throw new Error(data.error || 'Failed to load tickets');
+                }
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                document.getElementById('ticketsContainer').innerHTML =
+                    '<div class="error">❌ Failed to load tickets: ' + error.message + '</div>';
+            }
+        }
+
+        function displayTickets(data) {
+            const container = document.getElementById('ticketsContainer');
+            const countElement = document.getElementById('ticketsCount');
+
+            if (!data.tickets || data.tickets.length === 0) {
+                container.innerHTML = '<div class="no-data">📭 No tickets found matching current filters</div>';
+                countElement.textContent = '0 tickets';
+                return;
+            }
+
+            countElement.textContent = `${data.tickets.length} ticket(s) of ${data.pagination?.total || data.tickets.length} total`;
+
+            container.innerHTML = `
+                <table class="tickets-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Subject</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Category</th>
+                            <th>Organization</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.tickets.map(ticket => `
+                            <tr>
+                                <td><strong>#${ticket.id}</strong></td>
+                                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                                    ${ticket.subject || 'No Subject'}
+                                </td>
+                                <td>
+                                    <span class="badge priority-${ticket.priority || 'medium'}">
+                                        ${(ticket.priority || 'medium').toUpperCase()}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge status-${ticket.status || 'open'}">
+                                        ${(ticket.status || 'open').toUpperCase()}
+                                    </span>
+                                </td>
+                                <td>${ticket.category || 'General'}</td>
+                                <td>${ticket.organization || 'N/A'}</td>
+                                <td>${formatDate(ticket.created_at || ticket.created)}</td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="viewTicket(${ticket.id})" title="View Details">
+                                        👁️ View
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                ${data.pagination ? `
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Showing ${data.pagination.offset + 1} to ${Math.min(data.pagination.offset + data.pagination.limit, data.pagination.total)} 
+                            of ${data.pagination.total} tickets
+                        </div>
+                        ${data.pagination.has_more ? '<button class="btn btn-outline" onclick="loadMoreTickets()">Load More</button>' : ''}
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } catch {
+                return dateString;
+            }
+        }
+
+        // View ticket details
+        async function viewTicket(ticketId) {
+            try {
+                const response = await fetch(`${API_BASE}/admin/tickets/${ticketId}?token=${API_TOKEN}`);
+                const data = await response.json();
+
+                if (data.success || data.ticket) {
+                    const ticket = data.ticket || data;
+                    const details = `
+Ticket #${ticketId}
+
+Subject: ${ticket.subject || 'No Subject'}
+Status: ${ticket.status || 'Unknown'}
+Priority: ${ticket.priority || 'Unknown'}
+Category: ${ticket.category || 'Unknown'}
+Organization: ${ticket.organization || 'Unknown'}
+User: ${ticket.user_name || ticket.user || 'Unknown'}
+Created: ${formatDate(ticket.created_at || ticket.created)}
+
+Description: ${ticket.description || 'No description available'}
+                    `;
+                    alert(details);
+                } else {
+                    alert('❌ Error loading ticket details: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Failed to load ticket details: ' + error.message);
+            }
+        }
+
+        function applyFilters() {
+            loadTickets();
+        }
+
+        function refreshAll() {
+            loadDashboardStats();
+            loadTickets();
+        }
+
+        function loadMoreTickets() {
+            // Implementation for pagination if needed
+            alert('📋 Load more functionality - to be implemented based on requirements');
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(refreshAll, 30000);
+
+        console.log('🎫 Urban Vyapari Tickets Portal initialized successfully');
+        console.log('👤 Admin:', '{{ admin.admin_name }}');
+    </script>
+</body>
+
+</html>

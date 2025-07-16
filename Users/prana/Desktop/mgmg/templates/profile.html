@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if current_user.is_authenticated %}{{ current_user.Name }} - {% endif %}{{ _('User Profile') }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .priority-indicator {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-critical {
+            background: #dc3545;
+            color: white;
+        }
+
+        .priority-high {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .priority-medium {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .priority-low {
+            background: #28a745;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .recent-tickets {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .ticket-item {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .ticket-item:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-user-circle me-3"></i>{{ current_user.Name if current_user.is_authenticated
+                        else _('User Profile') }}</h1>
+                    <p class="lead mb-0">{{ current_user.OrganizationName if current_user.is_authenticated else
+                        _('Organization Profile') }}</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a href="{{ url_for('index') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>{{ _('Back to Support') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if current_user.is_authenticated %}
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="profile-card">
+                    <div class="text-center mb-4">
+                        <div class="d-inline-block bg-primary text-white rounded-circle p-3 mb-3"
+                            style="width: 80px; height: 80px; line-height: 54px; font-size: 2rem;">
+                            {{ current_user.Name[0].upper() if current_user.Name else 'U' }}
+                        </div>
+                        <h4>{{ current_user.Name }}</h4>
+                        <p class="text-muted">{{ current_user.Position or _('Team Member') }}</p>
+                        <span class="priority-indicator priority-{{ current_user.PriorityLevel }}">
+                            {{ current_user.PriorityLevel.title() }} {{ _('Priority') }}
+                        </span>
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="info-item mb-3">
+                            <i class="fas fa-envelope text-primary me-2"></i>
+                            <span>{{ current_user.Email }}</span>
+                        </div>
+                        <div class="info-item mb-3">
+                            <i class="fas fa-building text-primary me-2"></i>
+                            <span>{{ current_user.OrganizationName }}</span>
+                        </div>
+                        {% if current_user.Department %}
+                        <div class="info-item mb-3">
+                            <i class="fas fa-users text-primary me-2"></i>
+                            <span>{{ current_user.Department }}</span>
+                        </div>
+                        {% endif %}
+                        {% if current_user.Phone %}
+                        <div class="info-item mb-3">
+                            <i class="fas fa-phone text-primary me-2"></i>
+                            <span>{{ current_user.Phone }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="info-item mb-3">
+                            <i class="fas fa-calendar text-primary me-2"></i>
+                            <span>{{ _('Member since') }} {{ current_user.CreatedAt.strftime('%B %Y') if
+                                current_user.CreatedAt else _('Unknown') }}</span>
+                        </div>
+                        {% if current_user.LastLogin %}
+                        <div class="info-item mb-3">
+                            <i class="fas fa-clock text-primary me-2"></i>
+                            <span>{{ _('Last login') }}: {{ current_user.LastLogin.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary w-100" onclick="showEditProfile()">
+                            <i class="fas fa-edit me-2"></i>{{ _('Edit Profile') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="profile-card">
+                    <h5 class="mb-4"><i class="fas fa-chart-bar me-2"></i>{{ _('Support Statistics') }}</h5>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-tickets">0</div>
+                            <div class="text-muted">{{ _('Total Tickets') }}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="open-tickets">0</div>
+                            <div class="text-muted">{{ _('Open Tickets') }}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="resolved-tickets">0</div>
+                            <div class="text-muted">{{ _('Resolved Tickets') }}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="avg-resolution">-</div>
+                            <div class="text-muted">{{ _('Avg Resolution Time') }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0"><i class="fas fa-ticket-alt me-2"></i>{{ _('Recent Tickets') }}</h5>
+                        <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-plus me-1"></i>{{ _('Create New Ticket') }}
+                        </a>
+                    </div>
+                    <div class="recent-tickets" id="recent-tickets">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                            <p>{{ _('Loading tickets...') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="profile-card text-center">
+                    <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+                    <h4>{{ _('Please Log In') }}</h4>
+                    <p class="text-muted">{{ _('You need to be logged in to view your profile.') }}</p>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>{{ _('Login') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ _('Edit Profile') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="editProfileForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Full Name') }}</label>
+                                    <input type="text" class="form-control" id="edit-name"
+                                        value="{{ current_user.Name if current_user.is_authenticated else '' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Position') }}</label>
+                                    <input type="text" class="form-control" id="edit-position"
+                                        value="{{ current_user.Position if current_user.is_authenticated else '' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Department') }}</label>
+                                    <input type="text" class="form-control" id="edit-department"
+                                        value="{{ current_user.Department if current_user.is_authenticated else '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Phone Number') }}</label>
+                                    <input type="tel" class="form-control" id="edit-phone"
+                                        value="{{ current_user.Phone if current_user.is_authenticated else '' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Priority Level') }}</label>
+                                    <select class="form-select" id="edit-priority">
+                                        <option value="low" {{ 'selected' if current_user.is_authenticated and
+                                            current_user.PriorityLevel=='low' else '' }}>{{ _('Low') }}</option>
+                                        <option value="medium" {{ 'selected' if current_user.is_authenticated and
+                                            current_user.PriorityLevel=='medium' else '' }}>{{ _('Medium') }}</option>
+                                        <option value="high" {{ 'selected' if current_user.is_authenticated and
+                                            current_user.PriorityLevel=='high' else '' }}>{{ _('High') }}</option>
+                                        <option value="critical" {{ 'selected' if current_user.is_authenticated and
+                                            current_user.PriorityLevel=='critical' else '' }}>{{ _('Critical') }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{{ _('Preferred Language') }}</label>
+                                    <select class="form-select" id="edit-language">
+                                        {% for lang_code, lang_name in config.LANGUAGES.items() %}
+                                        <option value="{{ lang_code }}" {{ 'selected' if current_user.is_authenticated
+                                            and current_user.PreferredLanguage==lang_code else '' }}>{{ lang_name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel')
+                            }}</button>
+                        <button type="submit" class="btn btn-primary">{{ _('Save Changes') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Load user statistics and recent tickets
+        document.addEventListener('DOMContentLoaded', async () => {
+            if ({{ 'true' if current_user.is_authenticated else 'false' }
+        }) {
+            await loadUserStats();
+            await loadRecentTickets();
+        }
+        });
+
+        async function loadUserStats() {
+            try {
+                const response = await fetch('/api/user/stats');
+                const stats = await response.json();
+
+                document.getElementById('total-tickets').textContent = stats.total || 0;
+                document.getElementById('open-tickets').textContent = stats.open || 0;
+                document.getElementById('resolved-tickets').textContent = stats.resolved || 0;
+                document.getElementById('avg-resolution').textContent = stats.avgResolution || '-';
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+            }
+        }
+
+        async function loadRecentTickets() {
+            try {
+                const response = await fetch('/api/user/tickets?limit=10');
+                const tickets = await response.json();
+
+                const container = document.getElementById('recent-tickets');
+
+                if (tickets.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-2x mb-3"></i>
+                            <p>{{ _('No tickets found') }}</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = tickets.map(ticket => `
+                    <div class="ticket-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">#${ticket.id} - ${ticket.subject}</h6>
+                                <p class="text-muted mb-2">${ticket.category}</p>
+                                <small class="text-muted">${new Date(ticket.created_at).toLocaleDateString()}</small>
+                            </div>
+                            <span class="badge bg-${getStatusColor(ticket.status)}">${ticket.status.replace('_', ' ')}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading recent tickets:', error);
+                document.getElementById('recent-tickets').innerHTML = `
+                    <div class="text-center text-danger py-4">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <p>{{ _('Error loading tickets') }}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'open': 'primary',
+                'in_progress': 'warning',
+                'resolved': 'success',
+                'closed': 'secondary'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        function showEditProfile() {
+            const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+            modal.show();
+        }
+
+        // Handle profile form submission
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                name: document.getElementById('edit-name').value,
+                position: document.getElementById('edit-position').value,
+                department: document.getElementById('edit-department').value,
+                phone: document.getElementById('edit-phone').value,
+                priority: document.getElementById('edit-priority').value,
+                language: document.getElementById('edit-language').value
+            };
+
+            try {
+                const response = await fetch('/api/user/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    // Close modal and reload page
+                    bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+                    window.location.reload();
+                } else {
+                    alert('{{ _("Error updating profile") }}');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('{{ _("Error updating profile") }}');
+            }
+        });
+    </script>
+</body>
+
+</html>
