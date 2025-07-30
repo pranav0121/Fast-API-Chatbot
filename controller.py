@@ -1,26 +1,31 @@
+from fastapi import UploadFile
+import os
+from sqlalchemy.future import select
+from models import Category, CommonQuery, Ticket, TicketMessage, Feedback
+from fastapi import HTTPException, status
 from models import Category, CommonQuery, Ticket, TicketMessage, Feedback, User
 from sqlalchemy import select
 
 # ...existing code...
+
 
 async def get_users_controller(db):
     result = await db.execute(select(User))
     users = result.scalars().all()
     return {"users": [{"userid": u.userid, "name": u.name, "email": u.email} for u in users]}
 
-from fastapi import HTTPException, status
-from models import Category, CommonQuery, Ticket, TicketMessage, Feedback
-from sqlalchemy.future import select
 
 async def get_categories_controller(db):
     result = await db.execute(select(Category))
     categories = result.scalars().all()
     return {"categories": [{"id": c.categoryid, "name": c.name} for c in categories]}
 
+
 async def get_common_queries_controller(db, category_id: int):
     result = await db.execute(select(CommonQuery).where(CommonQuery.categoryid == category_id))
     queries = result.scalars().all()
     return {"queries": [{"id": q.queryid, "question": q.question, "solution": q.solution} for q in queries]}
+
 
 async def create_ticket_controller(db, payload):
     ticket = Ticket(
@@ -51,6 +56,7 @@ async def create_ticket_controller(db, payload):
         await db.commit()
     return {"ticket_id": ticket.ticketid, "status": "success"}
 
+
 async def get_ticket_details_controller(db, ticket_id: int):
     result = await db.execute(select(Ticket).where(Ticket.ticketid == ticket_id))
     ticket = result.scalar_one_or_none()
@@ -64,10 +70,12 @@ async def get_ticket_details_controller(db, ticket_id: int):
         "organizationname": ticket.organizationname
     }}
 
+
 async def get_ticket_messages_controller(db, ticket_id: int):
     result = await db.execute(select(TicketMessage).where(TicketMessage.ticketid == ticket_id))
     messages = result.scalars().all()
     return {"messages": [{"id": m.messageid, "content": m.content, "is_admin": m.isadminreply} for m in messages]}
+
 
 async def add_ticket_message_controller(db, ticket_id: int, payload):
     senderid = payload.user_id
@@ -88,8 +96,6 @@ async def add_ticket_message_controller(db, ticket_id: int, payload):
     await db.refresh(message)
     return {"message_id": message.messageid, "status": "success"}
 
-import os
-from fastapi import UploadFile
 
 async def upload_file_controller(file: UploadFile):
     uploads_dir = os.path.join(os.getcwd(), "uploads")
@@ -100,6 +106,7 @@ async def upload_file_controller(file: UploadFile):
         f.write(content)
     return {"file_url": f"/uploads/{file.filename}"}
 
+
 async def submit_feedback_controller(db, payload):
     feedback = Feedback(
         ticketid=payload.ticket_id,
@@ -109,6 +116,7 @@ async def submit_feedback_controller(db, payload):
     db.add(feedback)
     await db.commit()
     return {"status": "success"}
+
 
 async def test_database_controller(db):
     try:
