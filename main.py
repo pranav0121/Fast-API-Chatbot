@@ -8,6 +8,7 @@ import asyncio
 
 app = FastAPI(title="Chatbot Cloud Public API")
 
+
 @app.on_event("startup")
 async def on_startup():
     # Create tables if they do not exist
