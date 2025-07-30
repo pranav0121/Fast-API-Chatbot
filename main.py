@@ -1,7 +1,7 @@
 
 
 from fastapi import FastAPI
-from router import public_router
+from router import router
 from models import Base
 from db import engine
 import asyncio
@@ -15,4 +15,4 @@ async def on_startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-app.include_router(public_router, prefix="/api")
+app.include_router(router, prefix="/api")
