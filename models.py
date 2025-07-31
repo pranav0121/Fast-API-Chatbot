@@ -1,13 +1,18 @@
 
+import uuid
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Float, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
 # User Table
+
+
 class User(Base):
     __tablename__ = "users"
     userid = Column(Integer, primary_key=True, index=True)
+    uuid = Column(String(36), unique=True,
+                  default=lambda: str(uuid.uuid4()), index=True)
     name = Column(Text, nullable=True)
     email = Column(Text, nullable=True)
     createdat = Column(DateTime, nullable=True)
@@ -36,12 +41,12 @@ class User(Base):
     username = Column(Text, nullable=True)
     organization_id = Column(Integer, nullable=True)
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Float, ForeignKey
-from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
 # Categories Table
+
+
 class Category(Base):
     __tablename__ = "categories"
     categoryid = Column(Integer, primary_key=True, index=True)
@@ -50,6 +55,8 @@ class Category(Base):
     createdat = Column(DateTime, nullable=True)
 
 # CommonQueries Table (commonqueries)
+
+
 class CommonQuery(Base):
     __tablename__ = "commonqueries"
     queryid = Column(Integer, primary_key=True, index=True)
@@ -61,11 +68,14 @@ class CommonQuery(Base):
     category = relationship("Category")
 
 # Tickets Table
+
+
 class Ticket(Base):
     __tablename__ = "tickets"
     ticketid = Column(Integer, primary_key=True, index=True)
     userid = Column(Integer, nullable=True)
-    categoryid = Column(Integer, ForeignKey("categories.categoryid"), nullable=True)
+    categoryid = Column(Integer, ForeignKey(
+        "categories.categoryid"), nullable=True)
     subject = Column(Text, nullable=False)
     status = Column(Text, nullable=True)
     createdat = Column(DateTime, nullable=True)
@@ -110,6 +120,8 @@ class Ticket(Base):
     category = relationship("Category")
 
 # Ticket Messages Table (messages)
+
+
 class TicketMessage(Base):
     __tablename__ = "messages"
     messageid = Column(Integer, primary_key=True, index=True)
@@ -122,6 +134,8 @@ class TicketMessage(Base):
     ticket = relationship("Ticket")
 
 # Feedback Table
+
+
 class Feedback(Base):
     __tablename__ = "feedback"
     feedbackid = Column(Integer, primary_key=True, index=True)

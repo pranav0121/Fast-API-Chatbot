@@ -1,5 +1,8 @@
-from fastapi import APIRouter, Request, Depends, status, HTTPException, UploadFile, File
-from sqlalchemy.ext.asyncio import AsyncSession
+
+from schemas import (
+    TicketCreateRequest, TicketMessageRequest, FeedbackRequest,
+    UserRegisterRequest, UserLoginRequest, TokenResponse
+)
 from controller import (
     get_categories_controller,
     get_common_queries_controller,
@@ -10,14 +13,35 @@ from controller import (
     upload_file_controller,
     submit_feedback_controller,
     test_database_controller,
-    get_users_controller
+    get_users_controller,
+    get_user_by_uuid_controller
 )
-from schemas import (
-    TicketCreateRequest, TicketMessageRequest, FeedbackRequest
-)
+from sqlalchemy.ext.asyncio import AsyncSession
+from controller import register_user_controller, login_user_controller
 from db import get_db
-
+from fastapi import APIRouter, Request, Depends, status, HTTPException, UploadFile, File
 router = APIRouter()
+
+# Get user by UUID
+
+
+@router.get("/users/uuid/{user_uuid}", summary="Get user by UUID")
+async def get_user_by_uuid(user_uuid: str, db: AsyncSession = Depends(get_db)):
+    return await get_user_by_uuid_controller(db, user_uuid)
+
+# User registration endpoint
+
+
+@router.post("/register", summary="Register a new user")
+async def register_user(payload: UserRegisterRequest, db: AsyncSession = Depends(get_db)):
+    return await register_user_controller(db, payload)
+
+# User login endpoint
+
+
+@router.post("/login", response_model=TokenResponse, summary="User login and get JWT token")
+async def login_user(payload: UserLoginRequest, db: AsyncSession = Depends(get_db)):
+    return await login_user_controller(db, payload)
 
 
 @router.get("/categories", summary="Get all support categories")
