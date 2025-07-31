@@ -71,3 +71,54 @@ WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind 
 FROM users
 2025-07-31 14:38:43,054 | INFO | [generated in 0.00055s] ()
 2025-07-31 14:38:43,156 | INFO | ROLLBACK
+2025-07-31 14:43:10,221 | INFO | select pg_catalog.version()
+2025-07-31 14:43:10,221 | INFO | [raw sql] ()
+2025-07-31 14:43:10,236 | INFO | select current_schema()
+2025-07-31 14:43:10,237 | INFO | [raw sql] ()
+2025-07-31 14:43:10,238 | INFO | show standard_conforming_strings
+2025-07-31 14:43:10,238 | INFO | [raw sql] ()
+2025-07-31 14:43:10,239 | INFO | BEGIN (implicit)
+2025-07-31 14:43:10,242 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-07-31 14:43:10,242 | INFO | [generated in 0.00039s] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-07-31 14:43:10,248 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-07-31 14:43:10,248 | INFO | [cached since 0.006362s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-07-31 14:43:10,249 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-07-31 14:43:10,249 | INFO | [cached since 0.007587s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-07-31 14:43:10,250 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-07-31 14:43:10,251 | INFO | [cached since 0.009213s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-07-31 14:43:10,252 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-07-31 14:43:10,252 | INFO | [cached since 0.01052s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-07-31 14:43:10,253 | INFO | COMMIT
+2025-07-31 14:43:34,608 | INFO | BEGIN (implicit)
+2025-07-31 14:43:34,614 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.country, users.last_device_type, users.device_type, users.operating_system, users.browser, users.browser_version, users.os_version, users.device_brand, users.device_model, users.device_fingerprint, users.user_agent, users.ip_address, users.username, users.organization_id 
+FROM users
+2025-07-31 14:43:34,614 | INFO | [generated in 0.00058s] ()
+2025-07-31 14:43:34,620 | INFO | ROLLBACK
+2025-07-31 14:44:16,878 | INFO | BEGIN (implicit)
+2025-07-31 14:44:16,879 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.country, users.last_device_type, users.device_type, users.operating_system, users.browser, users.browser_version, users.os_version, users.device_brand, users.device_model, users.device_fingerprint, users.user_agent, users.ip_address, users.username, users.organization_id 
+FROM users 
+WHERE users.uuid = $1::VARCHAR
+2025-07-31 14:44:16,879 | INFO | [generated in 0.00071s] ('pranav_07d42d04-b63b-4da1-b50d-ac04f0097807',)
+2025-07-31 14:44:16,885 | INFO | ROLLBACK
+2025-07-31 14:44:41,074 | INFO | BEGIN (implicit)
+2025-07-31 14:44:41,074 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.country, users.last_device_type, users.device_type, users.operating_system, users.browser, users.browser_version, users.os_version, users.device_brand, users.device_model, users.device_fingerprint, users.user_agent, users.ip_address, users.username, users.organization_id 
+FROM users 
+WHERE users.uuid = $1::VARCHAR
+2025-07-31 14:44:41,075 | INFO | [cached since 24.19s ago] ('8_07d42d04-b63b-4da1-b50d-ac04f0097807',)
+2025-07-31 14:44:41,076 | INFO | ROLLBACK
+2025-07-31 14:46:07,581 | INFO | BEGIN (implicit)
+2025-07-31 14:46:07,582 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.country, users.last_device_type, users.device_type, users.operating_system, users.browser, users.browser_version, users.os_version, users.device_brand, users.device_model, users.device_fingerprint, users.user_agent, users.ip_address, users.username, users.organization_id 
+FROM users 
+WHERE users.uuid = $1::VARCHAR
+2025-07-31 14:46:07,582 | INFO | [cached since 110.7s ago] ('07d42d04-b63b-4da1-b50d-ac04f0097807',)
+2025-07-31 14:46:07,582 | INFO | ROLLBACK
