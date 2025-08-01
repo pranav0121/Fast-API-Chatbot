@@ -122,3 +122,284 @@ FROM users
 WHERE users.uuid = $1::VARCHAR
 2025-07-31 14:46:07,582 | INFO | [cached since 110.7s ago] ('07d42d04-b63b-4da1-b50d-ac04f0097807',)
 2025-07-31 14:46:07,582 | INFO | ROLLBACK
+2025-08-01 16:22:03,485 | INFO | select pg_catalog.version()
+2025-08-01 16:22:03,485 | INFO | [raw sql] ()
+2025-08-01 16:22:03,485 | INFO | select current_schema()
+2025-08-01 16:22:03,485 | INFO | [raw sql] ()
+2025-08-01 16:22:03,485 | INFO | show standard_conforming_strings
+2025-08-01 16:22:03,485 | INFO | [raw sql] ()
+2025-08-01 16:22:03,490 | INFO | BEGIN (implicit)
+2025-08-01 16:22:03,494 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:22:03,494 | INFO | [generated in 0.00042s] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:22:03,499 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:22:03,499 | INFO | [cached since 0.006706s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:22:03,500 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:22:03,501 | INFO | [cached since 0.00783s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:22:03,501 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:22:03,502 | INFO | [cached since 0.008846s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:22:03,502 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:22:03,503 | INFO | [cached since 0.009861s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:22:03,504 | INFO | COMMIT
+2025-08-01 16:29:31,960 | INFO | select pg_catalog.version()
+2025-08-01 16:29:31,960 | INFO | [raw sql] ()
+2025-08-01 16:29:31,960 | INFO | select current_schema()
+2025-08-01 16:29:31,960 | INFO | [raw sql] ()
+2025-08-01 16:29:31,960 | INFO | show standard_conforming_strings
+2025-08-01 16:29:31,976 | INFO | [raw sql] ()
+2025-08-01 16:29:31,976 | INFO | BEGIN (implicit)
+2025-08-01 16:29:31,981 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:29:31,981 | INFO | [generated in 0.00049s] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:29:31,986 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:29:31,986 | INFO | [cached since 0.006703s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:29:31,986 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:29:31,989 | INFO | [cached since 0.00819s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:29:31,990 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:29:31,990 | INFO | [cached since 0.009825s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:29:31,991 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:29:31,992 | INFO | [cached since 0.01101s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:29:31,992 | INFO | COMMIT
+2025-08-01 16:29:48,538 | INFO | BEGIN (implicit)
+2025-08-01 16:29:48,546 | INFO | SELECT count(tickets.ticketid) AS count_1 
+FROM tickets
+2025-08-01 16:29:48,546 | INFO | [generated in 0.00038s] ()
+2025-08-01 16:29:48,561 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.status IN ($1::VARCHAR, $2::VARCHAR)
+2025-08-01 16:29:48,566 | INFO | [generated in 0.00077s] ('open', 'in_progress')
+2025-08-01 16:29:48,566 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.status = $1::VARCHAR
+2025-08-01 16:29:48,566 | INFO | [generated in 0.00039s] ('resolved',)
+2025-08-01 16:29:48,566 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.status IN ($1::VARCHAR, $2::VARCHAR)
+2025-08-01 16:29:48,566 | INFO | [cached since 0.005804s ago] ('open', 'in_progress')
+2025-08-01 16:29:48,566 | INFO | ROLLBACK
+2025-08-01 16:29:57,516 | INFO | BEGIN (implicit)
+2025-08-01 16:29:57,524 | INFO | SELECT tickets.ticketid, tickets.userid, tickets.categoryid, tickets.subject, tickets.status, tickets.createdat, tickets.updatedat, tickets.priority, tickets.organizationname, tickets.createdby, tickets.assignedto, tickets.escalation_level, tickets.current_sla_target, tickets.resolution_method, tickets.bot_attempted, tickets.partner_id, tickets.odoo_customer_id, tickets.odoo_ticket_id, tickets.sla_time, tickets.raise_date, tickets.end_date, tickets.country, tickets.source_device, tickets.enddate, tickets.escalationlevel, tickets.escalationreason, tickets.escalationtimestamp, tickets.escalatedto, tickets.slabreachstatus, tickets.autoescalated, tickets.escalationhistory, tickets.currentassignedrole, tickets.slatarget, tickets.originalslatarget, tickets.device_type, tickets.operating_system, tickets.browser, tickets.browser_version, tickets.os_version, tickets.device_brand, tickets.device_model, tickets.device_fingerprint, tickets.user_agent, tickets.ip_address, users.userid AS userid_1, users.uuid, users.name, users.email, users.createdat AS createdat_1, users.passwordhash, users.preferredlanguage, users.organizationname AS organizationname_1, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.country AS country_1, users.last_device_type, users.device_type AS device_type_1, users.operating_system AS operating_system_1, users.browser AS browser_1, users.browser_version AS browser_version_1, users.os_version AS os_version_1, users.device_brand AS device_brand_1, users.device_model AS device_model_1, users.device_fingerprint AS device_fingerprint_1, users.user_agent AS user_agent_1, users.ip_address AS ip_address_1, users.username, users.organization_id, categories.categoryid AS categoryid_1, categories.name AS name_1, categories.team, categories.createdat AS createdat_2 
+FROM tickets LEFT OUTER JOIN users ON tickets.userid = users.userid LEFT OUTER JOIN categories ON tickets.categoryid = categories.categoryid ORDER BY tickets.createdat DESC 
+ LIMIT $1::INTEGER
+2025-08-01 16:29:57,529 | INFO | [generated in 0.00105s] (10,)
+2025-08-01 16:29:57,537 | INFO | ROLLBACK
+2025-08-01 16:30:08,517 | INFO | BEGIN (implicit)
+2025-08-01 16:30:08,517 | INFO | SELECT count(*) AS count_1 
+FROM (SELECT tickets.ticketid AS ticketid, tickets.userid AS userid, tickets.categoryid AS categoryid, tickets.subject AS subject, tickets.status AS status, tickets.createdat AS createdat, tickets.updatedat AS updatedat, tickets.priority AS priority, tickets.organizationname AS organizationname, tickets.createdby AS createdby, tickets.assignedto AS assignedto, tickets.escalation_level AS escalation_level, tickets.current_sla_target AS current_sla_target, tickets.resolution_method AS resolution_method, tickets.bot_attempted AS bot_attempted, tickets.partner_id AS partner_id, tickets.odoo_customer_id AS odoo_customer_id, tickets.odoo_ticket_id AS odoo_ticket_id, tickets.sla_time AS sla_time, tickets.raise_date AS raise_date, tickets.end_date AS end_date, tickets.country AS country, tickets.source_device AS source_device, tickets.enddate AS enddate, tickets.escalationlevel AS escalationlevel, tickets.escalationreason AS escalationreason, tickets.escalationtimestamp AS escalationtimestamp, tickets.escalatedto AS escalatedto, tickets.slabreachstatus AS slabreachstatus, tickets.autoescalated AS autoescalated, tickets.escalationhistory AS escalationhistory, tickets.currentassignedrole AS currentassignedrole, tickets.slatarget AS slatarget, tickets.originalslatarget AS originalslatarget, tickets.device_type AS device_type, tickets.operating_system AS operating_system, tickets.browser AS browser, tickets.browser_version AS browser_version, tickets.os_version AS os_version, tickets.device_brand AS device_brand, tickets.device_model AS device_model, tickets.device_fingerprint AS device_fingerprint, tickets.user_agent AS user_agent, tickets.ip_address AS ip_address 
+FROM tickets) AS anon_1
+2025-08-01 16:30:08,521 | INFO | [generated in 0.00075s] ()
+2025-08-01 16:30:08,522 | INFO | SELECT tickets.ticketid, tickets.userid, tickets.categoryid, tickets.subject, tickets.status, tickets.createdat, tickets.updatedat, tickets.priority, tickets.organizationname, tickets.createdby, tickets.assignedto, tickets.escalation_level, tickets.current_sla_target, tickets.resolution_method, tickets.bot_attempted, tickets.partner_id, tickets.odoo_customer_id, tickets.odoo_ticket_id, tickets.sla_time, tickets.raise_date, tickets.end_date, tickets.country, tickets.source_device, tickets.enddate, tickets.escalationlevel, tickets.escalationreason, tickets.escalationtimestamp, tickets.escalatedto, tickets.slabreachstatus, tickets.autoescalated, tickets.escalationhistory, tickets.currentassignedrole, tickets.slatarget, tickets.originalslatarget, tickets.device_type, tickets.operating_system, tickets.browser, tickets.browser_version, tickets.os_version, tickets.device_brand, tickets.device_model, tickets.device_fingerprint, tickets.user_agent, tickets.ip_address 
+FROM tickets ORDER BY tickets.createdat DESC 
+ LIMIT $1::INTEGER OFFSET $2::INTEGER
+2025-08-01 16:30:08,522 | INFO | [generated in 0.00048s] (50, 0)
+2025-08-01 16:30:08,529 | INFO | ROLLBACK
+2025-08-01 16:30:18,432 | INFO | BEGIN (implicit)
+2025-08-01 16:30:18,434 | INFO | SELECT tickets.ticketid, tickets.userid, tickets.categoryid, tickets.subject, tickets.status, tickets.createdat, tickets.updatedat, tickets.priority, tickets.organizationname, tickets.createdby, tickets.assignedto, tickets.escalation_level, tickets.current_sla_target, tickets.resolution_method, tickets.bot_attempted, tickets.partner_id, tickets.odoo_customer_id, tickets.odoo_ticket_id, tickets.sla_time, tickets.raise_date, tickets.end_date, tickets.country, tickets.source_device, tickets.enddate, tickets.escalationlevel, tickets.escalationreason, tickets.escalationtimestamp, tickets.escalatedto, tickets.slabreachstatus, tickets.autoescalated, tickets.escalationhistory, tickets.currentassignedrole, tickets.slatarget, tickets.originalslatarget, tickets.device_type, tickets.operating_system, tickets.browser, tickets.browser_version, tickets.os_version, tickets.device_brand, tickets.device_model, tickets.device_fingerprint, tickets.user_agent, tickets.ip_address 
+FROM tickets 
+WHERE tickets.ticketid = $1::INTEGER
+2025-08-01 16:30:18,435 | INFO | [generated in 0.00075s] (88,)
+2025-08-01 16:30:18,438 | INFO | SELECT messages.messageid, messages.ticketid, messages.senderid, messages.content, messages.isadminreply, messages.createdat, messages.isbotresponse 
+FROM messages 
+WHERE messages.ticketid = $1::INTEGER
+2025-08-01 16:30:18,438 | INFO | [generated in 0.00051s] (88,)
+2025-08-01 16:30:18,442 | INFO | ROLLBACK
+2025-08-01 16:30:26,193 | INFO | BEGIN (implicit)
+2025-08-01 16:30:26,193 | INFO | SELECT tickets.ticketid, tickets.userid, tickets.categoryid, tickets.subject, tickets.status, tickets.createdat, tickets.updatedat, tickets.priority, tickets.organizationname, tickets.createdby, tickets.assignedto, tickets.escalation_level, tickets.current_sla_target, tickets.resolution_method, tickets.bot_attempted, tickets.partner_id, tickets.odoo_customer_id, tickets.odoo_ticket_id, tickets.sla_time, tickets.raise_date, tickets.end_date, tickets.country, tickets.source_device, tickets.enddate, tickets.escalationlevel, tickets.escalationreason, tickets.escalationtimestamp, tickets.escalatedto, tickets.slabreachstatus, tickets.autoescalated, tickets.escalationhistory, tickets.currentassignedrole, tickets.slatarget, tickets.originalslatarget, tickets.device_type, tickets.operating_system, tickets.browser, tickets.browser_version, tickets.os_version, tickets.device_brand, tickets.device_model, tickets.device_fingerprint, tickets.user_agent, tickets.ip_address 
+FROM tickets 
+WHERE tickets.status IN ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR) ORDER BY tickets.updatedat DESC
+2025-08-01 16:30:26,193 | INFO | [generated in 0.00054s] ('open', 'in_progress', 'escalated')
+2025-08-01 16:30:26,198 | INFO | ROLLBACK
+2025-08-01 16:30:41,256 | INFO | BEGIN (implicit)
+2025-08-01 16:30:41,257 | INFO | SELECT tickets.ticketid, tickets.userid, tickets.categoryid, tickets.subject, tickets.status, tickets.createdat, tickets.updatedat, tickets.priority, tickets.organizationname, tickets.createdby, tickets.assignedto, tickets.escalation_level, tickets.current_sla_target, tickets.resolution_method, tickets.bot_attempted, tickets.partner_id, tickets.odoo_customer_id, tickets.odoo_ticket_id, tickets.sla_time, tickets.raise_date, tickets.end_date, tickets.country, tickets.source_device, tickets.enddate, tickets.escalationlevel, tickets.escalationreason, tickets.escalationtimestamp, tickets.escalatedto, tickets.slabreachstatus, tickets.autoescalated, tickets.escalationhistory, tickets.currentassignedrole, tickets.slatarget, tickets.originalslatarget, tickets.device_type, tickets.operating_system, tickets.browser, tickets.browser_version, tickets.os_version, tickets.device_brand, tickets.device_model, tickets.device_fingerprint, tickets.user_agent, tickets.ip_address 
+FROM tickets 
+WHERE tickets.ticketid = $1::INTEGER
+2025-08-01 16:30:41,257 | INFO | [cached since 22.82s ago] (88,)
+2025-08-01 16:30:41,258 | INFO | UPDATE tickets SET updatedat=$1::TIMESTAMP WITHOUT TIME ZONE WHERE tickets.ticketid = $2::INTEGER
+2025-08-01 16:30:41,258 | INFO | [generated in 0.00036s] (datetime.datetime(2025, 8, 1, 11, 0, 41, 258461), 88)
+2025-08-01 16:30:41,258 | INFO | COMMIT
+2025-08-01 16:30:48,845 | INFO | BEGIN (implicit)
+2025-08-01 16:30:48,846 | INFO | SELECT count(tickets.ticketid) AS count_1 
+FROM tickets
+2025-08-01 16:30:48,846 | INFO | [cached since 60.3s ago] ()
+2025-08-01 16:30:48,846 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.status = $1::VARCHAR
+2025-08-01 16:30:48,850 | INFO | [cached since 60.28s ago] ('open',)
+2025-08-01 16:30:48,853 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.status = $1::VARCHAR
+2025-08-01 16:30:48,853 | INFO | [cached since 60.28s ago] ('in_progress',)
+2025-08-01 16:30:48,853 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.status = $1::VARCHAR
+2025-08-01 16:30:48,853 | INFO | [cached since 60.29s ago] ('resolved',)
+2025-08-01 16:30:48,853 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.status = $1::VARCHAR
+2025-08-01 16:30:48,853 | INFO | [cached since 60.29s ago] ('closed',)
+2025-08-01 16:30:48,861 | INFO | SELECT tickets.createdat, tickets.end_date 
+FROM tickets 
+WHERE tickets.end_date IS NOT NULL
+2025-08-01 16:30:48,862 | INFO | [generated in 0.00058s] ()
+2025-08-01 16:30:48,862 | INFO | SELECT categories.name, count(tickets.ticketid) AS count_1 
+FROM categories JOIN tickets ON categories.categoryid = tickets.categoryid GROUP BY categories.name ORDER BY count(tickets.ticketid) DESC
+2025-08-01 16:30:48,862 | INFO | [generated in 0.00035s] ()
+2025-08-01 16:30:48,867 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.createdat >= $1::DATE AND tickets.createdat < $2::DATE
+2025-08-01 16:30:48,867 | INFO | [generated in 0.00056s] (datetime.date(2025, 7, 26), datetime.date(2025, 7, 27))
+2025-08-01 16:30:48,867 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.createdat >= $1::DATE AND tickets.createdat < $2::DATE
+2025-08-01 16:30:48,867 | INFO | [cached since 0.003347s ago] (datetime.date(2025, 7, 27), datetime.date(2025, 7, 28))
+2025-08-01 16:30:48,873 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.createdat >= $1::DATE AND tickets.createdat < $2::DATE
+2025-08-01 16:30:48,874 | INFO | [cached since 0.005019s ago] (datetime.date(2025, 7, 28), datetime.date(2025, 7, 29))
+2025-08-01 16:30:48,874 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.createdat >= $1::DATE AND tickets.createdat < $2::DATE
+2025-08-01 16:30:48,874 | INFO | [cached since 0.007528s ago] (datetime.date(2025, 7, 29), datetime.date(2025, 7, 30))
+2025-08-01 16:30:48,874 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.createdat >= $1::DATE AND tickets.createdat < $2::DATE
+2025-08-01 16:30:48,874 | INFO | [cached since 0.009372s ago] (datetime.date(2025, 7, 30), datetime.date(2025, 7, 31))
+2025-08-01 16:30:48,874 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.createdat >= $1::DATE AND tickets.createdat < $2::DATE
+2025-08-01 16:30:48,874 | INFO | [cached since 0.01071s ago] (datetime.date(2025, 7, 31), datetime.date(2025, 8, 1))
+2025-08-01 16:30:48,880 | INFO | SELECT count(*) AS count_1 
+FROM tickets 
+WHERE tickets.createdat >= $1::DATE AND tickets.createdat < $2::DATE
+2025-08-01 16:30:48,881 | INFO | [cached since 0.01236s ago] (datetime.date(2025, 8, 1), datetime.date(2025, 8, 2))
+2025-08-01 16:30:48,881 | INFO | ROLLBACK
+2025-08-01 16:34:21,288 | INFO | select pg_catalog.version()
+2025-08-01 16:34:21,288 | INFO | [raw sql] ()
+2025-08-01 16:34:21,288 | INFO | select current_schema()
+2025-08-01 16:34:21,288 | INFO | [raw sql] ()
+2025-08-01 16:34:21,288 | INFO | show standard_conforming_strings
+2025-08-01 16:34:21,288 | INFO | [raw sql] ()
+2025-08-01 16:34:21,288 | INFO | BEGIN (implicit)
+2025-08-01 16:34:21,307 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:34:21,307 | INFO | [generated in 0.00068s] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:34:21,312 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:34:21,312 | INFO | [cached since 0.007853s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:34:21,315 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:34:21,316 | INFO | [cached since 0.009148s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:34:21,316 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:34:21,317 | INFO | [cached since 0.01021s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:34:21,317 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:34:21,318 | INFO | [cached since 0.01124s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:34:21,318 | INFO | COMMIT
+2025-08-01 16:36:48,873 | INFO | select pg_catalog.version()
+2025-08-01 16:36:48,873 | INFO | [raw sql] ()
+2025-08-01 16:36:48,873 | INFO | select current_schema()
+2025-08-01 16:36:48,873 | INFO | [raw sql] ()
+2025-08-01 16:36:48,873 | INFO | show standard_conforming_strings
+2025-08-01 16:36:48,873 | INFO | [raw sql] ()
+2025-08-01 16:36:48,873 | INFO | BEGIN (implicit)
+2025-08-01 16:36:48,873 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:36:48,873 | INFO | [generated in 0.00037s] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:36:48,892 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:36:48,893 | INFO | [cached since 0.006127s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:36:48,894 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:36:48,894 | INFO | [cached since 0.007738s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:36:48,895 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:36:48,895 | INFO | [cached since 0.009279s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:36:48,896 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:36:48,896 | INFO | [cached since 0.01033s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:36:48,897 | INFO | COMMIT
+2025-08-01 16:37:17,364 | INFO | select pg_catalog.version()
+2025-08-01 16:37:17,364 | INFO | [raw sql] ()
+2025-08-01 16:37:17,364 | INFO | select current_schema()
+2025-08-01 16:37:17,364 | INFO | [raw sql] ()
+2025-08-01 16:37:17,364 | INFO | show standard_conforming_strings
+2025-08-01 16:37:17,364 | INFO | [raw sql] ()
+2025-08-01 16:37:17,364 | INFO | BEGIN (implicit)
+2025-08-01 16:37:17,364 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:37:17,364 | INFO | [generated in 0.00037s] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:37:17,383 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:37:17,383 | INFO | [cached since 0.007057s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:37:17,384 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:37:17,385 | INFO | [cached since 0.008528s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:37:17,385 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:37:17,386 | INFO | [cached since 0.009702s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:37:17,386 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:37:17,387 | INFO | [cached since 0.01084s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:37:17,388 | INFO | COMMIT
+2025-08-01 16:38:49,520 | INFO | select pg_catalog.version()
+2025-08-01 16:38:49,520 | INFO | [raw sql] ()
+2025-08-01 16:38:49,520 | INFO | select current_schema()
+2025-08-01 16:38:49,520 | INFO | [raw sql] ()
+2025-08-01 16:38:49,520 | INFO | show standard_conforming_strings
+2025-08-01 16:38:49,520 | INFO | [raw sql] ()
+2025-08-01 16:38:49,520 | INFO | BEGIN (implicit)
+2025-08-01 16:38:49,533 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:38:49,533 | INFO | [generated in 0.00034s] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:38:49,541 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:38:49,541 | INFO | [cached since 0.006757s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:38:49,541 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:38:49,542 | INFO | [cached since 0.00817s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:38:49,543 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:38:49,543 | INFO | [cached since 0.009578s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:38:49,544 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-01 16:38:49,544 | INFO | [cached since 0.01083s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-01 16:38:49,545 | INFO | COMMIT

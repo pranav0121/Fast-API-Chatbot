@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 from router import router
+from admin_router import admin_router
 from models import Base
 from db import engine
 import asyncio
@@ -16,3 +17,4 @@ async def on_startup():
         await conn.run_sync(Base.metadata.create_all)
 
 app.include_router(router, prefix="/api")
+app.include_router(admin_router, prefix="/api/admin")
