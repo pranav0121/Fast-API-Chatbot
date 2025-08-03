@@ -1,11 +1,19 @@
-
 import uuid
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Float, ForeignKey, Table
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
 # User Table
+
+
+class Role(Base):
+    __tablename__ = "roles"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), unique=True, nullable=False)
+    description = Column(Text)
+    permissions = relationship("RolePermission", back_populates="role")
+    users = relationship("User", back_populates="role")
 
 
 class User(Base):
@@ -14,7 +22,7 @@ class User(Base):
     uuid = Column(String(36), unique=True,
                   default=lambda: str(uuid.uuid4()), index=True)
     name = Column(Text, nullable=True)
-    email = Column(Text, nullable=True)
+    email = Column(Text, unique=True, nullable=True)
     createdat = Column(DateTime, nullable=True)
     passwordhash = Column(Text, nullable=True)
     preferredlanguage = Column(Text, nullable=False)
@@ -26,23 +34,33 @@ class User(Base):
     lastlogin = Column(DateTime, nullable=True)
     isactive = Column(Boolean, nullable=True)
     isadmin = Column(Boolean, nullable=True)
+    admin_access_roles = Column(Text, nullable=True)  # Comma-separated roles
     country = Column(Text, nullable=True)
-    last_device_type = Column(Text, nullable=True)
-    device_type = Column(String, nullable=True)
-    operating_system = Column(String, nullable=True)
-    browser = Column(String, nullable=True)
-    browser_version = Column(String, nullable=True)
-    os_version = Column(String, nullable=True)
-    device_brand = Column(String, nullable=True)
-    device_model = Column(String, nullable=True)
-    device_fingerprint = Column(String, nullable=True)
-    user_agent = Column(Text, nullable=True)
-    ip_address = Column(String, nullable=True)
-    username = Column(Text, nullable=True)
-    organization_id = Column(Integer, nullable=True)
+    permissions = relationship(
+        "Permission", secondary="user_permissions", backref="users")
+    roleid = Column(Integer, ForeignKey("roles.id"))
+    role = relationship("Role", back_populates="users")
+# RolePermission table for CRUD permissions
 
 
-Base = declarative_base()
+class RolePermission(Base):
+    __tablename__ = "role_permissions"
+    id = Column(Integer, primary_key=True)
+    role_id = Column(Integer, ForeignKey("roles.id"))
+    # 'read', 'create', 'update', 'delete'
+    permission = Column(String(50), nullable=False)
+    role = relationship("Role", back_populates="permissions")
+
+
+# Association table for many-to-many User <-> Permission
+user_permissions = Table(
+    "user_permissions",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.userid", ondelete="CASCADE")),
+    Column("permission_id", Integer, ForeignKey(
+        "permissions.permissionid", ondelete="CASCADE")),
+    # No need for primary_key=True here, handled by table definition
+)
 
 # Categories Table
 
@@ -88,35 +106,7 @@ class Ticket(Base):
     current_sla_target = Column(DateTime, nullable=True)
     resolution_method = Column(Text, nullable=True)
     bot_attempted = Column(Boolean, nullable=True)
-    partner_id = Column(Integer, nullable=True)
-    odoo_customer_id = Column(Integer, nullable=True)
-    odoo_ticket_id = Column(Integer, nullable=True)
-    sla_time = Column(Integer, nullable=True)
-    raise_date = Column(DateTime, nullable=True)
-    end_date = Column(DateTime, nullable=True)
     country = Column(Text, nullable=True)
-    source_device = Column(Text, nullable=True)
-    enddate = Column(DateTime, nullable=True)
-    escalationlevel = Column(Text, nullable=True)
-    escalationreason = Column(Text, nullable=True)
-    escalationtimestamp = Column(DateTime, nullable=True)
-    escalatedto = Column(Text, nullable=True)
-    slabreachstatus = Column(Text, nullable=True)
-    autoescalated = Column(Boolean, nullable=True)
-    escalationhistory = Column(Text, nullable=True)
-    currentassignedrole = Column(Text, nullable=True)
-    slatarget = Column(DateTime, nullable=True)
-    originalslatarget = Column(DateTime, nullable=True)
-    device_type = Column(Text, nullable=True)
-    operating_system = Column(String, nullable=True)
-    browser = Column(String, nullable=True)
-    browser_version = Column(String, nullable=True)
-    os_version = Column(String, nullable=True)
-    device_brand = Column(String, nullable=True)
-    device_model = Column(String, nullable=True)
-    device_fingerprint = Column(String, nullable=True)
-    user_agent = Column(Text, nullable=True)
-    ip_address = Column(String, nullable=True)
     category = relationship("Category")
 
 # Ticket Messages Table (messages)
@@ -144,3 +134,20 @@ class Feedback(Base):
     comment = Column(Text, nullable=True)
     createdat = Column(DateTime, nullable=True)
     ticket = relationship("Ticket")
+
+
+class Permission(Base):
+    __tablename__ = "permissions"
+    permissionid = Column(Integer, primary_key=True)
+    name = Column(String, unique=True, nullable=False)
+    description = Column(String, nullable=True)
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.userid"))
+    action = Column(Text)
+    status = Column(Text)
+    timestamp = Column(DateTime)
+    details = Column(Text)

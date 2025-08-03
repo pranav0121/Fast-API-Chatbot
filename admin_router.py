@@ -1,16 +1,39 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, desc
-from db import get_db
-from models import Ticket, TicketMessage, Category, User
+# Role-based CRUD permission check dependency
+from controller import get_current_user
+from datetime import datetime, timedelta
 from typing import List, Optional
-from datetime import datetime
+from models import Ticket, TicketMessage, Category, User, Permission, AuditLog
+from db import get_db
+from sqlalchemy import select, func, desc
+from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from models import RolePermission
+from router import require_role_permission
+
 
 admin_router = APIRouter()
 
+# Helper dependency to check admin
+
+
+async def admin_required(current_user: User = Depends(get_current_user)):
+    if not current_user.isadmin:
+        raise HTTPException(
+            status_code=403, detail="Admin privileges required")
+    return current_user
+
+
+def log_audit(db: AsyncSession, user_id: int, action: str, status: str, details: str = ""):
+    log = AuditLog(user_id=user_id, action=action,
+                   status=status, details=details)
+    db.add(log)
+    # This is now a sync helper, call await db.commit() after using in endpoints if needed
+
 # --- Admin Dashboard ---
+
+
 @admin_router.get("/dashboard-stats", summary="Get dashboard statistics", tags=["Admin Dashboard"], operation_id="get_dashboard_stats")
-async def get_dashboard_stats(db: AsyncSession = Depends(get_db)):
+async def get_dashboard_stats(db: AsyncSession = Depends(get_db), current_user: User = Depends(admin_required)):
     total_tickets = await db.execute(select(func.count(Ticket.ticketid)))
     pending_tickets = await db.execute(select(func.count()).where(Ticket.status.in_(["open", "in_progress"])))
     resolved_tickets = await db.execute(select(func.count()).where(Ticket.status == "resolved"))
@@ -23,8 +46,9 @@ async def get_dashboard_stats(db: AsyncSession = Depends(get_db)):
         "success": True
     }
 
+
 @admin_router.get("/recent-activity", summary="Get recent ticket activity", tags=["Admin Dashboard"], operation_id="get_recent_activity")
-async def get_recent_activity(db: AsyncSession = Depends(get_db)):
+async def get_recent_activity(db: AsyncSession = Depends(get_db), current_user: User = Depends(admin_required)):
     result = await db.execute(
         select(Ticket, User, Category)
         .join(User, Ticket.userid == User.userid, isouter=True)
@@ -34,7 +58,8 @@ async def get_recent_activity(db: AsyncSession = Depends(get_db)):
     activities = []
     for ticket, user, category in result.all():
         user_name = user.name if user and user.name else ticket.createdby
-        created_at = ticket.createdat.strftime('%Y-%m-%d %H:%M:%S') if ticket.createdat else None
+        created_at = ticket.createdat.strftime(
+            '%Y-%m-%d %H:%M:%S') if ticket.createdat else None
         activities.append({
             "ticketid": ticket.ticketid,
             "subject": ticket.subject,
@@ -45,6 +70,8 @@ async def get_recent_activity(db: AsyncSession = Depends(get_db)):
     return {"activities": activities}
 
 # --- Admin Ticket ---
+
+
 @admin_router.get("/tickets", summary="Get all tickets", tags=["Admin Ticket"], operation_id="get_admin_tickets")
 async def get_admin_tickets(
     status: Optional[str] = None,
@@ -52,7 +79,8 @@ async def get_admin_tickets(
     category: Optional[str] = None,
     limit: int = 50,
     offset: int = 0,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(admin_required)
 ):
     query = select(Ticket)
     if status:
@@ -89,8 +117,9 @@ async def get_admin_tickets(
         }
     }
 
+
 @admin_router.get("/tickets/{ticket_id}", summary="Get ticket details", tags=["Admin Ticket"], operation_id="get_admin_ticket_details")
-async def get_admin_ticket_details(ticket_id: int, db: AsyncSession = Depends(get_db)):
+async def get_admin_ticket_details(ticket_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(admin_required)):
     ticket_result = await db.execute(select(Ticket).where(Ticket.ticketid == ticket_id))
     ticket = ticket_result.scalar_one_or_none()
     if not ticket:
@@ -116,8 +145,9 @@ async def get_admin_ticket_details(ticket_id: int, db: AsyncSession = Depends(ge
         }
     }
 
+
 @admin_router.get("/active-conversations", summary="Get active conversations", tags=["Admin Ticket"], operation_id="get_active_conversations")
-async def get_active_conversations(db: AsyncSession = Depends(get_db)):
+async def get_active_conversations(db: AsyncSession = Depends(get_db), current_user: User = Depends(admin_required)):
     result = await db.execute(
         select(Ticket)
         .where(Ticket.status.in_(["open", "in_progress", "escalated"]))
@@ -135,8 +165,9 @@ async def get_active_conversations(db: AsyncSession = Depends(get_db)):
         ]
     }
 
+
 @admin_router.put("/tickets/{ticket_id}/status", summary="Update ticket status", tags=["Admin Ticket"], operation_id="update_ticket_status")
-async def update_ticket_status(ticket_id: int, status: str, db: AsyncSession = Depends(get_db)):
+async def update_ticket_status(ticket_id: int, status: str, db: AsyncSession = Depends(get_db), current_user: User = Depends(admin_required)):
     ticket_result = await db.execute(select(Ticket).where(Ticket.ticketid == ticket_id))
     ticket = ticket_result.scalar_one_or_none()
     if not ticket:
@@ -147,8 +178,10 @@ async def update_ticket_status(ticket_id: int, status: str, db: AsyncSession = D
     return {"status": "success", "ticket_id": ticket_id, "new_status": status}
 
 # --- Admin Analytics ---
+
+
 @admin_router.get("/analytics", summary="Get analytics data", tags=["Admin Analytics"], operation_id="get_admin_analytics")
-async def get_analytics(db: AsyncSession = Depends(get_db)):
+async def get_analytics(db: AsyncSession = Depends(get_db), current_user: User = Depends(admin_required)):
     total_result = await db.execute(select(func.count(Ticket.ticketid)))
     total_tickets = total_result.scalar_one()
     statuses = ["open", "in_progress", "resolved", "closed"]
@@ -157,7 +190,8 @@ async def get_analytics(db: AsyncSession = Depends(get_db)):
         res = await db.execute(select(func.count()).where(Ticket.status == status_val))
         tickets_by_status[status_val] = res.scalar_one()
     res = await db.execute(select(Ticket.createdat, Ticket.end_date).where(Ticket.end_date.isnot(None)))
-    times = [((row[1] - row[0]).total_seconds() / 3600) for row in res.all() if row[0] and row[1]]
+    times = [((row[1] - row[0]).total_seconds() / 3600)
+             for row in res.all() if row[0] and row[1]]
     avg_resolution_time = round(sum(times) / len(times), 2) if times else None
     cat_stats = await db.execute(
         select(Category.name, func.count(Ticket.ticketid))
@@ -169,7 +203,6 @@ async def get_analytics(db: AsyncSession = Depends(get_db)):
     top_categories = [
         {"category": c[0], "count": c[1]} for c in cat_data[:3]
     ]
-    from datetime import timedelta
     today = datetime.utcnow().date()
     days = [(today - timedelta(days=i)) for i in range(6, -1, -1)]
     tickets_per_day = {}
@@ -189,3 +222,31 @@ async def get_analytics(db: AsyncSession = Depends(get_db)):
         "top_categories": top_categories,
         "tickets_created_per_day": tickets_per_day
     }
+
+# Example: Only admins with 'manage_users' can access this endpoint
+
+
+@admin_router.get("/admin-users", summary="List all admin users", tags=["Admin"], operation_id="list_admin_users")
+async def list_admin_users(db: AsyncSession = Depends(get_db), current_user: User = Depends(require_role_permission('manage', 'users'))):
+    result = await db.execute(select(User).where(User.isadmin == True))
+    admins = result.scalars().all()
+    return [
+        {
+            "userid": admin.userid,
+            "email": admin.email,
+            "admin_role": admin.admin_role,
+            "admin_role_description": admin.admin_role_description,
+            "admin_access_roles": admin.admin_access_roles
+        }
+        for admin in admins
+    ]
+
+# Example protected endpoint
+
+
+@admin_router.get("/protected-admin-action", summary="Protected admin action", tags=["Admin"], operation_id="protected_admin_action")
+async def protected_admin_action(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_role_permission('manage', 'users'))
+):
+    return {"message": f"User {current_user.email} performed a protected admin action."}

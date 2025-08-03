@@ -403,3 +403,612 @@ FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace
 WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
 2025-08-01 16:38:49,544 | INFO | [cached since 0.01083s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
 2025-08-01 16:38:49,545 | INFO | COMMIT
+2025-08-03 17:26:19,253 | INFO | select version()
+2025-08-03 17:26:19,260 | INFO | [raw sql] ()
+2025-08-03 17:26:19,265 | INFO | select current_schema()
+2025-08-03 17:26:19,266 | INFO | [raw sql] ()
+2025-08-03 17:26:19,267 | INFO | show standard_conforming_strings
+2025-08-03 17:26:19,268 | INFO | [raw sql] ()
+2025-08-03 17:26:19,269 | INFO | BEGIN (implicit)
+2025-08-03 17:26:19,270 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,277 | INFO | [generated in 0.00696s] ('roles',)
+2025-08-03 17:26:19,279 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,279 | INFO | [cached since 0.01372s ago] ('users',)
+2025-08-03 17:26:19,285 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,285 | INFO | [cached since 0.01513s ago] ('role_permissions',)
+2025-08-03 17:26:19,286 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,286 | INFO | [cached since 0.01629s ago] ('user_permissions',)
+2025-08-03 17:26:19,287 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,287 | INFO | [cached since 0.01757s ago] ('categories',)
+2025-08-03 17:26:19,289 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,289 | INFO | [cached since 0.01894s ago] ('commonqueries',)
+2025-08-03 17:26:19,289 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,289 | INFO | [cached since 0.02021s ago] ('tickets',)
+2025-08-03 17:26:19,291 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,291 | INFO | [cached since 0.02124s ago] ('messages',)
+2025-08-03 17:26:19,291 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,291 | INFO | [cached since 0.02221s ago] ('feedback',)
+2025-08-03 17:26:19,293 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,293 | INFO | [cached since 0.02334s ago] ('permissions',)
+2025-08-03 17:26:19,294 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:19,294 | INFO | [cached since 0.02479s ago] ('audit_logs',)
+2025-08-03 17:26:19,296 | INFO | COMMIT
+2025-08-03 17:26:34,677 | INFO | select version()
+2025-08-03 17:26:34,678 | INFO | [raw sql] ()
+2025-08-03 17:26:34,680 | INFO | select current_schema()
+2025-08-03 17:26:34,680 | INFO | [raw sql] ()
+2025-08-03 17:26:34,682 | INFO | show standard_conforming_strings
+2025-08-03 17:26:34,682 | INFO | [raw sql] ()
+2025-08-03 17:26:34,682 | INFO | BEGIN (implicit)
+2025-08-03 17:26:34,682 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,682 | INFO | [generated in 0.00037s] ('roles',)
+2025-08-03 17:26:34,690 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,691 | INFO | [cached since 0.006073s ago] ('users',)
+2025-08-03 17:26:34,692 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,692 | INFO | [cached since 0.007419s ago] ('role_permissions',)
+2025-08-03 17:26:34,693 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,693 | INFO | [cached since 0.008694s ago] ('user_permissions',)
+2025-08-03 17:26:34,694 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,694 | INFO | [cached since 0.01002s ago] ('categories',)
+2025-08-03 17:26:34,695 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,696 | INFO | [cached since 0.01121s ago] ('commonqueries',)
+2025-08-03 17:26:34,697 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,697 | INFO | [cached since 0.01249s ago] ('tickets',)
+2025-08-03 17:26:34,698 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,698 | INFO | [cached since 0.01357s ago] ('messages',)
+2025-08-03 17:26:34,699 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,699 | INFO | [cached since 0.01476s ago] ('feedback',)
+2025-08-03 17:26:34,700 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,700 | INFO | [cached since 0.01585s ago] ('permissions',)
+2025-08-03 17:26:34,701 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:26:34,701 | INFO | [cached since 0.01691s ago] ('audit_logs',)
+2025-08-03 17:26:34,702 | INFO | COMMIT
+2025-08-03 17:29:10,592 | INFO | select version()
+2025-08-03 17:29:10,592 | INFO | [raw sql] ()
+2025-08-03 17:29:10,607 | INFO | select current_schema()
+2025-08-03 17:29:10,608 | INFO | [raw sql] ()
+2025-08-03 17:29:10,608 | INFO | show standard_conforming_strings
+2025-08-03 17:29:10,609 | INFO | [raw sql] ()
+2025-08-03 17:29:10,610 | INFO | BEGIN (implicit)
+2025-08-03 17:29:10,611 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,611 | INFO | [generated in 0.00033s] ('roles',)
+2025-08-03 17:29:10,616 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,616 | INFO | [cached since 0.005934s ago] ('users',)
+2025-08-03 17:29:10,617 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,618 | INFO | [cached since 0.007155s ago] ('role_permissions',)
+2025-08-03 17:29:10,619 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,619 | INFO | [cached since 0.008579s ago] ('user_permissions',)
+2025-08-03 17:29:10,621 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,621 | INFO | [cached since 0.01028s ago] ('categories',)
+2025-08-03 17:29:10,623 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,623 | INFO | [cached since 0.01193s ago] ('commonqueries',)
+2025-08-03 17:29:10,624 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,624 | INFO | [cached since 0.01333s ago] ('tickets',)
+2025-08-03 17:29:10,625 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,625 | INFO | [cached since 0.01437s ago] ('messages',)
+2025-08-03 17:29:10,626 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,627 | INFO | [cached since 0.01559s ago] ('feedback',)
+2025-08-03 17:29:10,627 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,627 | INFO | [cached since 0.0169s ago] ('permissions',)
+2025-08-03 17:29:10,628 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:29:10,628 | INFO | [cached since 0.01811s ago] ('audit_logs',)
+2025-08-03 17:29:10,629 | INFO | COMMIT
+2025-08-03 17:32:51,381 | INFO | select version()
+2025-08-03 17:32:51,381 | INFO | [raw sql] ()
+2025-08-03 17:32:51,381 | INFO | select current_schema()
+2025-08-03 17:32:51,381 | INFO | [raw sql] ()
+2025-08-03 17:32:51,381 | INFO | show standard_conforming_strings
+2025-08-03 17:32:51,381 | INFO | [raw sql] ()
+2025-08-03 17:32:51,381 | INFO | BEGIN (implicit)
+2025-08-03 17:32:51,381 | INFO | SELECT userid, isadmin FROM users
+2025-08-03 17:32:51,381 | INFO | [generated in 0.00029s] ()
+2025-08-03 17:32:51,440 | WARNING | (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\prana\AppData\Local\Programs\Python\Python39\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-08-03 17:32:51,711 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:51,711 | INFO | [generated in 0.00038s] ('$2b$12$blAZbfdsDXvCpd9hOBu2kOdivufk.lNmyj/M98c59ZZ9WPbCM9nrO', 1)
+2025-08-03 17:32:51,946 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:51,946 | INFO | [cached since 0.2248s ago] ('$2b$12$CE88XS0mv09LALxBAQW85eVG03KtQ2kI0UT.CIM7VvdYJMWAb.smu', 2)
+2025-08-03 17:32:52,170 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:52,170 | INFO | [cached since 0.4566s ago] ('$2b$12$nQ3MHv/V8872jq/1DIaVqeJCdebu5RYd6qJHzHk2ZrWFCceJaFVu.', 4)
+2025-08-03 17:32:52,398 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:52,398 | INFO | [cached since 0.6846s ago] ('$2b$12$HwegNaxCFo96RR1h2IHyQu9jg7dRKZBvtZkTnLskQ4clHOZ9kdJma', 5)
+2025-08-03 17:32:52,634 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:52,634 | INFO | [cached since 0.9138s ago] ('$2b$12$uqF/kjB2ZdRzJi026IkWS.Wg7tNiwKhI5MzPKrog261vJR3K4b7QK', 8)
+2025-08-03 17:32:52,860 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:52,860 | INFO | [cached since 1.138s ago] ('$2b$12$AG54rq8tdVsSsGgvpPJwZOfEMu9uqMvHtc9oflKM1U4EMGVsItm3G', 10)
+2025-08-03 17:32:53,077 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:53,077 | INFO | [cached since 1.367s ago] ('$2b$12$FQZejwmGyh.q8N3N6ZsvPOHKuBPnqnyp4B9kB3iWaelv3sJs5q9pW', 11)
+2025-08-03 17:32:53,315 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:53,315 | INFO | [cached since 1.594s ago] ('$2b$12$Gi.n1QGPNmMFBsxeTCW5Z.vGsl1Ik4JaSUbS6PrmGqFFOwON6HEV.', 12)
+2025-08-03 17:32:53,529 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:53,540 | INFO | [cached since 1.817s ago] ('$2b$12$GHF6eDf.kKFhywVgvowpseuMrDiU8XXRO5Q3F2q4x4tGAxL9gF7E2', 14)
+2025-08-03 17:32:53,758 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:53,758 | INFO | [cached since 2.043s ago] ('$2b$12$NDUUnQc3VH0PEQU7XMfb8uWRQcfp/CEZFzX.az3DvU1bWjyBSlepy', 3)
+2025-08-03 17:32:53,978 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:53,978 | INFO | [cached since 2.269s ago] ('$2b$12$z4nncPUE.4TAZ01SM/2qMO6RudY8BakoiOIkvr88BFyXgWmT.OD3i', 6)
+2025-08-03 17:32:54,213 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:54,213 | INFO | [cached since 2.492s ago] ('$2b$12$xs3XyXJKqpK/DcSa7Aev7uZiwXC6EnRZrRO0I9x2fYOTlkAI42AHG', 7)
+2025-08-03 17:32:54,444 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:54,444 | INFO | [cached since 2.727s ago] ('$2b$12$oenol/RLay20Ds7zaqiNHOdE2VuAcxlUs5kE34wIbNglYuuT96RzO', 18)
+2025-08-03 17:32:54,671 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:54,671 | INFO | [cached since 2.96s ago] ('$2b$12$fQAfQ28cmclqrcrZ9JfNLOaIFyOdo8eg9hACivZEDLK8VAdTsf7Me', 25)
+2025-08-03 17:32:54,906 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:54,906 | INFO | [cached since 3.19s ago] ('$2b$12$UVIm6ugsS4fy8485GCn/0OQzOuWhCl.WKfERE6sgHipD1a4CVTfgi', 26)
+2025-08-03 17:32:55,140 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:55,140 | INFO | [cached since 3.419s ago] ('$2b$12$ugnf5jsyyl.euujfDZ7pVOU3uaVmV9Z5WpB9BBUBeqMO8QFB3M4Eq', 27)
+2025-08-03 17:32:55,364 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:55,364 | INFO | [cached since 3.649s ago] ('$2b$12$Z4pcnRJ/r4/fZq/LTOQt6.8zzvRLNj2t1a4rjpyNms4FESdyyDjWG', 28)
+2025-08-03 17:32:55,591 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:55,591 | INFO | [cached since 3.878s ago] ('$2b$12$U0/.AwxJsPc7ouPPY4jpT.bLubyQi.5G4Qrpk5mYgem3T4N1qUU8i', 31)
+2025-08-03 17:32:55,817 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:55,817 | INFO | [cached since 4.1s ago] ('$2b$12$9YPAb7T6SlmyGRxgeq8HGugsSfB6AWO6TW8lamXO1ZAiasoJBs4rO', 32)
+2025-08-03 17:32:56,047 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:56,047 | INFO | [cached since 4.332s ago] ('$2b$12$03OHRTtz56ENCfPsxJ5aIOApSiH3RHqYWPk2b2/16p4ggK52kABeO', 9)
+2025-08-03 17:32:56,279 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:56,279 | INFO | [cached since 4.561s ago] ('$2b$12$RJ23HpNvSJCwMDGLCAVOBeH6.9BTjGFxkE6.ggcsmML9fnnpP6LaG', 13)
+2025-08-03 17:32:56,497 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:56,497 | INFO | [cached since 4.786s ago] ('$2b$12$4m0lq.2lO5jEw.JtoF9WIOTKfROfK5PWi85UxF/x0qwT9wp75iwh6', 15)
+2025-08-03 17:32:56,734 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:56,736 | INFO | [cached since 5.013s ago] ('$2b$12$88tLghTKWu/v3FJURi1nP.odc6lSGMsh6fpsx4DY.YMMJ0uUOqKvS', 30)
+2025-08-03 17:32:56,960 | INFO | UPDATE users SET passwordhash = %s WHERE userid = %s
+2025-08-03 17:32:56,960 | INFO | [cached since 5.238s ago] ('$2b$12$ct3rRmuADRqeP8ccZ2ufqObL.OlXFYokJSWRztliW1LfuKZ4HE5/.', 29)
+2025-08-03 17:32:56,960 | INFO | COMMIT
+2025-08-03 17:33:18,552 | INFO | select version()
+2025-08-03 17:33:18,552 | INFO | [raw sql] ()
+2025-08-03 17:33:18,552 | INFO | select current_schema()
+2025-08-03 17:33:18,552 | INFO | [raw sql] ()
+2025-08-03 17:33:18,552 | INFO | show standard_conforming_strings
+2025-08-03 17:33:18,552 | INFO | [raw sql] ()
+2025-08-03 17:33:18,552 | INFO | BEGIN (implicit)
+2025-08-03 17:33:18,552 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,552 | INFO | [generated in 0.00033s] ('roles',)
+2025-08-03 17:33:18,571 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,571 | INFO | [cached since 0.005723s ago] ('users',)
+2025-08-03 17:33:18,572 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,572 | INFO | [cached since 0.006767s ago] ('role_permissions',)
+2025-08-03 17:33:18,573 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,573 | INFO | [cached since 0.007723s ago] ('user_permissions',)
+2025-08-03 17:33:18,574 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,574 | INFO | [cached since 0.009338s ago] ('categories',)
+2025-08-03 17:33:18,576 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,576 | INFO | [cached since 0.01079s ago] ('commonqueries',)
+2025-08-03 17:33:18,577 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,577 | INFO | [cached since 0.01218s ago] ('tickets',)
+2025-08-03 17:33:18,577 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,577 | INFO | [cached since 0.01323s ago] ('messages',)
+2025-08-03 17:33:18,577 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,577 | INFO | [cached since 0.01419s ago] ('feedback',)
+2025-08-03 17:33:18,577 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,577 | INFO | [cached since 0.01511s ago] ('permissions',)
+2025-08-03 17:33:18,577 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:33:18,577 | INFO | [cached since 0.01593s ago] ('audit_logs',)
+2025-08-03 17:33:18,577 | INFO | COMMIT
+2025-08-03 17:35:35,175 | INFO | select version()
+2025-08-03 17:35:35,175 | INFO | [raw sql] ()
+2025-08-03 17:35:35,182 | INFO | select current_schema()
+2025-08-03 17:35:35,182 | INFO | [raw sql] ()
+2025-08-03 17:35:35,182 | INFO | show standard_conforming_strings
+2025-08-03 17:35:35,182 | INFO | [raw sql] ()
+2025-08-03 17:35:35,182 | INFO | BEGIN (implicit)
+2025-08-03 17:35:35,182 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,182 | INFO | [generated in 0.00034s] ('roles',)
+2025-08-03 17:35:35,191 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,191 | INFO | [cached since 0.005251s ago] ('users',)
+2025-08-03 17:35:35,192 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,192 | INFO | [cached since 0.006372s ago] ('role_permissions',)
+2025-08-03 17:35:35,193 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,193 | INFO | [cached since 0.007345s ago] ('user_permissions',)
+2025-08-03 17:35:35,194 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,195 | INFO | [cached since 0.008746s ago] ('categories',)
+2025-08-03 17:35:35,195 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,195 | INFO | [cached since 0.01023s ago] ('commonqueries',)
+2025-08-03 17:35:35,197 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,197 | INFO | [cached since 0.01167s ago] ('tickets',)
+2025-08-03 17:35:35,197 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,197 | INFO | [cached since 0.01272s ago] ('messages',)
+2025-08-03 17:35:35,199 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,199 | INFO | [cached since 0.01362s ago] ('feedback',)
+2025-08-03 17:35:35,199 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,199 | INFO | [cached since 0.01447s ago] ('permissions',)
+2025-08-03 17:35:35,199 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:35,199 | INFO | [cached since 0.01556s ago] ('audit_logs',)
+2025-08-03 17:35:35,199 | INFO | COMMIT
+2025-08-03 17:35:44,208 | INFO | select version()
+2025-08-03 17:35:44,208 | INFO | [raw sql] ()
+2025-08-03 17:35:44,208 | INFO | select current_schema()
+2025-08-03 17:35:44,208 | INFO | [raw sql] ()
+2025-08-03 17:35:44,208 | INFO | show standard_conforming_strings
+2025-08-03 17:35:44,208 | INFO | [raw sql] ()
+2025-08-03 17:35:44,208 | INFO | BEGIN (implicit)
+2025-08-03 17:35:44,208 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,208 | INFO | [generated in 0.00028s] ('roles',)
+2025-08-03 17:35:44,224 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,224 | INFO | [cached since 0.005716s ago] ('users',)
+2025-08-03 17:35:44,225 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,225 | INFO | [cached since 0.00685s ago] ('role_permissions',)
+2025-08-03 17:35:44,226 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,226 | INFO | [cached since 0.008124s ago] ('user_permissions',)
+2025-08-03 17:35:44,228 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,229 | INFO | [cached since 0.0097s ago] ('categories',)
+2025-08-03 17:35:44,229 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,230 | INFO | [cached since 0.01145s ago] ('commonqueries',)
+2025-08-03 17:35:44,231 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,232 | INFO | [cached since 0.01275s ago] ('tickets',)
+2025-08-03 17:35:44,232 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,233 | INFO | [cached since 0.01367s ago] ('messages',)
+2025-08-03 17:35:44,233 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,233 | INFO | [cached since 0.01451s ago] ('feedback',)
+2025-08-03 17:35:44,234 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,234 | INFO | [cached since 0.01541s ago] ('permissions',)
+2025-08-03 17:35:44,235 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:35:44,235 | INFO | [cached since 0.01666s ago] ('audit_logs',)
+2025-08-03 17:35:44,237 | INFO | COMMIT
+2025-08-03 17:36:09,535 | INFO | BEGIN (implicit)
+2025-08-03 17:36:09,535 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.role_id 
+FROM users 
+WHERE users.email = %s
+2025-08-03 17:36:09,550 | INFO | [generated in 0.00059s] ('admin@youcloudtech.com',)
+2025-08-03 17:36:09,550 | INFO | ROLLBACK
+2025-08-03 17:37:01,095 | INFO | select version()
+2025-08-03 17:37:01,095 | INFO | [raw sql] ()
+2025-08-03 17:37:01,097 | INFO | select current_schema()
+2025-08-03 17:37:01,098 | INFO | [raw sql] ()
+2025-08-03 17:37:01,099 | INFO | show standard_conforming_strings
+2025-08-03 17:37:01,099 | INFO | [raw sql] ()
+2025-08-03 17:37:01,100 | INFO | BEGIN (implicit)
+2025-08-03 17:37:01,101 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,102 | INFO | [generated in 0.00048s] ('roles',)
+2025-08-03 17:37:01,106 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,106 | INFO | [cached since 0.005372s ago] ('users',)
+2025-08-03 17:37:01,107 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,107 | INFO | [cached since 0.006555s ago] ('role_permissions',)
+2025-08-03 17:37:01,109 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,109 | INFO | [cached since 0.007811s ago] ('user_permissions',)
+2025-08-03 17:37:01,109 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,109 | INFO | [cached since 0.009058s ago] ('categories',)
+2025-08-03 17:37:01,109 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,109 | INFO | [cached since 0.0101s ago] ('commonqueries',)
+2025-08-03 17:37:01,109 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,109 | INFO | [cached since 0.01115s ago] ('tickets',)
+2025-08-03 17:37:01,113 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,113 | INFO | [cached since 0.01193s ago] ('messages',)
+2025-08-03 17:37:01,114 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,114 | INFO | [cached since 0.01273s ago] ('feedback',)
+2025-08-03 17:37:01,115 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,115 | INFO | [cached since 0.01346s ago] ('permissions',)
+2025-08-03 17:37:01,115 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:01,115 | INFO | [cached since 0.01448s ago] ('audit_logs',)
+2025-08-03 17:37:01,117 | INFO | COMMIT
+2025-08-03 17:37:40,364 | INFO | select version()
+2025-08-03 17:37:40,364 | INFO | [raw sql] ()
+2025-08-03 17:37:40,364 | INFO | select current_schema()
+2025-08-03 17:37:40,364 | INFO | [raw sql] ()
+2025-08-03 17:37:40,364 | INFO | show standard_conforming_strings
+2025-08-03 17:37:40,364 | INFO | [raw sql] ()
+2025-08-03 17:37:40,371 | INFO | BEGIN (implicit)
+2025-08-03 17:37:40,371 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,371 | INFO | [generated in 0.00063s] ('roles',)
+2025-08-03 17:37:40,375 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,375 | INFO | [cached since 0.005459s ago] ('users',)
+2025-08-03 17:37:40,375 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,378 | INFO | [cached since 0.006765s ago] ('role_permissions',)
+2025-08-03 17:37:40,378 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,378 | INFO | [cached since 0.008347s ago] ('user_permissions',)
+2025-08-03 17:37:40,381 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,381 | INFO | [cached since 0.00968s ago] ('categories',)
+2025-08-03 17:37:40,382 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,382 | INFO | [cached since 0.01081s ago] ('commonqueries',)
+2025-08-03 17:37:40,383 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,383 | INFO | [cached since 0.01187s ago] ('tickets',)
+2025-08-03 17:37:40,383 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,383 | INFO | [cached since 0.01277s ago] ('messages',)
+2025-08-03 17:37:40,383 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,383 | INFO | [cached since 0.01378s ago] ('feedback',)
+2025-08-03 17:37:40,383 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,383 | INFO | [cached since 0.01517s ago] ('permissions',)
+2025-08-03 17:37:40,383 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:37:40,383 | INFO | [cached since 0.01647s ago] ('audit_logs',)
+2025-08-03 17:37:40,388 | INFO | COMMIT
+2025-08-03 17:38:15,122 | INFO | BEGIN (implicit)
+2025-08-03 17:38:15,129 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = %s
+2025-08-03 17:38:15,129 | INFO | [generated in 0.00036s] ('admin@youcloudtech.com',)
+2025-08-03 17:38:15,129 | INFO | ROLLBACK
+2025-08-03 17:39:14,080 | INFO | select version()
+2025-08-03 17:39:14,080 | INFO | [raw sql] ()
+2025-08-03 17:39:14,087 | INFO | select current_schema()
+2025-08-03 17:39:14,087 | INFO | [raw sql] ()
+2025-08-03 17:39:14,087 | INFO | show standard_conforming_strings
+2025-08-03 17:39:14,087 | INFO | [raw sql] ()
+2025-08-03 17:39:14,087 | INFO | BEGIN (implicit)
+2025-08-03 17:39:14,087 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,093 | INFO | [generated in 0.00028s] ('roles',)
+2025-08-03 17:39:14,098 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,098 | INFO | [cached since 0.00579s ago] ('users',)
+2025-08-03 17:39:14,099 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,099 | INFO | [cached since 0.007073s ago] ('role_permissions',)
+2025-08-03 17:39:14,100 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,100 | INFO | [cached since 0.008235s ago] ('user_permissions',)
+2025-08-03 17:39:14,101 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,102 | INFO | [cached since 0.009259s ago] ('categories',)
+2025-08-03 17:39:14,103 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,103 | INFO | [cached since 0.0108s ago] ('commonqueries',)
+2025-08-03 17:39:14,104 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,104 | INFO | [cached since 0.01257s ago] ('tickets',)
+2025-08-03 17:39:14,104 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,104 | INFO | [cached since 0.01374s ago] ('messages',)
+2025-08-03 17:39:14,104 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,104 | INFO | [cached since 0.0146s ago] ('feedback',)
+2025-08-03 17:39:14,104 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,104 | INFO | [cached since 0.01545s ago] ('permissions',)
+2025-08-03 17:39:14,109 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:14,109 | INFO | [cached since 0.0165s ago] ('audit_logs',)
+2025-08-03 17:39:14,110 | INFO | COMMIT
+2025-08-03 17:39:32,105 | INFO | select version()
+2025-08-03 17:39:32,112 | INFO | [raw sql] ()
+2025-08-03 17:39:32,114 | INFO | select current_schema()
+2025-08-03 17:39:32,114 | INFO | [raw sql] ()
+2025-08-03 17:39:32,116 | INFO | show standard_conforming_strings
+2025-08-03 17:39:32,116 | INFO | [raw sql] ()
+2025-08-03 17:39:32,118 | INFO | BEGIN (implicit)
+2025-08-03 17:39:32,119 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,119 | INFO | [generated in 0.00044s] ('roles',)
+2025-08-03 17:39:32,124 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,124 | INFO | [cached since 0.005844s ago] ('users',)
+2025-08-03 17:39:32,126 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,126 | INFO | [cached since 0.007499s ago] ('role_permissions',)
+2025-08-03 17:39:32,127 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,127 | INFO | [cached since 0.008766s ago] ('user_permissions',)
+2025-08-03 17:39:32,128 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,129 | INFO | [cached since 0.009973s ago] ('categories',)
+2025-08-03 17:39:32,129 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,130 | INFO | [cached since 0.01099s ago] ('commonqueries',)
+2025-08-03 17:39:32,131 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,131 | INFO | [cached since 0.01232s ago] ('tickets',)
+2025-08-03 17:39:32,132 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,132 | INFO | [cached since 0.01358s ago] ('messages',)
+2025-08-03 17:39:32,133 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,133 | INFO | [cached since 0.01479s ago] ('feedback',)
+2025-08-03 17:39:32,134 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,134 | INFO | [cached since 0.01582s ago] ('permissions',)
+2025-08-03 17:39:32,135 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:39:32,136 | INFO | [cached since 0.01691s ago] ('audit_logs',)
+2025-08-03 17:39:32,136 | INFO | COMMIT
+2025-08-03 17:40:33,768 | INFO | BEGIN (implicit)
+2025-08-03 17:40:33,773 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = %s
+2025-08-03 17:40:33,773 | INFO | [generated in 0.00034s] ('admin@youcloudtech.com',)
+2025-08-03 17:40:33,786 | WARNING | (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\prana\AppData\Local\Programs\Python\Python39\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-08-03 17:40:34,009 | INFO | LOGIN | user_id: 6 | email: admin@youcloudtech.com
+2025-08-03 17:40:34,009 | INFO | ROLLBACK
+2025-08-03 17:45:30,186 | INFO | select version()
+2025-08-03 17:45:30,186 | INFO | [raw sql] ()
+2025-08-03 17:45:30,186 | INFO | select current_schema()
+2025-08-03 17:45:30,186 | INFO | [raw sql] ()
+2025-08-03 17:45:30,186 | INFO | show standard_conforming_strings
+2025-08-03 17:45:30,186 | INFO | [raw sql] ()
+2025-08-03 17:45:30,186 | INFO | BEGIN (implicit)
+2025-08-03 17:45:30,186 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,192 | INFO | [generated in 0.00030s] ('roles',)
+2025-08-03 17:45:30,197 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,197 | INFO | [cached since 0.00516s ago] ('users',)
+2025-08-03 17:45:30,198 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,198 | INFO | [cached since 0.006315s ago] ('role_permissions',)
+2025-08-03 17:45:30,199 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,199 | INFO | [cached since 0.007772s ago] ('user_permissions',)
+2025-08-03 17:45:30,201 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,201 | INFO | [cached since 0.009153s ago] ('categories',)
+2025-08-03 17:45:30,201 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,201 | INFO | [cached since 0.01037s ago] ('commonqueries',)
+2025-08-03 17:45:30,203 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,203 | INFO | [cached since 0.01152s ago] ('tickets',)
+2025-08-03 17:45:30,204 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,204 | INFO | [cached since 0.01246s ago] ('messages',)
+2025-08-03 17:45:30,204 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,205 | INFO | [cached since 0.01331s ago] ('feedback',)
+2025-08-03 17:45:30,206 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,206 | INFO | [cached since 0.01431s ago] ('permissions',)
+2025-08-03 17:45:30,207 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:45:30,207 | INFO | [cached since 0.01538s ago] ('audit_logs',)
+2025-08-03 17:45:30,208 | INFO | COMMIT
+2025-08-03 17:46:53,030 | INFO | select version()
+2025-08-03 17:46:53,031 | INFO | [raw sql] ()
+2025-08-03 17:46:53,033 | INFO | select current_schema()
+2025-08-03 17:46:53,033 | INFO | [raw sql] ()
+2025-08-03 17:46:53,035 | INFO | show standard_conforming_strings
+2025-08-03 17:46:53,035 | INFO | [raw sql] ()
+2025-08-03 17:46:53,037 | INFO | BEGIN (implicit)
+2025-08-03 17:46:53,038 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,038 | INFO | [generated in 0.00039s] ('roles',)
+2025-08-03 17:46:53,043 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,044 | INFO | [cached since 0.006316s ago] ('users',)
+2025-08-03 17:46:53,045 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,045 | INFO | [cached since 0.007639s ago] ('role_permissions',)
+2025-08-03 17:46:53,046 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,046 | INFO | [cached since 0.009093s ago] ('user_permissions',)
+2025-08-03 17:46:53,048 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,048 | INFO | [cached since 0.0105s ago] ('categories',)
+2025-08-03 17:46:53,050 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,051 | INFO | [cached since 0.01243s ago] ('commonqueries',)
+2025-08-03 17:46:53,052 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,052 | INFO | [cached since 0.01443s ago] ('tickets',)
+2025-08-03 17:46:53,053 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,053 | INFO | [cached since 0.0156s ago] ('messages',)
+2025-08-03 17:46:53,054 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,054 | INFO | [cached since 0.01694s ago] ('feedback',)
+2025-08-03 17:46:53,054 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,054 | INFO | [cached since 0.01806s ago] ('permissions',)
+2025-08-03 17:46:53,054 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:53,057 | INFO | [cached since 0.01913s ago] ('audit_logs',)
+2025-08-03 17:46:53,058 | INFO | COMMIT
+2025-08-03 17:46:56,744 | INFO | select version()
+2025-08-03 17:46:56,744 | INFO | [raw sql] ()
+2025-08-03 17:46:56,747 | INFO | select current_schema()
+2025-08-03 17:46:56,747 | INFO | [raw sql] ()
+2025-08-03 17:46:56,748 | INFO | show standard_conforming_strings
+2025-08-03 17:46:56,749 | INFO | [raw sql] ()
+2025-08-03 17:46:56,749 | INFO | BEGIN (implicit)
+2025-08-03 17:46:56,749 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,749 | INFO | [generated in 0.00028s] ('roles',)
+2025-08-03 17:46:56,755 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,755 | INFO | [cached since 0.005666s ago] ('users',)
+2025-08-03 17:46:56,757 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,757 | INFO | [cached since 0.006834s ago] ('role_permissions',)
+2025-08-03 17:46:56,758 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,758 | INFO | [cached since 0.007934s ago] ('user_permissions',)
+2025-08-03 17:46:56,760 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,760 | INFO | [cached since 0.009639s ago] ('categories',)
+2025-08-03 17:46:56,760 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,760 | INFO | [cached since 0.01092s ago] ('commonqueries',)
+2025-08-03 17:46:56,762 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,762 | INFO | [cached since 0.01201s ago] ('tickets',)
+2025-08-03 17:46:56,763 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,763 | INFO | [cached since 0.01286s ago] ('messages',)
+2025-08-03 17:46:56,764 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,764 | INFO | [cached since 0.01368s ago] ('feedback',)
+2025-08-03 17:46:56,764 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,765 | INFO | [cached since 0.01448s ago] ('permissions',)
+2025-08-03 17:46:56,765 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:46:56,766 | INFO | [cached since 0.01552s ago] ('audit_logs',)
+2025-08-03 17:46:56,767 | INFO | COMMIT
+2025-08-03 17:47:00,596 | INFO | select version()
+2025-08-03 17:47:00,597 | INFO | [raw sql] ()
+2025-08-03 17:47:00,598 | INFO | select current_schema()
+2025-08-03 17:47:00,599 | INFO | [raw sql] ()
+2025-08-03 17:47:00,600 | INFO | show standard_conforming_strings
+2025-08-03 17:47:00,600 | INFO | [raw sql] ()
+2025-08-03 17:47:00,601 | INFO | BEGIN (implicit)
+2025-08-03 17:47:00,602 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,602 | INFO | [generated in 0.00028s] ('roles',)
+2025-08-03 17:47:00,608 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,608 | INFO | [cached since 0.006008s ago] ('users',)
+2025-08-03 17:47:00,609 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,609 | INFO | [cached since 0.007415s ago] ('role_permissions',)
+2025-08-03 17:47:00,610 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,611 | INFO | [cached since 0.008555s ago] ('user_permissions',)
+2025-08-03 17:47:00,611 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,612 | INFO | [cached since 0.00974s ago] ('categories',)
+2025-08-03 17:47:00,613 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,613 | INFO | [cached since 0.01109s ago] ('commonqueries',)
+2025-08-03 17:47:00,614 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,615 | INFO | [cached since 0.01294s ago] ('tickets',)
+2025-08-03 17:47:00,616 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,616 | INFO | [cached since 0.01402s ago] ('messages',)
+2025-08-03 17:47:00,617 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,617 | INFO | [cached since 0.01489s ago] ('feedback',)
+2025-08-03 17:47:00,618 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,618 | INFO | [cached since 0.01574s ago] ('permissions',)
+2025-08-03 17:47:00,618 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:00,619 | INFO | [cached since 0.01661s ago] ('audit_logs',)
+2025-08-03 17:47:00,619 | INFO | COMMIT
+2025-08-03 17:47:02,091 | INFO | select version()
+2025-08-03 17:47:02,091 | INFO | [raw sql] ()
+2025-08-03 17:47:02,091 | INFO | select current_schema()
+2025-08-03 17:47:02,091 | INFO | [raw sql] ()
+2025-08-03 17:47:02,091 | INFO | show standard_conforming_strings
+2025-08-03 17:47:02,091 | INFO | [raw sql] ()
+2025-08-03 17:47:02,091 | INFO | BEGIN (implicit)
+2025-08-03 17:47:02,091 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,091 | INFO | [generated in 0.00039s] ('roles',)
+2025-08-03 17:47:02,110 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,111 | INFO | [cached since 0.006202s ago] ('users',)
+2025-08-03 17:47:02,112 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,112 | INFO | [cached since 0.007595s ago] ('role_permissions',)
+2025-08-03 17:47:02,112 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,112 | INFO | [cached since 0.009094s ago] ('user_permissions',)
+2025-08-03 17:47:02,115 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,115 | INFO | [cached since 0.01033s ago] ('categories',)
+2025-08-03 17:47:02,116 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,116 | INFO | [cached since 0.01139s ago] ('commonqueries',)
+2025-08-03 17:47:02,117 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,117 | INFO | [cached since 0.01247s ago] ('tickets',)
+2025-08-03 17:47:02,118 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,118 | INFO | [cached since 0.01333s ago] ('messages',)
+2025-08-03 17:47:02,119 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,119 | INFO | [cached since 0.01454s ago] ('feedback',)
+2025-08-03 17:47:02,120 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,121 | INFO | [cached since 0.01567s ago] ('permissions',)
+2025-08-03 17:47:02,121 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 17:47:02,122 | INFO | [cached since 0.0169s ago] ('audit_logs',)
+2025-08-03 17:47:02,122 | INFO | COMMIT
+2025-08-03 21:37:12,989 | INFO | select version()
+2025-08-03 21:37:12,989 | INFO | [raw sql] ()
+2025-08-03 21:37:12,989 | INFO | select current_schema()
+2025-08-03 21:37:12,989 | INFO | [raw sql] ()
+2025-08-03 21:37:12,989 | INFO | show standard_conforming_strings
+2025-08-03 21:37:12,989 | INFO | [raw sql] ()
+2025-08-03 21:37:13,005 | INFO | BEGIN (implicit)
+2025-08-03 21:37:13,005 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,005 | INFO | [generated in 0.00034s] ('roles',)
+2025-08-03 21:37:13,012 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,013 | INFO | [cached since 0.005696s ago] ('users',)
+2025-08-03 21:37:13,014 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,014 | INFO | [cached since 0.007195s ago] ('role_permissions',)
+2025-08-03 21:37:13,015 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,015 | INFO | [cached since 0.008416s ago] ('user_permissions',)
+2025-08-03 21:37:13,016 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,017 | INFO | [cached since 0.009801s ago] ('categories',)
+2025-08-03 21:37:13,017 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,018 | INFO | [cached since 0.01106s ago] ('commonqueries',)
+2025-08-03 21:37:13,019 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,020 | INFO | [cached since 0.01238s ago] ('tickets',)
+2025-08-03 21:37:13,020 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,020 | INFO | [cached since 0.01344s ago] ('messages',)
+2025-08-03 21:37:13,021 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,021 | INFO | [cached since 0.01435s ago] ('feedback',)
+2025-08-03 21:37:13,022 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,022 | INFO | [cached since 0.01519s ago] ('permissions',)
+2025-08-03 21:37:13,023 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:37:13,023 | INFO | [cached since 0.01631s ago] ('audit_logs',)
+2025-08-03 21:37:13,024 | INFO | COMMIT
+2025-08-03 21:54:03,260 | INFO | select version()
+2025-08-03 21:54:03,260 | INFO | [raw sql] ()
+2025-08-03 21:54:03,260 | INFO | select current_schema()
+2025-08-03 21:54:03,260 | INFO | [raw sql] ()
+2025-08-03 21:54:03,260 | INFO | show standard_conforming_strings
+2025-08-03 21:54:03,260 | INFO | [raw sql] ()
+2025-08-03 21:54:03,260 | INFO | BEGIN (implicit)
+2025-08-03 21:54:03,260 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,260 | INFO | [generated in 0.00026s] ('roles',)
+2025-08-03 21:54:03,280 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,280 | INFO | [cached since 0.005571s ago] ('users',)
+2025-08-03 21:54:03,281 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,281 | INFO | [cached since 0.007066s ago] ('role_permissions',)
+2025-08-03 21:54:03,281 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,283 | INFO | [cached since 0.008664s ago] ('user_permissions',)
+2025-08-03 21:54:03,284 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,284 | INFO | [cached since 0.01003s ago] ('categories',)
+2025-08-03 21:54:03,285 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,285 | INFO | [cached since 0.01119s ago] ('commonqueries',)
+2025-08-03 21:54:03,286 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,286 | INFO | [cached since 0.01238s ago] ('tickets',)
+2025-08-03 21:54:03,287 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,287 | INFO | [cached since 0.01323s ago] ('messages',)
+2025-08-03 21:54:03,288 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,288 | INFO | [cached since 0.01416s ago] ('feedback',)
+2025-08-03 21:54:03,289 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,290 | INFO | [cached since 0.01549s ago] ('permissions',)
+2025-08-03 21:54:03,291 | INFO | select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%s
+2025-08-03 21:54:03,291 | INFO | [cached since 0.01682s ago] ('audit_logs',)
+2025-08-03 21:54:03,292 | INFO | COMMIT
+2025-08-03 21:54:20,245 | INFO | BEGIN (implicit)
+2025-08-03 21:54:20,292 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = %s
+2025-08-03 21:54:20,292 | INFO | [generated in 0.00107s] ('pranavreddy037@gmail.com',)
+2025-08-03 21:54:20,308 | WARNING | (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\prana\AppData\Local\Programs\Python\Python39\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-08-03 21:54:20,561 | INFO | LOGIN | user_id: 8 | email: pranavreddy037@gmail.com
+2025-08-03 21:54:20,561 | INFO | ROLLBACK

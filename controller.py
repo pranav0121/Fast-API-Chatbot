@@ -1,31 +1,28 @@
+
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
-import logging
-from models import Category, CommonQuery, Ticket, TicketMessage, Feedback, User
-from fastapi import HTTPException, status
-from models import Category, CommonQuery, Ticket, TicketMessage, Feedback
-from sqlalchemy.future import select
-import os
-from fastapi import UploadFile
+from fastapi import HTTPException, status, Depends, UploadFile
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
-from fastapi import Depends
 from schemas import UserRegisterRequest, UserLoginRequest, TokenResponse
+from models import User, Category, CommonQuery, Ticket, TicketMessage, Feedback
+import os
+import logging
 
 
 # Set up logging
-logging.basicConfig(
-    filename='user_activity.log',
-    level=logging.INFO,
-    format='%(asctime)s | %(levelname)s | %(message)s',
-)
+logging.basicConfig(filename='user_activity.log', level=logging.INFO,
+                    format='%(asctime)s | %(levelname)s | %(message)s')
+
 
 # JWT settings
 # Change this to a strong secret in production
 SECRET_KEY = "your_secret_key_here"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
@@ -68,12 +65,10 @@ async def get_current_user(db=Depends(lambda: None), token: str = Depends(oauth2
         raise credentials_exception
     return user
 
+
 # User registration
-
-
 async def register_user_controller(db, payload: UserRegisterRequest):
     from models import User
-    # Check if user already exists
     result = await db.execute(select(User).where(User.email == payload.email))
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -101,12 +96,12 @@ async def register_user_controller(db, payload: UserRegisterRequest):
 # User login
 
 
-async def login_user_controller(db, payload: UserLoginRequest):
+async def login_user_controller(db, form_data: OAuth2PasswordRequestForm):
     from models import User
-    result = await db.execute(select(User).where(User.email == payload.email))
+    result = await db.execute(select(User).where(User.email == form_data.username))
     user = result.scalar_one_or_none()
-    if not user or not verify_password(payload.password, user.passwordhash):
-        logging.error(f"FAILED LOGIN | email: {payload.email}")
+    if not user or not verify_password(form_data.password, user.passwordhash):
+        logging.error(f"FAILED LOGIN | email: {form_data.username}")
         raise HTTPException(
             status_code=401, detail="Incorrect email or password")
     access_token = create_access_token(data={"sub": user.email})
