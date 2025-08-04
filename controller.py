@@ -1,4 +1,5 @@
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from fastapi import HTTPException, status, Depends, UploadFile
@@ -10,6 +11,7 @@ from schemas import UserRegisterRequest, UserLoginRequest, TokenResponse
 from models import User, Category, CommonQuery, Ticket, TicketMessage, Feedback
 import os
 import logging
+from db import get_db
 
 
 # Set up logging
@@ -43,7 +45,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-async def get_current_user(db=Depends(lambda: None), token: str = Depends(oauth2_scheme)):
+async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depends(oauth2_scheme)):
     from models import User
     credentials_exception = HTTPException(
         status_code=401,
@@ -73,6 +75,12 @@ async def register_user_controller(db, payload: UserRegisterRequest):
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")
     hashed_password = get_password_hash(payload.password)
+    # Get the roleid for the 'user' role
+    from models import Role
+    role_result = await db.execute(select(Role).where(Role.name == 'user'))
+    user_role = role_result.scalar_one_or_none()
+    user_roleid = user_role.roleid if user_role else None
+
     user = User(
         name=payload.name,
         email=payload.email,
@@ -86,7 +94,8 @@ async def register_user_controller(db, payload: UserRegisterRequest):
         country=payload.country,
         createdat=datetime.utcnow(),
         isactive=True,
-        isadmin=False
+        isadmin=False,
+        roleid=user_roleid
     )
     db.add(user)
     await db.commit()

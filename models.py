@@ -9,7 +9,7 @@ Base = declarative_base()
 
 class Role(Base):
     __tablename__ = "roles"
-    id = Column(Integer, primary_key=True)
+    roleid = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
     description = Column(Text)
     permissions = relationship("RolePermission", back_populates="role")
@@ -38,7 +38,7 @@ class User(Base):
     country = Column(Text, nullable=True)
     permissions = relationship(
         "Permission", secondary="user_permissions", backref="users")
-    roleid = Column(Integer, ForeignKey("roles.id"))
+    roleid = Column(Integer, ForeignKey("roles.roleid"))
     role = relationship("Role", back_populates="users")
 # RolePermission table for CRUD permissions
 
@@ -46,9 +46,11 @@ class User(Base):
 class RolePermission(Base):
     __tablename__ = "role_permissions"
     id = Column(Integer, primary_key=True)
-    role_id = Column(Integer, ForeignKey("roles.id"))
+    role_id = Column(Integer, ForeignKey("roles.roleid"))
     # 'read', 'create', 'update', 'delete'
     permission = Column(String(50), nullable=False)
+    # Added for module-based permissions
+    module = Column(String(100), nullable=False)
     role = relationship("Role", back_populates="permissions")
 
 
