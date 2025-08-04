@@ -30,6 +30,8 @@ router = APIRouter()
 # =====================
 # User Endpoints
 # =====================
+
+
 def require_role_permission(permission: str, module: str):
     async def dependency(db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
         roleid = getattr(current_user, 'roleid', None)
@@ -48,7 +50,6 @@ def require_role_permission(permission: str, module: str):
                 status_code=403, detail=f"Role does not have '{permission}' permission for module '{module}'")
         return current_user
     return dependency
-
 
 
 # Only admin (with manage-users) can create users
@@ -143,6 +144,7 @@ async def upload_file(file: UploadFile = File(...)):
 @router.post("/feedback", summary="Submit feedback/rating", tags=["Feedback"])
 async def submit_feedback(payload: FeedbackRequest, db: AsyncSession = Depends(get_db)):
     return await submit_feedback_controller(db, payload)
+
 
 # =====================
 # Health Check

@@ -1,6 +1,37 @@
+
 import uuid
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Float, ForeignKey, Table
 from sqlalchemy.orm import declarative_base, relationship
+
+Base = declarative_base()
+
+# ...existing model classes...
+
+# SLA Logs Table
+
+
+class SLALog(Base):
+    __tablename__ = "sla_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey("tickets.ticketid"), nullable=False)
+    sla_policy_id = Column(Integer, ForeignKey(
+        "sla_policies.sla_id"), nullable=False)
+    # e.g., 'created', 'breached', 'resolved'
+    event_type = Column(String, nullable=False)
+    timestamp = Column(DateTime, nullable=False)
+    details = Column(Text)
+
+# Ticket Status Logs Table
+
+
+class TicketStatusLog(Base):
+    __tablename__ = "ticket_status_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey("tickets.ticketid"), nullable=False)
+    status = Column(String, nullable=False)
+    timestamp = Column(DateTime, nullable=False)
+    details = Column(Text)
+
 
 Base = declarative_base()
 
@@ -153,3 +184,14 @@ class AuditLog(Base):
     status = Column(Text)
     timestamp = Column(DateTime)
     details = Column(Text)
+
+# SLA Model (merged from sla_models.py)
+
+
+class SLAPolicy(Base):
+    __tablename__ = "sla_policies"
+    sla_id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    description = Column(Text)
+    response_time_minutes = Column(Integer, nullable=False)
+    resolution_time_minutes = Column(Integer, nullable=False)

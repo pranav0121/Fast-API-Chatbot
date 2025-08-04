@@ -1,22 +1,121 @@
-
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy import select
-from fastapi import HTTPException, status, Depends, UploadFile
-from passlib.context import CryptContext
-from jose import jwt, JWTError
-from datetime import datetime, timedelta
-from fastapi.security import OAuth2PasswordBearer
-from schemas import UserRegisterRequest, UserLoginRequest, TokenResponse
-from models import User, Category, CommonQuery, Ticket, TicketMessage, Feedback
-import os
-import logging
+# Utility: Sync all existing tickets with SLA
+from sqlalchemy.future import select
 from db import get_db
+import logging
+import os
+from models import SLAPolicy
+from models import User, Category, CommonQuery, Ticket, TicketMessage, Feedback
+from schemas import SLAPolicyCreate, SLAPolicyUpdate, SLAPolicyOut, SLAStatusOut, SLAViolationOut, SLAReportOut
+from schemas import UserRegisterRequest, UserLoginRequest, TokenResponse
+from fastapi.security import OAuth2PasswordBearer
+from datetime import datetime, timedelta
+from jose import jwt, JWTError
+from passlib.context import CryptContext
+from fastapi import HTTPException, status, Depends, UploadFile
+from sqlalchemy import select
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
+
+
+async def sync_existing_tickets_with_sla(db: AsyncSession):
+    from datetime import datetime, timedelta
+    # Get all SLA policies and map by name (priority)
+    sla_policies_result = await db.execute(select(SLAPolicy))
+    sla_policies = {
+        p.name.lower(): p for p in sla_policies_result.scalars().all()}
+    # Find tickets without current_sla_target
+    tickets_result = await db.execute(select(Ticket).where(Ticket.current_sla_target == None))
+    tickets = tickets_result.scalars().all()
+    now = datetime.utcnow()
+    updated = 0
+    for ticket in tickets:
+        priority = (ticket.priority or "medium").lower()
+        sla_policy = sla_policies.get(priority)
+        if sla_policy:
+            ticket.current_sla_target = now + \
+                timedelta(minutes=sla_policy.resolution_time_minutes)
+            ticket.updatedat = now
+            db.add(ticket)
+            updated += 1
+    if updated:
+        await db.commit()
+    return {"status": "synced", "updated": updated}
 
 
 # Set up logging
 logging.basicConfig(filename='user_activity.log', level=logging.INFO,
                     format='%(asctime)s | %(levelname)s | %(message)s')
+
+# =====================
+# SLA Controllers (merged from sla_controller.py)
+# =====================
+
+
+async def get_sla_policies_controller(db: AsyncSession):
+    result = await db.execute(select(SLAPolicy))
+    return result.scalars().all()
+
+
+async def create_sla_policy_controller(sla: SLAPolicyCreate, db: AsyncSession):
+    new_policy = SLAPolicy(**sla.dict())
+    db.add(new_policy)
+    await db.commit()
+    await db.refresh(new_policy)
+    return new_policy
+
+
+async def update_sla_policy_controller(sla_id: int, sla: SLAPolicyUpdate, db: AsyncSession):
+    result = await db.execute(select(SLAPolicy).where(SLAPolicy.sla_id == sla_id))
+    policy = result.scalar_one_or_none()
+    if not policy:
+        raise HTTPException(status_code=404, detail="SLA policy not found")
+    for key, value in sla.dict(exclude_unset=True).items():
+        setattr(policy, key, value)
+    await db.commit()
+    await db.refresh(policy)
+    return policy
+
+
+async def get_ticket_sla_status_controller(ticket_id: int, db: AsyncSession):
+    # Example logic: find ticket, get SLA policy, calculate status
+    result = await db.execute(select(Ticket).where(Ticket.ticketid == ticket_id))
+    ticket = result.scalar_one_or_none()
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    # For demo, assume all tickets use the first SLA policy
+    policy_result = await db.execute(select(SLAPolicy))
+    sla_policy = policy_result.scalars().first()
+    if not sla_policy:
+        raise HTTPException(status_code=404, detail="No SLA policy found")
+    # Calculate status (placeholder logic)
+    status = "on track"
+    time_left = sla_policy.resolution_time_minutes  # Placeholder
+    return {
+        "ticket_id": ticket.ticketid,
+        "sla_policy": sla_policy,
+        "status": status,
+        "time_left_minutes": time_left
+    }
+
+
+async def get_sla_violations_controller(db: AsyncSession):
+    # Example: find tickets that are breached (placeholder logic)
+    # In real logic, compare ticket timestamps to SLA
+    return []
+
+
+async def get_sla_report_controller(db: AsyncSession):
+    # Example: count tickets and breached tickets (placeholder logic)
+    total_tickets = 0
+    tickets_within_sla = 0
+    tickets_breached = 0
+    compliance_percentage = 100.0
+    return {
+        "total_tickets": total_tickets,
+        "tickets_within_sla": tickets_within_sla,
+        "tickets_breached": tickets_breached,
+        "compliance_percentage": compliance_percentage
+    }
 
 
 # JWT settings
@@ -75,12 +174,7 @@ async def register_user_controller(db, payload: UserRegisterRequest):
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")
     hashed_password = get_password_hash(payload.password)
-    # Get the roleid for the 'user' role
-    from models import Role
-    role_result = await db.execute(select(Role).where(Role.name == 'user'))
-    user_role = role_result.scalar_one_or_none()
-    user_roleid = user_role.roleid if user_role else None
-
+    # Always assign roleid=3 (user) for new users
     user = User(
         name=payload.name,
         email=payload.email,
@@ -95,7 +189,7 @@ async def register_user_controller(db, payload: UserRegisterRequest):
         createdat=datetime.utcnow(),
         isactive=True,
         isadmin=False,
-        roleid=user_roleid
+        roleid=3
     )
     db.add(user)
     await db.commit()
@@ -159,6 +253,19 @@ async def get_common_queries_controller(db, category_id: int):
 
 
 async def create_ticket_controller(db, payload):
+    # Assign SLA policy based on ticket priority
+    from models import SLALog, TicketStatusLog
+    sla_policies_result = await db.execute(select(SLAPolicy))
+    sla_policies = {
+        p.name.lower(): p for p in sla_policies_result.scalars().all()}
+    from datetime import datetime, timedelta
+    now = datetime.utcnow()
+    priority = (payload.priority or "medium").lower()
+    sla_policy = sla_policies.get(priority)
+    sla_target = None
+    if sla_policy:
+        sla_target = now + \
+            timedelta(minutes=sla_policy.resolution_time_minutes)
     ticket = Ticket(
         userid=None,
         categoryid=payload.category_id,
@@ -167,14 +274,35 @@ async def create_ticket_controller(db, payload):
         priority=payload.priority,
         organizationname=payload.organization,
         createdby=payload.name,
-        createdat=None,
-        updatedat=None
+        createdat=now,
+        updatedat=now,
+        current_sla_target=sla_target
     )
     db.add(ticket)
     await db.commit()
     await db.refresh(ticket)
     logging.info(
         f"TICKET CREATED | subject: {payload.subject} | createdby: {payload.name} | ticket_id: {ticket.ticketid}")
+
+    # Log SLA assignment event
+    if sla_policy:
+        sla_log = SLALog(
+            ticket_id=ticket.ticketid,
+            sla_policy_id=sla_policy.sla_id,
+            event_type="assigned",
+            timestamp=now,
+            details=f"SLA assigned on ticket creation. SLA: {sla_policy.name}"
+        )
+        db.add(sla_log)
+
+    # Log ticket status event
+    status_log = TicketStatusLog(
+        ticket_id=ticket.ticketid,
+        status="open",
+        timestamp=now,
+        details="Ticket created"
+    )
+    db.add(status_log)
 
     # Create initial message for the ticket
     if payload.message:
@@ -183,12 +311,14 @@ async def create_ticket_controller(db, payload):
             senderid=None,
             content=payload.message,
             isadminreply=False,
-            isbotresponse=False
+            isbotresponse=False,
+            createdat=now
         )
         db.add(message)
-        await db.commit()
         logging.info(
             f"TICKET MESSAGE CREATED | ticket_id: {ticket.ticketid} | content: {payload.message}")
+
+    await db.commit()
     return {"ticket_id": ticket.ticketid, "status": "success"}
 
 
