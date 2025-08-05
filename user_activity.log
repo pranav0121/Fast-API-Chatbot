@@ -2109,3 +2109,282 @@ WHERE role_permissions.role_id = $1::INTEGER AND role_permissions.permission = $
 FROM sla_policies
 2025-08-05 00:51:47,441 | INFO | [cached since 23.37s ago] ()
 2025-08-05 00:51:47,441 | INFO | ROLLBACK
+2025-08-05 10:03:06,639 | INFO | select pg_catalog.version()
+2025-08-05 10:03:06,654 | INFO | [raw sql] ()
+2025-08-05 10:03:06,662 | INFO | select current_schema()
+2025-08-05 10:03:06,663 | INFO | [raw sql] ()
+2025-08-05 10:03:06,670 | INFO | show standard_conforming_strings
+2025-08-05 10:03:06,671 | INFO | [raw sql] ()
+2025-08-05 10:03:06,675 | INFO | BEGIN (implicit)
+2025-08-05 10:03:06,689 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,691 | INFO | [generated in 0.00142s] ('roles', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,712 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,713 | INFO | [cached since 0.02359s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,717 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,718 | INFO | [cached since 0.02768s ago] ('role_permissions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,720 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,721 | INFO | [cached since 0.03154s ago] ('user_permissions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,724 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,726 | INFO | [cached since 0.03584s ago] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,729 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,731 | INFO | [cached since 0.04062s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,735 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,736 | INFO | [cached since 0.04591s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,739 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,740 | INFO | [cached since 0.04946s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,742 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,743 | INFO | [cached since 0.05331s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,745 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,747 | INFO | [cached since 0.05726s ago] ('permissions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,749 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,751 | INFO | [cached since 0.06105s ago] ('audit_logs', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,753 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 10:03:06,754 | INFO | [cached since 0.06455s ago] ('sla_policies', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 10:03:06,758 | INFO | COMMIT
+2025-08-05 10:03:06,760 | INFO | BEGIN (implicit)
+2025-08-05 10:03:06,823 | INFO | SELECT sla_policies.sla_id, sla_policies.name, sla_policies.description, sla_policies.response_time_minutes, sla_policies.resolution_time_minutes 
+FROM sla_policies
+2025-08-05 10:03:06,825 | INFO | [generated in 0.00109s] ()
+2025-08-05 10:03:06,841 | INFO | SELECT tickets.ticketid, tickets.userid, tickets.categoryid, tickets.subject, tickets.status, tickets.createdat, tickets.updatedat, tickets.priority, tickets.organizationname, tickets.createdby, tickets.assignedto, tickets.escalation_level, tickets.current_sla_target, tickets.resolution_method, tickets.bot_attempted, tickets.country 
+FROM tickets 
+WHERE tickets.current_sla_target IS NULL
+2025-08-05 10:03:06,843 | INFO | [generated in 0.00121s] ()
+2025-08-05 10:03:06,859 | INFO | ROLLBACK
+2025-08-05 10:04:11,728 | INFO | BEGIN (implicit)
+2025-08-05 10:04:11,737 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:04:11,739 | INFO | [generated in 0.00193s] ('superadmin@youcloudtech.com',)
+2025-08-05 10:04:11,762 | WARNING | (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "d:\Fast API Chatbot\.venv\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-08-05 10:04:13,178 | INFO | LOGIN | user_id: 13 | email: superadmin@youcloudtech.com
+2025-08-05 10:04:13,179 | INFO | ROLLBACK
+2025-08-05 10:05:16,464 | INFO | BEGIN (implicit)
+2025-08-05 10:05:16,466 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:05:16,469 | INFO | [cached since 64.73s ago] ('superadmin@youcloudtech.com',)
+2025-08-05 10:05:16,496 | INFO | SELECT role_permissions.id, role_permissions.role_id, role_permissions.permission, role_permissions.module 
+FROM role_permissions 
+WHERE role_permissions.role_id = $1::INTEGER AND role_permissions.permission = $2::VARCHAR AND role_permissions.module = $3::VARCHAR
+2025-08-05 10:05:16,497 | INFO | [generated in 0.00229s] (1, 'manage', 'users')
+2025-08-05 10:05:16,582 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:05:16,582 | INFO | [cached since 64.85s ago] ('prakash@test.com',)
+2025-08-05 10:05:17,456 | INFO | INSERT INTO users (uuid, name, email, createdat, passwordhash, preferredlanguage, organizationname, position, prioritylevel, phone, department, lastlogin, isactive, isadmin, admin_access_roles, country, roleid) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::TIMESTAMP WITHOUT TIME ZONE, $5::VARCHAR, $6::VARCHAR, $7::VARCHAR, $8::VARCHAR, $9::VARCHAR, $10::VARCHAR, $11::VARCHAR, $12::TIMESTAMP WITHOUT TIME ZONE, $13::BOOLEAN, $14::BOOLEAN, $15::VARCHAR, $16::VARCHAR, $17::INTEGER) RETURNING users.userid
+2025-08-05 10:05:17,457 | INFO | [generated in 0.00155s] ('3b55ee3f-7832-4c49-8e0c-86fa85412655', 'prakash', 'prakash@test.com', datetime.datetime(2025, 8, 5, 4, 35, 17, 444700), '$2b$12$JBE3gwcMgl2uaCVGHtEm.u1p.iPUcvafHexANi53fWb9OyrRZe9RS', 'english', 'yc', 'dev', 'high', '0987654321', 'dev', None, True, False, None, 'India', 3)
+2025-08-05 10:05:17,494 | INFO | COMMIT
+2025-08-05 10:05:17,510 | INFO | BEGIN (implicit)
+2025-08-05 10:05:17,520 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.userid = $1::INTEGER
+2025-08-05 10:05:17,522 | INFO | [generated in 0.00184s] (34,)
+2025-08-05 10:05:17,534 | INFO | ROLLBACK
+2025-08-05 10:06:56,200 | INFO | BEGIN (implicit)
+2025-08-05 10:06:56,205 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:06:56,226 | INFO | [cached since 164.5s ago] ('superadmin@youcloudtech.com',)
+2025-08-05 10:06:56,268 | INFO | SELECT role_permissions.id, role_permissions.role_id, role_permissions.permission, role_permissions.module 
+FROM role_permissions 
+WHERE role_permissions.role_id = $1::INTEGER AND role_permissions.permission = $2::VARCHAR AND role_permissions.module = $3::VARCHAR
+2025-08-05 10:06:56,272 | INFO | [cached since 99.78s ago] (1, 'read', 'sla_policies')
+2025-08-05 10:06:56,293 | INFO | SELECT sla_policies.sla_id, sla_policies.name, sla_policies.description, sla_policies.response_time_minutes, sla_policies.resolution_time_minutes 
+FROM sla_policies
+2025-08-05 10:06:56,294 | INFO | [cached since 229.5s ago] ()
+2025-08-05 10:06:56,310 | INFO | ROLLBACK
+2025-08-05 10:10:49,161 | INFO | BEGIN (implicit)
+2025-08-05 10:10:49,163 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:10:49,164 | INFO | [cached since 397.4s ago] ('gokul@test.com',)
+2025-08-05 10:10:49,980 | INFO | LOGIN | user_id: 33 | email: gokul@test.com
+2025-08-05 10:10:49,982 | INFO | ROLLBACK
+2025-08-05 10:11:18,454 | INFO | BEGIN (implicit)
+2025-08-05 10:11:18,458 | INFO | SELECT categories.categoryid, categories.name, categories.team, categories.createdat 
+FROM categories
+2025-08-05 10:11:18,459 | INFO | [generated in 0.00139s] ()
+2025-08-05 10:11:18,478 | INFO | ROLLBACK
+2025-08-05 10:12:10,994 | INFO | BEGIN (implicit)
+2025-08-05 10:12:10,995 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:12:10,996 | INFO | [cached since 479.3s ago] ('gokul@test.com',)
+2025-08-05 10:12:11,007 | INFO | SELECT sla_policies.sla_id, sla_policies.name, sla_policies.description, sla_policies.response_time_minutes, sla_policies.resolution_time_minutes 
+FROM sla_policies
+2025-08-05 10:12:11,008 | INFO | [cached since 544.2s ago] ()
+2025-08-05 10:12:11,015 | INFO | INSERT INTO tickets (userid, categoryid, subject, status, createdat, updatedat, priority, organizationname, createdby, assignedto, escalation_level, current_sla_target, resolution_method, bot_attempted, country) VALUES ($1::INTEGER, $2::INTEGER, $3::VARCHAR, $4::VARCHAR, $5::TIMESTAMP WITHOUT TIME ZONE, $6::TIMESTAMP WITHOUT TIME ZONE, $7::VARCHAR, $8::VARCHAR, $9::VARCHAR, $10::VARCHAR, $11::INTEGER, $12::TIMESTAMP WITHOUT TIME ZONE, $13::VARCHAR, $14::BOOLEAN, $15::VARCHAR) RETURNING tickets.ticketid
+2025-08-05 10:12:11,016 | INFO | [generated in 0.00141s] (None, 3, 'Technical Glitches', 'open', datetime.datetime(2025, 8, 5, 4, 42, 11, 10910), datetime.datetime(2025, 8, 5, 4, 42, 11, 10910), 'medium', 'yc', 'gokul', None, None, datetime.datetime(2025, 8, 5, 8, 42, 11, 10910), None, None, None)
+2025-08-05 10:12:11,030 | INFO | COMMIT
+2025-08-05 10:12:11,035 | INFO | BEGIN (implicit)
+2025-08-05 10:12:11,039 | INFO | SELECT tickets.ticketid, tickets.userid, tickets.categoryid, tickets.subject, tickets.status, tickets.createdat, tickets.updatedat, tickets.priority, tickets.organizationname, tickets.createdby, tickets.assignedto, tickets.escalation_level, tickets.current_sla_target, tickets.resolution_method, tickets.bot_attempted, tickets.country 
+FROM tickets 
+WHERE tickets.ticketid = $1::INTEGER
+2025-08-05 10:12:11,040 | INFO | [generated in 0.00163s] (89,)
+2025-08-05 10:12:11,051 | INFO | TICKET CREATED | subject: Technical Glitches | createdby: gokul | ticket_id: 89
+2025-08-05 10:12:11,057 | INFO | TICKET MESSAGE CREATED | ticket_id: 89 | content: TEch Test
+2025-08-05 10:12:11,059 | INFO | ROLLBACK
+2025-08-05 10:13:26,694 | INFO | BEGIN (implicit)
+2025-08-05 10:13:26,695 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:13:26,696 | INFO | [cached since 555s ago] ('gokul@test.com',)
+2025-08-05 10:13:26,699 | INFO | ROLLBACK
+2025-08-05 10:14:49,405 | INFO | BEGIN (implicit)
+2025-08-05 10:14:49,407 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:14:49,408 | INFO | [cached since 637.7s ago] ('gokul',)
+2025-08-05 10:14:49,412 | ERROR | FAILED LOGIN | email: gokul
+2025-08-05 10:14:49,413 | INFO | ROLLBACK
+2025-08-05 10:15:05,917 | INFO | BEGIN (implicit)
+2025-08-05 10:15:05,918 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:15:05,920 | INFO | [cached since 654.2s ago] ('superadmin@youcloudtech.com',)
+2025-08-05 10:15:06,710 | INFO | LOGIN | user_id: 13 | email: superadmin@youcloudtech.com
+2025-08-05 10:15:06,711 | INFO | ROLLBACK
+2025-08-05 10:15:11,946 | INFO | BEGIN (implicit)
+2025-08-05 10:15:11,949 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:15:11,950 | INFO | [cached since 660.2s ago] ('gokul',)
+2025-08-05 10:15:11,953 | ERROR | FAILED LOGIN | email: gokul
+2025-08-05 10:15:11,954 | INFO | ROLLBACK
+2025-08-05 10:15:36,134 | INFO | BEGIN (implicit)
+2025-08-05 10:15:36,135 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:15:36,136 | INFO | [cached since 684.4s ago] ('superadmin@youcloudtech.com',)
+2025-08-05 10:15:36,964 | INFO | LOGIN | user_id: 13 | email: superadmin@youcloudtech.com
+2025-08-05 10:15:36,966 | INFO | ROLLBACK
+2025-08-05 10:16:00,231 | INFO | BEGIN (implicit)
+2025-08-05 10:16:00,231 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:16:00,232 | INFO | [cached since 708.5s ago] ('gokul@test.com',)
+2025-08-05 10:16:01,044 | INFO | LOGIN | user_id: 33 | email: gokul@test.com
+2025-08-05 10:16:01,045 | INFO | ROLLBACK
+2025-08-05 10:16:17,734 | INFO | BEGIN (implicit)
+2025-08-05 10:16:17,735 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 10:16:17,736 | INFO | [cached since 726s ago] ('gokul@test.com',)
+2025-08-05 10:16:18,576 | INFO | LOGIN | user_id: 33 | email: gokul@test.com
+2025-08-05 10:16:18,577 | INFO | ROLLBACK
+2025-08-05 11:21:43,346 | INFO | select pg_catalog.version()
+2025-08-05 11:21:43,346 | INFO | [raw sql] ()
+2025-08-05 11:21:43,346 | INFO | select current_schema()
+2025-08-05 11:21:43,346 | INFO | [raw sql] ()
+2025-08-05 11:21:43,346 | INFO | show standard_conforming_strings
+2025-08-05 11:21:43,346 | INFO | [raw sql] ()
+2025-08-05 11:21:43,360 | INFO | BEGIN (implicit)
+2025-08-05 11:21:43,363 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,363 | INFO | [generated in 0.00044s] ('roles', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,369 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,369 | INFO | [cached since 0.006763s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,370 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,370 | INFO | [cached since 0.007928s ago] ('role_permissions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,371 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,372 | INFO | [cached since 0.009209s ago] ('user_permissions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,372 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,373 | INFO | [cached since 0.01036s ago] ('categories', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,374 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,375 | INFO | [cached since 0.01175s ago] ('commonqueries', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,375 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,375 | INFO | [cached since 0.01339s ago] ('tickets', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,377 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,377 | INFO | [cached since 0.01444s ago] ('messages', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,378 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,378 | INFO | [cached since 0.01536s ago] ('feedback', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,378 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,378 | INFO | [cached since 0.01625s ago] ('permissions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,379 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,379 | INFO | [cached since 0.01712s ago] ('audit_logs', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,380 | INFO | SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2025-08-05 11:21:43,380 | INFO | [cached since 0.01806s ago] ('sla_policies', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2025-08-05 11:21:43,381 | INFO | COMMIT
+2025-08-05 11:21:43,382 | INFO | BEGIN (implicit)
+2025-08-05 11:21:43,400 | INFO | SELECT sla_policies.sla_id, sla_policies.name, sla_policies.description, sla_policies.response_time_minutes, sla_policies.resolution_time_minutes 
+FROM sla_policies
+2025-08-05 11:21:43,401 | INFO | [generated in 0.00036s] ()
+2025-08-05 11:21:43,403 | INFO | SELECT tickets.ticketid, tickets.userid, tickets.categoryid, tickets.subject, tickets.status, tickets.createdat, tickets.updatedat, tickets.priority, tickets.organizationname, tickets.createdby, tickets.assignedto, tickets.escalation_level, tickets.current_sla_target, tickets.resolution_method, tickets.bot_attempted, tickets.country 
+FROM tickets 
+WHERE tickets.current_sla_target IS NULL
+2025-08-05 11:21:43,403 | INFO | [generated in 0.00037s] ()
+2025-08-05 11:21:43,410 | INFO | ROLLBACK
+2025-08-05 11:22:34,391 | INFO | BEGIN (implicit)
+2025-08-05 11:22:34,391 | INFO | SELECT users.userid, users.uuid, users.name, users.email, users.createdat, users.passwordhash, users.preferredlanguage, users.organizationname, users.position, users.prioritylevel, users.phone, users.department, users.lastlogin, users.isactive, users.isadmin, users.admin_access_roles, users.country, users.roleid 
+FROM users 
+WHERE users.email = $1::VARCHAR
+2025-08-05 11:22:34,398 | INFO | [generated in 0.00040s] ('gokul@test.com',)
+2025-08-05 11:22:34,398 | WARNING | (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "d:\Fast API Chatbot\.venv\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-08-05 11:22:35,065 | INFO | LOGIN | user_id: 33 | email: gokul@test.com
+2025-08-05 11:22:35,065 | INFO | ROLLBACK
+2025-08-06 00:33:13,575 | ERROR | FAILED LOGIN | email: string
+2025-08-06 00:33:35,755 | ERROR | FAILED LOGIN | email: string
+2025-08-06 02:13:29,195 | INFO | USER_UUID:test-user-123 | ROLE:USER | ACTION:TEST_LOG_ENTRY | system_test | status: working
+2025-08-06 02:16:29,588 | INFO | USER_ID:123 | EMAIL:test@example.com | ROLE:USER | ACTION:TEST_LOGIN | mock_test | status: working
+2025-08-06 02:30:09,859 | INFO | USER_UUID:055dcefc-a303-4bda-830f-1a1cb6d12d11 | ROLE:USER | ACTION:DASHBOARD_STATS_ACCESSED | total: 81 | pending: 18 | resolved: 1
+2025-08-06 02:31:12,555 | INFO | USER_UUID:055dcefc-a303-4bda-830f-1a1cb6d12d11 | ROLE:USER | ACTION:TICKET_STATUS_UPDATED | ticket_id: 103 | old_status: open | new_status: closed
+2025-08-06 02:37:57,494 | INFO | USER_UUID:055dcefc-a303-4bda-830f-1a1cb6d12d11 | ROLE:USER | ACTION:DASHBOARD_STATS_ACCESSED | total: 81 | pending: 17 | resolved: 1
+2025-08-06 02:42:16,684 | INFO | USER_ID:35 | EMAIL:qwerty@example.com | ROLE:USER | ACTION:USER_REGISTERED | new_user_created | org: sa
+2025-08-06 02:45:57,146 | INFO | USER_UUID:6788be5c-fa80-4e92-86ab-9b46793b8001 | ROLE:USER | ACTION:DASHBOARD_STATS_ACCESSED | total: 81 | pending: 17 | resolved: 1
+2025-08-06 03:25:14,507 | INFO | USER_ID:33 | EMAIL:gokul@test.com | ROLE:USER | ACTION:LOGIN_SUCCESS | token_generated
+2025-08-06 03:25:48,954 | INFO | USER_ID:33 | EMAIL:gokul@test.com | ROLE:USER | ACTION:LOGIN_SUCCESS | token_generated

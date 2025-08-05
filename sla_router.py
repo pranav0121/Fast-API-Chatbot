@@ -5,9 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db import get_db
 from models import User
 from router import require_role_permission, get_current_user
-from controller import (
+from sla_controller import (
     get_sla_policies_controller, create_sla_policy_controller, update_sla_policy_controller,
-    get_ticket_sla_status_controller, get_sla_violations_controller, get_sla_report_controller
+    get_ticket_sla_status_controller, get_sla_violations_controller, get_sla_report_controller,
+    update_all_tickets_sla_alignment
 )
 from schemas import SLAPolicyCreate, SLAPolicyUpdate, SLAPolicyOut, SLAStatusOut, SLAViolationOut, SLAReportOut
 
@@ -17,9 +18,11 @@ sla_router = APIRouter(prefix="/api/sla", tags=["SLA"])
 @sla_router.get("/policies", response_model=list[SLAPolicyOut])
 async def get_sla_policies(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(
-        require_role_permission('read', 'sla_policies'))
+    current_user: User = Depends(get_current_user)
 ):
+    if not current_user.role or current_user.role.name.lower() != "superadmin":
+        raise HTTPException(
+            status_code=403, detail="Only superadmin can access this endpoint.")
     return await get_sla_policies_controller(db)
 
 
@@ -27,9 +30,11 @@ async def get_sla_policies(
 async def create_sla_policy(
     sla: SLAPolicyCreate,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(
-        require_role_permission('manage', 'sla_policies'))
+    current_user: User = Depends(get_current_user)
 ):
+    if not current_user.role or current_user.role.name.lower() != "superadmin":
+        raise HTTPException(
+            status_code=403, detail="Only superadmin can access this endpoint.")
     return await create_sla_policy_controller(sla, db)
 
 
@@ -38,31 +43,52 @@ async def update_sla_policy(
     sla_id: int,
     sla: SLAPolicyUpdate,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(
-        require_role_permission('manage', 'sla_policies'))
+    current_user: User = Depends(get_current_user)
 ):
+    if not current_user.role or current_user.role.name.lower() != "superadmin":
+        raise HTTPException(
+            status_code=403, detail="Only superadmin can access this endpoint.")
     return await update_sla_policy_controller(sla_id, sla, db)
 
 
 @sla_router.get("/violations", response_model=list[SLAViolationOut])
 async def get_sla_violations(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(
-        require_role_permission('read', 'sla_violations'))
+    current_user: User = Depends(get_current_user)
 ):
+    if not current_user.role or current_user.role.name.lower() != "superadmin":
+        raise HTTPException(
+            status_code=403, detail="Only superadmin can access this endpoint.")
     return await get_sla_violations_controller(db)
 
 
 @sla_router.get("/report", response_model=SLAReportOut)
 async def get_sla_report(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(
-        require_role_permission('read', 'sla_reports'))
+    current_user: User = Depends(get_current_user)
 ):
+    if not current_user.role or current_user.role.name.lower() != "superadmin":
+        raise HTTPException(
+            status_code=403, detail="Only superadmin can access this endpoint.")
     return await get_sla_report_controller(db)
 
 
-@sla_router.get("/ticket/{ticket_id}/status", response_model=SLAStatusOut)
+@sla_router.post("/align-tickets")
+async def align_all_tickets_sla(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not current_user.role or current_user.role.name.lower() != "superadmin":
+        raise HTTPException(
+            status_code=403, detail="Only superadmin can access this endpoint.")
+    from fastapi.responses import JSONResponse
+    from sla_controller import to_dict
+    result = await update_all_tickets_sla_alignment(db)
+    serializable_result = to_dict(result)
+    return JSONResponse(content=serializable_result)
+
+
+@sla_router.get("/ticket/{ticket_id}/status")
 async def get_ticket_sla_status(
     ticket_id: int,
     db: AsyncSession = Depends(get_db),
@@ -79,4 +105,9 @@ async def get_ticket_sla_status(
         if ticket_obj.userid != current_user.userid:
             raise HTTPException(
                 status_code=403, detail="Not authorized to view this ticket's SLA status")
-    return await get_ticket_sla_status_controller(ticket_id, db)
+    from fastapi.responses import JSONResponse
+    from sla_controller import to_dict
+    result = await get_ticket_sla_status_controller(ticket_id, db)
+    # Deeply serialize the entire result dict to avoid any SQLAlchemy objects
+    serializable_result = to_dict(result)
+    return JSONResponse(content=serializable_result)

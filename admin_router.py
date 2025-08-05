@@ -1,5 +1,5 @@
 # Role-based CRUD permission check dependency
-from controller import get_current_user
+from controller import get_current_user, log_user_activity
 from datetime import datetime, timedelta
 from typing import List, Optional
 from models import Ticket, TicketMessage, Category, User, Permission, AuditLog
@@ -38,13 +38,22 @@ async def get_dashboard_stats(db: AsyncSession = Depends(get_db), current_user: 
     pending_tickets = await db.execute(select(func.count()).where(Ticket.status.in_(["open", "in_progress"])))
     resolved_tickets = await db.execute(select(func.count()).where(Ticket.status == "resolved"))
     active_chats = await db.execute(select(func.count()).where(Ticket.status.in_(["open", "in_progress"])))
-    return {
+
+    stats = {
         "totalTickets": total_tickets.scalar(),
         "pendingTickets": pending_tickets.scalar(),
         "resolvedTickets": resolved_tickets.scalar(),
         "activeChats": active_chats.scalar(),
         "success": True
     }
+
+    log_user_activity(
+        current_user.uuid,
+        "DASHBOARD_STATS_ACCESSED",
+        f"total: {stats['totalTickets']} | pending: {stats['pendingTickets']} | resolved: {stats['resolvedTickets']}"
+    )
+
+    return stats
 
 
 @admin_router.get("/recent-activity", summary="Get recent ticket activity", tags=["Admin Dashboard"], operation_id="get_recent_activity")
@@ -171,10 +180,24 @@ async def update_ticket_status(ticket_id: int, status: str, db: AsyncSession = D
     ticket_result = await db.execute(select(Ticket).where(Ticket.ticketid == ticket_id))
     ticket = ticket_result.scalar_one_or_none()
     if not ticket:
+        log_user_activity(
+            current_user.uuid,
+            "TICKET_STATUS_UPDATE_FAILED",
+            f"ticket_id: {ticket_id} | reason: ticket_not_found"
+        )
         raise HTTPException(status_code=404, detail="Ticket not found")
+
+    old_status = ticket.status
     ticket.status = status
     ticket.updatedat = datetime.utcnow()
     await db.commit()
+
+    log_user_activity(
+        current_user.uuid,
+        "TICKET_STATUS_UPDATED",
+        f"ticket_id: {ticket_id} | old_status: {old_status} | new_status: {status}"
+    )
+
     return {"status": "success", "ticket_id": ticket_id, "new_status": status}
 
 # --- Admin Analytics ---
@@ -189,7 +212,8 @@ async def get_analytics(db: AsyncSession = Depends(get_db), current_user: User =
     for status_val in statuses:
         res = await db.execute(select(func.count()).where(Ticket.status == status_val))
         tickets_by_status[status_val] = res.scalar_one()
-    res = await db.execute(select(Ticket.createdat, Ticket.end_date).where(Ticket.end_date.isnot(None)))
+    # Use updatedat as the end date for analytics
+    res = await db.execute(select(Ticket.createdat, Ticket.updatedat).where(Ticket.updatedat.isnot(None)))
     times = [((row[1] - row[0]).total_seconds() / 3600)
              for row in res.all() if row[0] and row[1]]
     avg_resolution_time = round(sum(times) / len(times), 2) if times else None
@@ -234,8 +258,6 @@ async def list_admin_users(db: AsyncSession = Depends(get_db), current_user: Use
         {
             "userid": admin.userid,
             "email": admin.email,
-            "admin_role": admin.admin_role,
-            "admin_role_description": admin.admin_role_description,
             "admin_access_roles": admin.admin_access_roles
         }
         for admin in admins

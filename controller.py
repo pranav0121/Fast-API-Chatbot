@@ -1,11 +1,17 @@
-# Utility: Sync all existing tickets with SLA
-from sqlalchemy.future import select
-from db import get_db
-import logging
-import os
-from models import SLAPolicy
 from models import User, Category, CommonQuery, Ticket, TicketMessage, Feedback
-from schemas import SLAPolicyCreate, SLAPolicyUpdate, SLAPolicyOut, SLAStatusOut, SLAViolationOut, SLAReportOut
+from sla_models import SLAPolicy, SLALog
+from sla_controller import (
+    get_sla_policies_controller,
+    create_sla_policy_controller,
+    update_sla_policy_controller,
+    get_ticket_sla_status_controller,
+    get_sla_violations_controller,
+    get_sla_report_controller
+)
+import os
+import logging
+from db import get_db
+from sqlalchemy.future import select
 from schemas import UserRegisterRequest, UserLoginRequest, TokenResponse
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
@@ -15,6 +21,100 @@ from fastapi import HTTPException, status, Depends, UploadFile
 from sqlalchemy import select
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
+from schemas import SLAPolicyCreate, SLAPolicyUpdate, SLAPolicyOut, SLAStatusOut, SLAViolationOut, SLAReportOut
+
+
+# Load priority levels from .env
+PRIORITY_LEVELS = {
+    "critical": os.getenv("PRIORITY_LEVEL_0", "critical").lower(),
+    "high": os.getenv("PRIORITY_LEVEL_1", "high").lower(),
+    "medium": os.getenv("PRIORITY_LEVEL_2", "medium").lower(),
+    "low": os.getenv("PRIORITY_LEVEL_3", "low").lower(),
+}
+PRIORITY_LEVELS_REVERSE = {v: k for k, v in PRIORITY_LEVELS.items()}
+
+
+def get_priority_name(level: int) -> str:
+    priority_map = {
+        0: PRIORITY_LEVELS["critical"],
+        1: PRIORITY_LEVELS["high"],
+        2: PRIORITY_LEVELS["medium"],
+        3: PRIORITY_LEVELS["low"],
+    }
+    return priority_map.get(level, PRIORITY_LEVELS["medium"])
+
+
+def get_priority_level(name: str) -> int:
+    level_map = {
+        PRIORITY_LEVELS["critical"]: 0,
+        PRIORITY_LEVELS["high"]: 1,
+        PRIORITY_LEVELS["medium"]: 2,
+        PRIORITY_LEVELS["low"]: 3,
+    }
+    return level_map.get((name or '').lower(), 2)
+
+
+async def assign_sla_to_ticket(db: AsyncSession, ticket, ticket_priority: str):
+    """Assign SLA policy to ticket using the same logic as SLA controller"""
+    # Get all SLA policies
+    policy_result = await db.execute(select(SLAPolicy))
+    all_policies = policy_result.scalars().all()
+
+    # Create case-insensitive mapping
+    sla_policies = {}
+    for p in all_policies:
+        policy_name = str(p.name).strip().lower()
+        sla_policies[policy_name] = p
+
+    if not sla_policies:
+        return None
+
+    ticket_priority_normalized = ticket_priority.strip().lower()
+    matched_sla_name = None
+    sla_policy = None
+
+    # First try exact match with ticket priority
+    if ticket_priority_normalized in sla_policies:
+        sla_policy = sla_policies[ticket_priority_normalized]
+        matched_sla_name = sla_policy.name
+    else:
+        # Try mapping from env variables and check if SLA policy exists
+        for env_key, env_value in PRIORITY_LEVELS.items():
+            if ticket_priority_normalized == env_value:
+                # Look for SLA policy with this name (case insensitive)
+                if env_key in sla_policies:
+                    sla_policy = sla_policies[env_key]
+                    matched_sla_name = sla_policy.name
+                    break
+
+        # If still no match, try partial matching on policy names
+        if not sla_policy:
+            for key, policy in sla_policies.items():
+                if key in ticket_priority_normalized or ticket_priority_normalized in key:
+                    sla_policy = policy
+                    matched_sla_name = policy.name
+                    break
+
+        # Final fallback to default
+        if not sla_policy:
+            sla_policy = sla_policies.get(
+                "default sla") or list(sla_policies.values())[0]
+            matched_sla_name = sla_policy.name if hasattr(
+                sla_policy, "name") else sla_policy.get("name")
+
+    # Set SLA target time
+    if sla_policy and ticket.createdat:
+        sla_target = ticket.createdat + \
+            timedelta(minutes=sla_policy.resolution_time_minutes)
+        ticket.current_sla_target = sla_target
+
+        log_user_activity(
+            None,
+            "SLA_ASSIGNED",
+            f"ticket_id: {ticket.ticketid} | priority: {ticket_priority} | sla: {matched_sla_name} | target: {sla_target}"
+        )
+
+    return sla_policy
 
 
 async def sync_existing_tickets_with_sla(db: AsyncSession):
@@ -29,8 +129,9 @@ async def sync_existing_tickets_with_sla(db: AsyncSession):
     now = datetime.utcnow()
     updated = 0
     for ticket in tickets:
-        priority = (ticket.priority or "medium").lower()
-        sla_policy = sla_policies.get(priority)
+        # Use env-based priorities
+        priority_name = (ticket.priority or get_priority_name(2)).lower()
+        sla_policy = sla_policies.get(priority_name)
         if sla_policy:
             ticket.current_sla_target = now + \
                 timedelta(minutes=sla_policy.resolution_time_minutes)
@@ -42,80 +143,80 @@ async def sync_existing_tickets_with_sla(db: AsyncSession):
     return {"status": "synced", "updated": updated}
 
 
-# Set up logging
-logging.basicConfig(filename='user_activity.log', level=logging.INFO,
-                    format='%(asctime)s | %(levelname)s | %(message)s')
+# Set up separate loggers for user, admin, and superadmin
+user_logger = logging.getLogger("user_logger")
+user_handler = logging.FileHandler("user_activity.log")
+user_handler.setFormatter(logging.Formatter(
+    '%(asctime)s | %(levelname)s | %(message)s'))
+user_logger.addHandler(user_handler)
+user_logger.setLevel(logging.INFO)
 
-# =====================
-# SLA Controllers (merged from sla_controller.py)
-# =====================
+admin_logger = logging.getLogger("admin_logger")
+admin_handler = logging.FileHandler("admin_activity.log")
+admin_handler.setFormatter(logging.Formatter(
+    '%(asctime)s | %(levelname)s | %(message)s'))
+admin_logger.addHandler(admin_handler)
+admin_logger.setLevel(logging.INFO)
 
-
-async def get_sla_policies_controller(db: AsyncSession):
-    result = await db.execute(select(SLAPolicy))
-    return result.scalars().all()
-
-
-async def create_sla_policy_controller(sla: SLAPolicyCreate, db: AsyncSession):
-    new_policy = SLAPolicy(**sla.dict())
-    db.add(new_policy)
-    await db.commit()
-    await db.refresh(new_policy)
-    return new_policy
-
-
-async def update_sla_policy_controller(sla_id: int, sla: SLAPolicyUpdate, db: AsyncSession):
-    result = await db.execute(select(SLAPolicy).where(SLAPolicy.sla_id == sla_id))
-    policy = result.scalar_one_or_none()
-    if not policy:
-        raise HTTPException(status_code=404, detail="SLA policy not found")
-    for key, value in sla.dict(exclude_unset=True).items():
-        setattr(policy, key, value)
-    await db.commit()
-    await db.refresh(policy)
-    return policy
+superadmin_logger = logging.getLogger("superadmin_logger")
+superadmin_handler = logging.FileHandler("superadmin_activity.log")
+superadmin_handler.setFormatter(logging.Formatter(
+    '%(asctime)s | %(levelname)s | %(message)s'))
+superadmin_logger.addHandler(superadmin_handler)
+superadmin_logger.setLevel(logging.INFO)
 
 
-async def get_ticket_sla_status_controller(ticket_id: int, db: AsyncSession):
-    # Example logic: find ticket, get SLA policy, calculate status
-    result = await db.execute(select(Ticket).where(Ticket.ticketid == ticket_id))
-    ticket = result.scalar_one_or_none()
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
-    # For demo, assume all tickets use the first SLA policy
-    policy_result = await db.execute(select(SLAPolicy))
-    sla_policy = policy_result.scalars().first()
-    if not sla_policy:
-        raise HTTPException(status_code=404, detail="No SLA policy found")
-    # Calculate status (placeholder logic)
-    status = "on track"
-    time_left = sla_policy.resolution_time_minutes  # Placeholder
-    return {
-        "ticket_id": ticket.ticketid,
-        "sla_policy": sla_policy,
-        "status": status,
-        "time_left_minutes": time_left
-    }
+def get_user_type_logger(user):
+    """Get appropriate logger based on user role"""
+    if not user:
+        return superadmin_logger  # Default to superadmin for system actions
+
+    # Handle string UUIDs - default to user logger
+    if isinstance(user, str):
+        return user_logger
+
+    # Use only direct boolean fields to avoid lazy loading database queries
+    # Accessing user.role would trigger an async DB query which causes greenlet issues
+    if getattr(user, 'is_superadmin', False):
+        return superadmin_logger
+    elif getattr(user, 'isadmin', False):
+        return admin_logger
+    else:
+        return user_logger
 
 
-async def get_sla_violations_controller(db: AsyncSession):
-    # Example: find tickets that are breached (placeholder logic)
-    # In real logic, compare ticket timestamps to SLA
-    return []
+def log_user_activity(user, action, details="", level="INFO"):
+    """Enhanced logging function for user activities"""
+    logger = get_user_type_logger(user)
 
+    if user:
+        # Handle both User objects and string UUIDs
+        if isinstance(user, str):
+            # If user is a string UUID, we'll log it as such
+            user_info = f"USER_UUID:{user}"
+            role = "USER"  # Default role for UUID-only logging
+        else:
+            # If user is a User object
+            user_info = f"USER_ID:{user.userid} | EMAIL:{user.email}"
+            role = "SUPERADMIN" if getattr(user, 'is_superadmin', False) else \
+                   "ADMIN" if getattr(user, 'isadmin', False) else "USER"
 
-async def get_sla_report_controller(db: AsyncSession):
-    # Example: count tickets and breached tickets (placeholder logic)
-    total_tickets = 0
-    tickets_within_sla = 0
-    tickets_breached = 0
-    compliance_percentage = 100.0
-    return {
-        "total_tickets": total_tickets,
-        "tickets_within_sla": tickets_within_sla,
-        "tickets_breached": tickets_breached,
-        "compliance_percentage": compliance_percentage
-    }
+            # Note: Avoiding user.role access to prevent lazy loading DB queries
+
+        message = f"{user_info} | ROLE:{role} | ACTION:{action}"
+        if details:
+            message += f" | {details}"
+    else:
+        message = f"SYSTEM | ACTION:{action}"
+        if details:
+            message += f" | {details}"
+
+    if level.upper() == "ERROR":
+        logger.error(message)
+    elif level.upper() == "WARNING":
+        logger.warning(message)
+    else:
+        logger.info(message)
 
 
 # JWT settings
@@ -139,8 +240,14 @@ def get_password_hash(password):
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire})
+    now = datetime.utcnow()
+    expire = now + \
+        (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({
+        "exp": expire,
+        "iat": now,
+        "iss": "YouCloud Pay"
+    })
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
@@ -160,7 +267,11 @@ async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depe
         raise credentials_exception
     if db is None:
         raise credentials_exception
-    result = await db.execute(select(User).where(User.email == email))
+    from sqlalchemy.orm import selectinload
+    result = await db.execute(
+        select(User).options(selectinload(
+            User.role)).where(User.email == email)
+    )
     user = result.scalar_one_or_none()
     if user is None:
         raise credentials_exception
@@ -172,6 +283,8 @@ async def register_user_controller(db, payload: UserRegisterRequest):
     from models import User
     result = await db.execute(select(User).where(User.email == payload.email))
     if result.scalar_one_or_none():
+        log_user_activity(None, "REGISTRATION_FAILED",
+                          f"email_already_exists: {payload.email}", "WARNING")
         raise HTTPException(status_code=400, detail="Email already registered")
     hashed_password = get_password_hash(payload.password)
     # Always assign roleid=3 (user) for new users
@@ -194,6 +307,8 @@ async def register_user_controller(db, payload: UserRegisterRequest):
     db.add(user)
     await db.commit()
     await db.refresh(user)
+    log_user_activity(user, "USER_REGISTERED",
+                      f"new_user_created | org: {payload.organizationname}")
     return {"status": "success", "user_id": user.userid}
 
 # User login
@@ -204,14 +319,17 @@ async def login_user_controller(db, form_data: OAuth2PasswordRequestForm):
     result = await db.execute(select(User).where(User.email == form_data.username))
     user = result.scalar_one_or_none()
     if not user or not verify_password(form_data.password, user.passwordhash):
-        logging.error(f"FAILED LOGIN | email: {form_data.username}")
+        log_user_activity(None, "LOGIN_FAILED",
+                          f"email: {form_data.username}", "ERROR")
         raise HTTPException(
             status_code=401, detail="Incorrect email or password")
-    access_token = create_access_token(data={"sub": user.email})
-    logging.info(f"LOGIN | user_id: {user.userid} | email: {user.email}")
+    access_token = create_access_token(data={
+        "sub": user.email,
+        "user_id": user.userid,
+        "role_id": user.roleid
+    })
+    log_user_activity(user, "LOGIN_SUCCESS", f"token_generated")
     return TokenResponse(access_token=access_token)
-
-# ...existing code...
 
 
 async def get_users_controller(db):
@@ -227,7 +345,11 @@ async def get_user_by_uuid_controller(db, user_uuid: str):
     result = await db.execute(select(User).where(User.uuid == user_uuid))
     user = result.scalar_one_or_none()
     if not user:
-        logging.error(f"USER NOT FOUND | uuid: {user_uuid}")
+        log_user_activity(
+            None,
+            "USER_NOT_FOUND_ERROR",
+            f"uuid: {user_uuid}"
+        )
         raise HTTPException(status_code=404, detail="User not found")
     return {
         "userid": user.userid,
@@ -253,54 +375,55 @@ async def get_common_queries_controller(db, category_id: int):
 
 
 async def create_ticket_controller(db, payload):
-    # Assign SLA policy based on ticket priority
-    from models import SLALog, TicketStatusLog
-    sla_policies_result = await db.execute(select(SLAPolicy))
-    sla_policies = {
-        p.name.lower(): p for p in sla_policies_result.scalars().all()}
+    from models import TicketStatusLog
     from datetime import datetime, timedelta
+
     now = datetime.utcnow()
-    priority = (payload.priority or "medium").lower()
-    sla_policy = sla_policies.get(priority)
-    sla_target = None
-    if sla_policy:
-        sla_target = now + \
-            timedelta(minutes=sla_policy.resolution_time_minutes)
+
+    # Validate and normalize priority
+    requested_priority = (
+        payload.priority or get_priority_name(2)).strip().lower()
+    allowed_priorities = set(PRIORITY_LEVELS.values())
+
+    if requested_priority not in allowed_priorities:
+        requested_priority = get_priority_name(2)  # Default to medium
+
+    # Create ticket first
     ticket = Ticket(
         userid=None,
         categoryid=payload.category_id,
         subject=payload.subject,
         status="open",
-        priority=payload.priority,
+        priority=requested_priority,
         organizationname=payload.organization,
         createdby=payload.name,
         createdat=now,
-        updatedat=now,
-        current_sla_target=sla_target
+        updatedat=now
     )
     db.add(ticket)
+    await db.flush()  # Get ticket ID without committing
+
+    # Assign SLA using consistent logic
+    await assign_sla_to_ticket(db, ticket, requested_priority)
+
     await db.commit()
     await db.refresh(ticket)
-    logging.info(
-        f"TICKET CREATED | subject: {payload.subject} | createdby: {payload.name} | ticket_id: {ticket.ticketid}")
 
-    # Log SLA assignment event
-    if sla_policy:
-        sla_log = SLALog(
-            ticket_id=ticket.ticketid,
-            sla_policy_id=sla_policy.sla_id,
-            event_type="assigned",
-            timestamp=now,
-            details=f"SLA assigned on ticket creation. SLA: {sla_policy.name}"
-        )
-        db.add(sla_log)
+    log_user_activity(
+        None,
+        "TICKET_CREATED",
+        f"ticket_id: {ticket.ticketid} | subject: {payload.subject} | createdby: {payload.name} | priority: {requested_priority} | sla_target: {ticket.current_sla_target}"
+    )
 
     # Log ticket status event
     status_log = TicketStatusLog(
         ticket_id=ticket.ticketid,
-        status="open",
-        timestamp=now,
-        details="Ticket created"
+        old_status=None,
+        new_status="open",
+        changed_by_type="system",  # Required field
+        created_at=now,
+        changed_at=now,
+        comment="Ticket created"
     )
     db.add(status_log)
 
@@ -315,8 +438,11 @@ async def create_ticket_controller(db, payload):
             createdat=now
         )
         db.add(message)
-        logging.info(
-            f"TICKET MESSAGE CREATED | ticket_id: {ticket.ticketid} | content: {payload.message}")
+        log_user_activity(
+            None,
+            "TICKET_MESSAGE_CREATED",
+            f"ticket_id: {ticket.ticketid} | content_length: {len(payload.message)}"
+        )
 
     await db.commit()
     return {"ticket_id": ticket.ticketid, "status": "success"}
@@ -359,8 +485,11 @@ async def add_ticket_message_controller(db, ticket_id: int, payload):
     db.add(message)
     await db.commit()
     await db.refresh(message)
-    logging.info(
-        f"TICKET MESSAGE ADDED | ticket_id: {ticket_id} | sender_id: {senderid} | content: {payload.content}")
+    log_user_activity(
+        None,
+        "TICKET_MESSAGE_ADDED",
+        f"ticket_id: {ticket_id} | sender_id: {senderid} | content_length: {len(payload.content)}"
+    )
     return {"message_id": message.messageid, "status": "success"}
 
 
@@ -371,7 +500,11 @@ async def upload_file_controller(file: UploadFile):
     with open(file_location, "wb") as f:
         content = await file.read()
         f.write(content)
-    logging.info(f"FILE UPLOADED | filename: {file.filename}")
+    log_user_activity(
+        None,
+        "FILE_UPLOADED",
+        f"filename: {file.filename} | size: {len(content)} bytes"
+    )
     return {"file_url": f"/uploads/{file.filename}"}
 
 
@@ -383,8 +516,11 @@ async def submit_feedback_controller(db, payload):
     )
     db.add(feedback)
     await db.commit()
-    logging.info(
-        f"FEEDBACK SUBMITTED | ticket_id: {payload.ticket_id} | rating: {payload.rating}")
+    log_user_activity(
+        None,
+        "FEEDBACK_SUBMITTED",
+        f"ticket_id: {payload.ticket_id} | rating: {payload.rating}"
+    )
     return {"status": "success"}
 
 
