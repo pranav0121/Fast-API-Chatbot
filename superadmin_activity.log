@@ -1,3 +1,12 @@
 2025-08-06 02:16:57,791 | ERROR | SYSTEM | ACTION:LOGIN_FAILED | email: test@example.com
 2025-08-06 02:17:41,295 | ERROR | SYSTEM | ACTION:LOGIN_FAILED | email: test@example.com
 2025-08-06 02:43:28,595 | INFO | SYSTEM | ACTION:USER_NOT_FOUND_ERROR | uuid: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkB5b3VjbG91ZHRlY2guY29tIiwidXNlcl9pZCI6Niwicm9sZV9pZCI6MiwiZXhwIjoxNzU0NDMxODU2LCJpYXQiOjE3NTQ0MjgyNTYsImlzcyI6IllvdUNsb3VkIFBheSJ9.K9LHxl9bqgNoc5eb1ZbdHESq4SuMVLyc4XtNrJ7kGHQ
+2025-08-06 03:24:12,567 | ERROR | SYSTEM | ACTION:LOGIN_FAILED | email: superadmin@youcloudtech.com
+2025-08-06 03:27:44,308 | INFO | SYSTEM | ACTION:SLA_ASSIGNED | ticket_id: 116 | priority: medium | sla: Medium | target: 2025-08-06 01:57:44.305086
+2025-08-06 03:27:44,314 | INFO | SYSTEM | ACTION:TICKET_CREATED | ticket_id: 116 | subject: string | createdby: string | priority: medium | sla_target: 2025-08-06 01:57:44.305086
+2025-08-06 03:27:44,320 | INFO | SYSTEM | ACTION:TICKET_MESSAGE_CREATED | ticket_id: 116 | content_length: 6
+2025-08-06 03:28:49,512 | INFO | SYSTEM | ACTION:TICKET_MESSAGE_ADDED | ticket_id: 116 | sender_id: None | content_length: 4
+2025-08-06 03:29:25,870 | INFO | SYSTEM | ACTION:FEEDBACK_SUBMITTED | ticket_id: 116 | rating: 5
+2025-08-06 03:29:39,619 | INFO | SYSTEM | ACTION:FILE_UPLOADED | filename: data-1754417676388.csv | size: 62272 bytes
+2025-08-06 04:06:35,787 | INFO | SYSTEM | ACTION:TICKET_MESSAGE_ADDED | ticket_id: 116 | sender_id: None | content_length: 6
+2025-08-06 04:06:56,612 | INFO | SYSTEM | ACTION:FEEDBACK_SUBMITTED | ticket_id: 116 | rating: 5
