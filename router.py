@@ -9,6 +9,8 @@ from schemas import (
     TicketCreateRequest, TicketMessageRequest, FeedbackRequest,
     UserRegisterRequest, UserLoginRequest, TokenResponse
 )
+
+# Core controller imports
 from controller import (
     get_categories_controller,
     get_common_queries_controller,
@@ -21,8 +23,13 @@ from controller import (
     test_database_controller,
     get_users_controller,
     get_user_by_uuid_controller,
-    register_user_controller, login_user_controller, get_current_user
+    register_user_controller,
+    login_user_controller,
+    get_current_user
 )
+# YouShop API imports (import only if needed for youshop functionality)
+# Example:
+from youshop_API.youshop.yshop_router import router as youshop_router
 
 router = APIRouter()
 

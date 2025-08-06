@@ -11,3 +11,9 @@
 2025-08-06 04:06:35,787 | INFO | SYSTEM | ACTION:TICKET_MESSAGE_ADDED | ticket_id: 116 | sender_id: None | content_length: 6
 2025-08-06 04:06:56,612 | INFO | SYSTEM | ACTION:FEEDBACK_SUBMITTED | ticket_id: 116 | rating: 5
 2025-08-06 10:09:33,658 | ERROR | SYSTEM | ACTION:LOGIN_FAILED | email: superadmin@youcloudtech.com
+2025-08-06 20:41:28,107 | ERROR | SYSTEM | ACTION:LOGIN_FAILED | email: superadmin@youcloudtech.com
+2025-08-06 20:43:03,155 | ERROR | SYSTEM | ACTION:LOGIN_FAILED | email: harshith
+2025-08-06 20:46:36,532 | INFO | SYSTEM | ACTION:SLA_ASSIGNED | ticket_id: 117 | priority: low | sla: low | target: 2025-08-06 19:16:36.489187
+2025-08-06 20:46:36,572 | INFO | SYSTEM | ACTION:TICKET_CREATED | ticket_id: 117 | subject: tech glitches | createdby: harshith | priority: low | sla_target: 2025-08-06 19:16:36.489187
+2025-08-06 20:46:36,573 | INFO | SYSTEM | ACTION:TICKET_MESSAGE_CREATED | ticket_id: 117 | content_length: 7
+2025-08-06 20:47:26,350 | INFO | SYSTEM | ACTION:TICKET_MESSAGE_ADDED | ticket_id: 117 | sender_id: 36 | content_length: 11
