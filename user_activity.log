@@ -2390,3 +2390,7 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-08-06 03:25:48,954 | INFO | USER_ID:33 | EMAIL:gokul@test.com | ROLE:USER | ACTION:LOGIN_SUCCESS | token_generated
 2025-08-06 04:07:12,806 | INFO | USER_UUID:055dcefc-a303-4bda-830f-1a1cb6d12d11 | ROLE:USER | ACTION:DASHBOARD_STATS_ACCESSED | total: 82 | pending: 18 | resolved: 1
 2025-08-06 04:07:55,288 | INFO | USER_UUID:055dcefc-a303-4bda-830f-1a1cb6d12d11 | ROLE:USER | ACTION:TICKET_STATUS_UPDATED | ticket_id: 116 | old_status: open | new_status: open
+2025-08-06 14:33:00,104 | INFO | USER_ID:8 | EMAIL:pranavreddy037@gmail.com | ROLE:USER | ACTION:LOGIN_SUCCESS | token_generated
+2025-08-06 14:36:58,466 | INFO | USER_ID:8 | EMAIL:pranavreddy037@gmail.com | ROLE:USER | ACTION:LOGIN_SUCCESS | token_generated
+2025-08-06 14:38:21,987 | INFO | USER_ID:8 | EMAIL:pranavreddy037@gmail.com | ROLE:USER | ACTION:LOGIN_SUCCESS | token_generated
+2025-08-06 14:39:56,294 | INFO | USER_ID:8 | EMAIL:pranavreddy037@gmail.com | ROLE:USER | ACTION:LOGIN_SUCCESS | token_generated

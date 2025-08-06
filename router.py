@@ -1,4 +1,3 @@
-
 # Imports grouped by type for clarity
 from fastapi import APIRouter, Request, Depends, HTTPException, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
@@ -126,6 +125,20 @@ async def get_ticket_messages(ticket_id: int, db: AsyncSession = Depends(get_db)
 @router.post("/tickets/{ticket_id}/messages", summary="Add message to ticket", tags=["Tickets"])
 async def add_ticket_message(ticket_id: int, payload: TicketMessageRequest, db: AsyncSession = Depends(get_db)):
     return await add_ticket_message_controller(db, ticket_id, payload)
+
+
+@router.delete("/tickets/{ticket_id}", summary="Delete ticket", tags=["Tickets"])
+async def delete_ticket(ticket_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    from models import Ticket, TicketMessage, Feedback, TicketStatusLog
+    await db.execute(TicketMessage.__table__.delete().where(TicketMessage.ticketid == ticket_id))
+    await db.execute(Feedback.__table__.delete().where(Feedback.ticketid == ticket_id))
+    await db.execute(TicketStatusLog.__table__.delete().where(TicketStatusLog.ticket_id == ticket_id))
+    ticket = (await db.execute(select(Ticket).where(Ticket.ticketid == ticket_id))).scalar_one_or_none()
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    await db.delete(ticket)
+    await db.commit()
+    return {"message": f"Ticket {ticket_id} and all related data deleted successfully"}
 
 # =====================
 # File Upload

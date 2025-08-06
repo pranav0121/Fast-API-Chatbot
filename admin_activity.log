@@ -44,3 +44,4 @@
 2025-08-06 03:19:42,104 | INFO | USER_ID:13 | EMAIL:superadmin@youcloudtech.com | ROLE:ADMIN | ACTION:LOGIN_SUCCESS | token_generated
 2025-08-06 03:24:20,134 | INFO | USER_ID:13 | EMAIL:superadmin@youcloudtech.com | ROLE:ADMIN | ACTION:LOGIN_SUCCESS | token_generated
 2025-08-06 04:05:01,508 | INFO | USER_ID:13 | EMAIL:superadmin@youcloudtech.com | ROLE:ADMIN | ACTION:LOGIN_SUCCESS | token_generated
+2025-08-06 10:09:39,852 | INFO | USER_ID:13 | EMAIL:superadmin@youcloudtech.com | ROLE:ADMIN | ACTION:LOGIN_SUCCESS | token_generated

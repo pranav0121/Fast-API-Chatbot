@@ -10,3 +10,4 @@
 2025-08-06 03:29:39,619 | INFO | SYSTEM | ACTION:FILE_UPLOADED | filename: data-1754417676388.csv | size: 62272 bytes
 2025-08-06 04:06:35,787 | INFO | SYSTEM | ACTION:TICKET_MESSAGE_ADDED | ticket_id: 116 | sender_id: None | content_length: 6
 2025-08-06 04:06:56,612 | INFO | SYSTEM | ACTION:FEEDBACK_SUBMITTED | ticket_id: 116 | rating: 5
+2025-08-06 10:09:33,658 | ERROR | SYSTEM | ACTION:LOGIN_FAILED | email: superadmin@youcloudtech.com
