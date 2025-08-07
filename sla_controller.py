@@ -1,4 +1,14 @@
+import math
+import os
+from sla_models import SLAPolicy
+from sqlalchemy import select
+from fastapi import HTTPException
+from datetime import datetime, timedelta
+from models import Ticket
+from dbactions import get_sla_policies, create_sla_policy, update_sla_policy
 # Utility: Match ticket priority to SLA policy (shared logic)
+
+
 async def match_ticket_to_sla_policy(db, ticket_priority):
     from sla_models import SLAPolicy
     from sqlalchemy import select
@@ -25,23 +35,22 @@ async def match_ticket_to_sla_policy(db, ticket_priority):
                     matched_sla_name = policy.name
                     break
         if not sla_policy and sla_policies:
-            sla_policy = sla_policies.get("default sla") or list(sla_policies.values())[0]
-            matched_sla_name = sla_policy.name if hasattr(sla_policy, "name") else sla_policy.get("name")
+            sla_policy = sla_policies.get(
+                "default sla") or list(sla_policies.values())[0]
+            matched_sla_name = sla_policy.name if hasattr(
+                sla_policy, "name") else sla_policy.get("name")
     return sla_policy, matched_sla_name
-
-from models import Ticket
-from datetime import datetime, timedelta
-from fastapi import HTTPException
-import os, math
-from sqlalchemy import select
-from sla_models import SLAPolicy
 
 
 def to_dict(obj):
-    if obj is None:return None
-    if isinstance(obj,list):return [to_dict(i) for i in obj]
-    if hasattr(obj,'__table__'):return{c.name:getattr(obj,c.name)for c in obj.__table__.columns}
-    if isinstance(obj,dict):return{k:to_dict(v)for k,v in obj.items()}
+    if obj is None:
+        return None
+    if isinstance(obj, list):
+        return [to_dict(i) for i in obj]
+    if hasattr(obj, '__table__'):
+        return {c.name: getattr(obj, c.name)for c in obj.__table__.columns}
+    if isinstance(obj, dict):
+        return {k: to_dict(v)for k, v in obj.items()}
     return obj
 
 
@@ -310,7 +319,6 @@ async def get_sla_report_controller(db):
     tickets = tickets_result.scalars().all()
     sla_policy_result = await db.execute(select(SLAPolicy))
     all_policies = sla_policy_result.scalars().all()
-    # Create case-insensitive mapping
     sla_policies = {}
     for p in all_policies:
         policy_name = str(p.name).strip().lower()
@@ -333,40 +341,29 @@ async def get_sla_report_controller(db):
         resolved = getattr(ticket, "end_date", None) or getattr(
             ticket, "updatedat", None)
         ticket_priority = (ticket.priority or "").strip().lower()
-
-        # Map ticket priority to SLA policy using environment variables
         matched_sla_name = None
         sla_policy = None
-
-        # First try exact match with ticket priority
         if ticket_priority in sla_policies:
             sla_policy = sla_policies[ticket_priority]
             matched_sla_name = sla_policy.name
         else:
-            # Try mapping from env variables and check if SLA policy exists
             for env_key, env_value in PRIORITY_LEVELS.items():
                 if ticket_priority == env_value:
-                    # Look for SLA policy with this name (case insensitive)
                     if env_key in sla_policies:
                         sla_policy = sla_policies[env_key]
                         matched_sla_name = sla_policy.name
                         break
-
-            # If still no match, try partial matching on policy names
             if not sla_policy:
                 for key, policy in sla_policies.items():
                     if key in ticket_priority or ticket_priority in key:
                         sla_policy = policy
                         matched_sla_name = policy.name
                         break
-
-            # Final fallback to default
             if not sla_policy:
                 sla_policy = sla_policies.get(
                     "default sla") or list(sla_policies.values())[0]
                 matched_sla_name = sla_policy.name if hasattr(
                     sla_policy, "name") else sla_policy.get("name")
-
         sla_minutes = sla_policy.resolution_time_minutes if hasattr(
             sla_policy, "resolution_time_minutes") else sla_policy.get("resolution_time_minutes")
         if not created or not resolved or not sla_policy:
@@ -417,13 +414,10 @@ async def get_sla_report_controller(db):
     total_tickets = len(tickets)
     compliance_percentage = (tickets_within_sla /
                              total_tickets * 100) if total_tickets > 0 else 0.0
-
-    result = {
+    return {
         "total_tickets": total_tickets,
         "tickets_within_sla": tickets_within_sla,
         "tickets_breached": tickets_breached,
         "compliance_percentage": round(compliance_percentage, 2),
         "details": details
     }
-
-    return result
