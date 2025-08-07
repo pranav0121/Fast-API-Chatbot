@@ -27,7 +27,7 @@ def log_audit(db: AsyncSession, user_id: int, action: str, status: str, details:
     log = AuditLog(user_id=user_id, action=action,
                    status=status, details=details)
     db.add(log)
-    # This is now a sync helper, call await db.commit() after using in endpoints if needed
+
 
 # --- Admin Dashboard ---
 

@@ -36,6 +36,14 @@ async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depe
         raise credentials_exception
     return user
 
+
+async def get_current_admin_user(current_user: User = Depends(get_current_user)):
+    """Ensure the current user is an admin."""
+    if not getattr(current_user, 'isadmin', False):
+        raise HTTPException(
+            status_code=403, detail="Admin privileges required")
+    return current_user
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -183,16 +191,28 @@ async def get_common_queries_controller(db: AsyncSession, category_id: int):
     return await get_common_queries(db, category_id)
 
 
-async def login_user_controller(db: AsyncSession, form_data):
-    from models import User
-    result = await db.execute(select(User).where(User.email == form_data.username))
-    user = result.scalar_one_or_none()
-    if not user or not pwd_context.verify(form_data.password, user.passwordhash):
-        raise HTTPException(
-            status_code=401, detail="Incorrect email or password")
-    access_token = jwt.encode(
-        {"sub": user.email}, "your_secret_key_here", algorithm="HS256")
-    return {"access_token": access_token}
+# YouShop authentication utilities
+SECRET_KEY = "your_secret_key_here"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+
+def get_password_hash(password: str) -> str:
+    """Hash a password using bcrypt."""
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify a plaintext password against a hash."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def create_access_token(data: dict) -> str:
+    """Generate a JWT token with expiration."""
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 async def register_user_controller(db: AsyncSession, payload):

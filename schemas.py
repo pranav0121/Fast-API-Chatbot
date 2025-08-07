@@ -77,7 +77,7 @@ class SLAPolicyOut(SLAPolicyBase):
     sla_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SLAStatusOut(BaseModel):

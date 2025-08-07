@@ -10,7 +10,7 @@ from schemas import (
     UserRegisterRequest, UserLoginRequest, TokenResponse
 )
 
-# Core controller imports
+# Controller imports
 from controller import (
     get_categories_controller,
     get_common_queries_controller,
@@ -28,7 +28,7 @@ from controller import (
     get_current_user
 )
 # YouShop API imports (import only if needed for youshop functionality)
-# Example:
+
 from youshop_API.youshop.yshop_router import router as youshop_router
 
 router = APIRouter()

@@ -3,12 +3,23 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from db import get_db
 from .yshop_schemas import ProductSearchResponse, CartResponse, OrderRequest, OrderResponse, OrderStatusResponse, MessageResponse
-from .yshop_dbactions import (
-    search_products, get_trending_products, get_recommended_products, get_product_by_id,
-    add_to_cart, remove_from_cart, get_cart, place_order, get_order_status
+from .yshop_controller import (
+    get_current_shop_customer,
+    controller_search_products,
+    controller_get_trending,
+    controller_get_recommended,
+    controller_get_product_details,
+    controller_add_to_cart,
+    controller_remove_from_cart,
+    controller_view_cart,
+    controller_place_order
 )
 
-router = APIRouter(prefix="/yshop", tags=["YouShop Chatbot"])
+router = APIRouter(
+    prefix="/yshop",
+    tags=["YouShop Chatbot"],
+    dependencies=[Depends(get_current_shop_customer)]
+)
 
 # Product Discovery
 
@@ -20,19 +31,19 @@ async def api_search_products(
     brand: Optional[str] = None,
     db: AsyncSession = Depends(get_db)
 ):
-    results = await search_products(db, name, category, brand)
+    results = await controller_search_products(name, category, brand, db)
     return {"results": results}
 
 
 @router.get("/products/trending", response_model=ProductSearchResponse)
 async def api_trending_products(db: AsyncSession = Depends(get_db)):
-    results = await get_trending_products(db)
+    results = await controller_get_trending(db)
     return {"results": results}
 
 
 @router.get("/products/recommended", response_model=ProductSearchResponse)
 async def api_recommended_products(db: AsyncSession = Depends(get_db)):
-    results = await get_recommended_products(db)
+    results = await controller_get_recommended(db)
     return {"results": results}
 
 # Product Details
@@ -40,43 +51,37 @@ async def api_recommended_products(db: AsyncSession = Depends(get_db)):
 
 @router.get("/products/{product_id}", response_model=ProductSearchResponse)
 async def api_product_details(product_id: int, db: AsyncSession = Depends(get_db)):
-    product = await get_product_by_id(db, product_id)
-    if product:
-        return {"results": [product]}
-    raise HTTPException(status_code=404, detail="Product not found")
+    product = await controller_get_product_details(product_id, db)
+    return {"results": [product]}
 
 # Cart Management
 
 
 @router.post("/cart/add/{product_id}", response_model=CartResponse)
 async def api_add_to_cart(product_id: int, db: AsyncSession = Depends(get_db)):
-    success = await add_to_cart(db, product_id)
-    if success:
-        cart = await get_cart(db)
-        return {"cart": [item.product for item in cart]}
-    raise HTTPException(status_code=404, detail="Product not found")
+    cart_items = await controller_add_to_cart(product_id, db)
+    return {"cart": [item.product for item in cart_items]}
 
 
 @router.post("/cart/remove/{product_id}", response_model=CartResponse)
 async def api_remove_from_cart(product_id: int, db: AsyncSession = Depends(get_db)):
-    success = await remove_from_cart(db, product_id)
-    if success:
-        cart = await get_cart(db)
-        return {"cart": [item.product for item in cart]}
-    raise HTTPException(status_code=404, detail="Product not in cart")
+    cart_items = await controller_remove_from_cart(product_id, db)
+    return {"cart": [item.product for item in cart_items]}
 
 
 @router.get("/cart", response_model=CartResponse)
 async def api_view_cart(db: AsyncSession = Depends(get_db)):
-    cart = await get_cart(db)
-    return {"cart": [item.product for item in cart]}
+    cart_items = await controller_view_cart(db)
+    return {"cart": [item.product for item in cart_items]}
 
 # Order Placement
 
 
 @router.post("/order/place", response_model=OrderResponse)
-async def api_place_order(order: OrderRequest, db: AsyncSession = Depends(get_db)):
-    order_id = await place_order(db, order.address, order.payment_method)
-    if order_id:
-        return {"message": "Order placed", "order_id": order_id}
-    raise HTTPException(status_code=400, detail="Cart is empty")
+async def api_place_order(
+    order: OrderRequest,
+    db: AsyncSession = Depends(get_db),
+    current_customer=Depends(get_current_shop_customer)
+):
+    order_id = await controller_place_order(order, db, current_customer)
+    return {"message": "Order placed", "order_id": order_id}
